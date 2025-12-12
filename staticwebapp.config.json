@@ -1,0 +1,15 @@
+{
+  "navigationFallback": {
+    "rewrite": "/index.html",
+    "exclude": ["/assets/*", "/*.{css,scss,js,ts,jpg,jpeg,png,gif,svg,ico,woff,woff2,ttf,eot}"]
+  },
+  "mimeTypes": {
+    ".json": "application/json",
+    ".css": "text/css",
+    ".js": "application/javascript",
+    ".woff2": "font/woff2"
+  },
+  "globalHeaders": {
+    "cache-control": "must-revalidate, max-age=6000"
+  }
+}

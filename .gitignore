@@ -1,0 +1,86 @@
+# Dependencies
+node_modules
+
+# Build output
+dist
+server/public
+
+# Environment variables (CRITICAL - Never commit!)
+.env
+.env.local
+.env.*.local
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Temporary files
+*.tmp
+*.temp
+.cache
+
+# Vite
+vite.config.ts.*
+
+# Archives
+*.tar.gz
+*.zip
+
+# Database
+*.db
+*.sqlite
+*.db-journal
+*.db-shm
+*.db-wal
+
+# Backup files (can be large, shouldn't be in version control)
+monitoring-system/backups/
+backups/
+*.backup
+*.bak
+*.sql.bak
+
+# Test files
+test_*.csv
+test-*.js
+test-*.html
+test-*.ts
+
+# Local development files
+.replit
+replit.md
+gpt-4.1-nano
+run
+setup
+
+# Temporary assets and uploads
+attached_assets/
+uploads/
+temp/
+
+# Local configuration
+.config/
+.local/
+
+# Platform-specific files
+*.bat
+*.sh
+!scripts/*.bat
+!scripts/*.sh
+
+# Optional: Migrations (if using version control)
+# migrations/

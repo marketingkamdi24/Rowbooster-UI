@@ -1,0 +1,132 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: "Nunito";
+  font-style: normal;
+  font-weight: 200 1000;
+  font-display: swap;
+  src: url("@konzept/Fonts/Fonts/Nunito/Nunito/Nunito-VariableFont_wght.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Nunito";
+  font-style: italic;
+  font-weight: 200 1000;
+  font-display: swap;
+  src: url("@konzept/Fonts/Fonts/Nunito/Nunito/Nunito-Italic-VariableFont_wght.ttf") format("truetype");
+}
+
+:root {
+      --background: 0 0% 100%;
+--foreground: 20 14.3% 4.1%;
+--muted: 60 4.8% 95.9%;
+--muted-foreground: 25 5.3% 44.7%;
+--popover: 0 0% 100%;
+--popover-foreground: 20 14.3% 4.1%;
+--card: 0 0% 100%;
+--card-foreground: 20 14.3% 4.1%;
+--border: 20 5.9% 90%;
+--input: 20 5.9% 90%;
+--primary: 207 90% 54%;
+--primary-foreground: 211 100% 99%;
+--secondary: 60 4.8% 95.9%;
+--secondary-foreground: 24 9.8% 10%;
+--accent: 60 4.8% 95.9%;
+--accent-foreground: 24 9.8% 10%;
+--destructive: 0 84.2% 60.2%;
+--destructive-foreground: 60 9.1% 97.8%;
+--ring: 20 14.3% 4.1%;
+--radius: 0.5rem;
+
+  --rb-primary: #0c2443;
+  --rb-primary-dark: #0E1621;
+  --rb-secondary: #1a2332;
+  --rb-light: #ecf5fa;
+  --rb-dark: #1e1e1e;
+  --rb-white: #ffffff;
+  --rb-cyan: #17c3ce;
+  --rb-lime: #c8fa64;
+  --rb-error: #e53935;
+
+  --rb-text: #ffffff;
+  --rb-text-muted: #B0BAC5;
+  --rb-text-dark: #1e1e1e;
+  --rb-text-muted-dark: #5a6a7a;
+
+  --rb-ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --rb-ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .dark {
+      --background: 240 10% 3.9%;
+--foreground: 0 0% 98%;
+--muted: 240 3.7% 15.9%;
+--muted-foreground: 240 5% 64.9%;
+--popover: 240 10% 3.9%;
+--popover-foreground: 0 0% 98%;
+--card: 240 10% 3.9%;
+--card-foreground: 0 0% 98%;
+--border: 240 3.7% 15.9%;
+--input: 240 3.7% 15.9%;
+--primary: 207 90% 54%;
+--primary-foreground: 211 100% 99%;
+--secondary: 240 3.7% 15.9%;
+--secondary-foreground: 0 0% 98%;
+--accent: 240 3.7% 15.9%;
+--accent-foreground: 0 0% 98%;
+--destructive: 0 62.8% 30.6%;
+--destructive-foreground: 0 0% 98%;
+--ring: 240 4.9% 83.9%;
+--radius: 0.5rem;
+  }
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply font-sans antialiased bg-background text-foreground;
+  }
+  
+  /* Mobile-specific improvements */
+  @media (max-width: 640px) {
+    .container {
+      @apply px-4;
+    }
+    
+    /* Ensure tables are scrollable on mobile */
+    .table-container {
+      @apply overflow-x-auto;
+      scrollbar-width: thin;
+    }
+    
+    .table-container::-webkit-scrollbar {
+      height: 4px;
+    }
+    
+    .table-container::-webkit-scrollbar-track {
+      @apply bg-gray-100;
+    }
+    
+    .table-container::-webkit-scrollbar-thumb {
+      @apply bg-gray-400 rounded;
+    }
+    
+    /* Improve button spacing on mobile */
+    .btn-mobile {
+      @apply min-h-[44px] min-w-[44px];
+    }
+    
+    /* Card improvements for mobile */
+    .card-mobile {
+      @apply mx-2 rounded-lg;
+    }
+    
+    /* Text improvements for mobile */
+    .text-mobile {
+      @apply text-sm leading-relaxed;
+    }
+  }
+}

@@ -1,0 +1,3086 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="RowBooster - KI-gestützte Datenharmonisierung. Daten 99% schneller verarbeiten.">
+    <title>RowBooster - Daten 99% schneller</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.typekit.net/qji7pll.css">
+    
+    <style>
+        /* ========================================
+           CSS VARIABLES & RESET
+        ======================================== */
+        :root {
+            --color-primary: #0c2443;
+            --color-primary-dark: #0E1621;
+            --color-secondary: #1a2332;
+            --color-dark: #1e1e1e;
+            --color-cyan: #17c3ce;
+            --color-lime: #c8fa64;
+            --color-light: #ecf5fa;
+            --color-white: #ffffff;
+            --color-text: #ffffff;
+            --color-text-dark: #1e1e1e;
+            --color-text-muted: #B0BAC5;
+            --color-text-muted-dark: #5a6a7a;
+            --color-error: #e53935;
+            --font-body: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            --font-heading: 'bc-civitas', Georgia, serif;
+            --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+            --ease-out-back: cubic-bezier(0.34, 1.56, 0.64, 1);
+            --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            overflow-x: hidden;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body {
+            font-family: var(--font-body);
+            line-height: 1.6;
+        }
+
+        /* ========================================
+           NAVBAR - Fixed Header
+        ======================================== */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 80px;
+            background: rgba(14, 22, 33, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .navbar.scrolled {
+            padding: 16px 80px;
+            background: rgba(14, 22, 33, 0.98);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .navbar-logo {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            z-index: 1001;
+        }
+
+        .navbar-logo-img {
+            height: 32px;
+            width: auto;
+        }
+
+        .navbar-logo-mobile {
+            display: none;
+        }
+
+        .navbar-nav {
+            display: flex;
+            gap: 48px;
+            align-items: center;
+        }
+
+        .navbar-nav a {
+            color: var(--color-text-muted);
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        .navbar-nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--color-lime);
+            transition: width 0.3s ease;
+        }
+
+        .navbar-nav a:hover {
+            color: var(--color-white);
+        }
+
+        .navbar-nav a:hover::after {
+            width: 100%;
+        }
+
+        .navbar-cta {
+            padding: 10px 24px;
+            background: transparent;
+            border: 2px solid var(--color-lime);
+            border-radius: 50px;
+            color: var(--color-lime);
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .navbar-cta:hover {
+            background: var(--color-lime);
+            color: var(--color-primary-dark);
+        }
+
+        .navbar-cta::after {
+            display: none;
+        }
+
+        /* Burger Menu */
+        .burger-menu {
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            gap: 6px;
+            width: 32px;
+            height: 32px;
+            cursor: pointer;
+            z-index: 1001;
+            background: none;
+            border: none;
+            padding: 0;
+        }
+
+        .burger-line {
+            width: 100%;
+            height: 2px;
+            background: var(--color-white);
+            border-radius: 2px;
+            transition: all 0.3s ease;
+            transform-origin: center;
+        }
+
+        .burger-menu.active .burger-line:nth-child(1) {
+            transform: rotate(45deg) translate(6px, 6px);
+        }
+
+        .burger-menu.active .burger-line:nth-child(2) {
+            opacity: 0;
+            transform: scaleX(0);
+        }
+
+        .burger-menu.active .burger-line:nth-child(3) {
+            transform: rotate(-45deg) translate(6px, -6px);
+        }
+
+        /* Mobile Menu */
+        .mobile-menu {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--color-primary-dark);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 32px;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s ease;
+            z-index: 999;
+        }
+
+        .mobile-menu.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .mobile-menu a {
+            font-family: var(--font-heading);
+            font-size: 28px;
+            font-weight: 600;
+            color: var(--color-white);
+            text-decoration: none;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.4s ease;
+        }
+
+        .mobile-menu.active a {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .mobile-menu a:nth-child(1) { transition-delay: 0.1s; }
+        .mobile-menu a:nth-child(2) { transition-delay: 0.15s; }
+        .mobile-menu a:nth-child(3) { transition-delay: 0.2s; }
+        .mobile-menu a:nth-child(4) { transition-delay: 0.25s; }
+        .mobile-menu a:nth-child(5) { transition-delay: 0.3s; }
+
+        .mobile-menu a:hover {
+            color: var(--color-lime);
+        }
+
+        /* Body padding for fixed navbar */
+        .page-content {
+            padding-top: 80px;
+        }
+
+        /* ========================================
+           RESPONSIVE NAVBAR
+        ======================================== */
+        @media (max-width: 1200px) {
+            .navbar {
+                padding: 20px 40px;
+            }
+            .navbar.scrolled {
+                padding: 16px 40px;
+            }
+            .navbar-nav {
+                gap: 32px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 16px 24px;
+            }
+            .navbar.scrolled {
+                padding: 14px 24px;
+            }
+            .navbar-nav {
+                display: none;
+            }
+            .burger-menu {
+                display: flex;
+            }
+            .page-content {
+                padding-top: 70px;
+            }
+            .navbar-logo-desktop {
+                display: none;
+            }
+            .navbar-logo-mobile {
+                display: block;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- ========================================
+         NAVBAR
+    ======================================== -->
+    <nav class="navbar" role="navigation" aria-label="Hauptnavigation">
+        <a href="#" class="navbar-logo" aria-label="RowBooster Home">
+            <img src="Logos/RowBooster_WortBildmarke.png" alt="RowBooster Logo" class="navbar-logo-img navbar-logo-desktop">
+            <img src="Logos/RowBooster_Bildmarke.png" alt="RowBooster Logo" class="navbar-logo-img navbar-logo-mobile">
+        </a>
+        
+        <div class="navbar-nav">
+            <a href="#vision">Vision</a>
+            <a href="#preise">Preise</a>
+            <a href="#kontakt">Kontakt</a>
+            <a href="#login">Login</a>
+            <a href="#demo" class="navbar-cta">Demo anfragen</a>
+        </div>
+
+        <button class="burger-menu" aria-label="Menü öffnen" aria-expanded="false">
+            <span class="burger-line"></span>
+            <span class="burger-line"></span>
+            <span class="burger-line"></span>
+        </button>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" aria-hidden="true">
+        <a href="#vision">Vision</a>
+        <a href="#preise">Preise</a>
+        <a href="#kontakt">Kontakt</a>
+        <a href="#login">Login</a>
+        <a href="#demo">Demo anfragen</a>
+    </div>
+
+    <!-- Fixed Grid Background -->
+    <div class="grid-background" aria-hidden="true"></div>
+
+    <!-- Page Content -->
+    <main class="page-content">
+
+        <!-- ========================================
+             HERO SECTION (from landing_page_clean)
+        ======================================== -->
+        <style>
+            /* Fixed Grid Background - only visible behind dark sections */
+            .grid-background {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-image: 
+                    linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+                background-size: 60px 60px;
+                pointer-events: none;
+                z-index: -1;
+            }
+
+            /* Hero Section Styles */
+            .hero-wrapper {
+                background: var(--color-primary);
+                position: relative;
+            }
+
+            .hero-diagonal {
+                position: absolute;
+                top: 0;
+                right: 0;
+                width: 50%;
+                height: 100%;
+                background: linear-gradient(180deg, #0a1a2e 0%, #050d18 100%);
+                clip-path: polygon(30% 0, 100% 0, 100% 100%, 0% 100%);
+                z-index: 0;
+            }
+
+            .hero {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 80px 80px 120px;
+                max-width: 1440px;
+                margin: 0 auto;
+                position: relative;
+                min-height: 600px;
+                z-index: 1;
+            }
+
+            .hero-content {
+                max-width: 580px;
+                z-index: 10;
+            }
+
+            .hero-headline {
+                font-family: var(--font-heading);
+                font-size: 62px;
+                font-weight: 600;
+                line-height: 1.2;
+                margin-bottom: 32px;
+                letter-spacing: -0.5px;
+                color: var(--color-white);
+            }
+
+            .hero-accent {
+                color: var(--color-lime);
+            }
+
+            .hero-description {
+                font-size: 18px;
+                line-height: 1.7;
+                color: var(--color-text-muted);
+                margin-bottom: 40px;
+                font-weight: 400;
+            }
+
+            .hero-cta {
+                display: inline-flex;
+                align-items: center;
+                gap: 12px;
+                padding: 16px 32px;
+                border: 2px solid var(--color-white);
+                border-radius: 50px;
+                background: transparent;
+                color: var(--color-white);
+                font-size: 16px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                text-decoration: none;
+            }
+
+            .hero-cta:hover {
+                background: rgba(255, 255, 255, 0.1);
+                transform: translateX(4px);
+            }
+
+            .hero-cta-arrow {
+                font-size: 20px;
+                transition: transform 0.3s ease;
+            }
+
+            .hero-cta:hover .hero-cta-arrow {
+                transform: translateX(4px);
+            }
+
+            .hero-decoration {
+                position: relative;
+                width: 400px;
+                height: 400px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .decoration-dots {
+                position: absolute;
+                width: 100%;
+                height: 100%;
+            }
+
+            .hero-dot {
+                position: absolute;
+                width: 3px;
+                height: 3px;
+                background: rgba(200, 250, 100, 0.3);
+                border-radius: 50%;
+                animation: heroTwinkle 3s infinite;
+            }
+
+            .hero-dot:nth-child(1) { top: 10%; left: 20%; animation-delay: 0s; }
+            .hero-dot:nth-child(2) { top: 15%; left: 35%; animation-delay: 0.5s; }
+            .hero-dot:nth-child(3) { top: 20%; left: 25%; animation-delay: 1s; }
+            .hero-dot:nth-child(4) { top: 25%; left: 40%; animation-delay: 1.5s; }
+            .hero-dot:nth-child(5) { top: 30%; left: 30%; animation-delay: 2s; }
+            .hero-dot:nth-child(6) { top: 35%; left: 45%; animation-delay: 2.5s; }
+            .hero-dot:nth-child(7) { top: 40%; left: 35%; animation-delay: 0.8s; }
+            .hero-dot:nth-child(8) { top: 45%; left: 50%; animation-delay: 1.2s; }
+            .hero-dot:nth-child(9) { top: 50%; left: 40%; animation-delay: 1.8s; }
+            .hero-dot:nth-child(10) { top: 55%; left: 30%; animation-delay: 0.3s; }
+
+            @keyframes heroTwinkle {
+                0%, 100% { opacity: 0.3; }
+                50% { opacity: 1; }
+            }
+
+            .decoration-line {
+                position: absolute;
+                top: 40%;
+                right: 10%;
+                width: 200px;
+                height: 2px;
+                background: linear-gradient(90deg, transparent, var(--color-lime));
+                border-radius: 10px;
+            }
+
+            .decoration-circle {
+                position: absolute;
+                top: 39%;
+                right: 8%;
+                width: 12px;
+                height: 12px;
+                background: var(--color-lime);
+                border-radius: 50%;
+                box-shadow: 0 0 20px rgba(200, 250, 100, 0.5);
+            }
+
+            .hero::before {
+                content: '';
+                position: absolute;
+                right: -10%;
+                top: 50%;
+                transform: translateY(-50%);
+                width: 800px;
+                height: 800px;
+                background: radial-gradient(circle, rgba(26, 35, 50, 0.6) 0%, transparent 70%);
+                border-radius: 50%;
+                z-index: 1;
+            }
+
+            /* Feature Ordnung Section */
+            .feature-ordnung {
+                background: #1a2332;
+                padding: 80px 80px;
+                position: relative;
+            }
+
+            .feature-container {
+                max-width: 1000px;
+                margin: 0 auto;
+                text-align: center;
+            }
+
+            .feature-content-inner {
+                max-width: 800px;
+                margin: 0 auto;
+            }
+
+            .feature-headline {
+                font-family: var(--font-heading);
+                font-size: 36px;
+                font-weight: 600;
+                color: var(--color-white);
+                margin-bottom: 20px;
+                letter-spacing: -0.3px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                gap: 16px;
+                line-height: 1;
+                width: 100%;
+            }
+
+            .feature-icon {
+                font-size: 1.8em;
+                color: var(--color-white);
+                font-weight: 400;
+                line-height: 1;
+                display: inline-flex;
+                align-items: center;
+                position: relative;
+                top: -0.05em;
+            }
+
+            .feature-description {
+                font-size: 17px;
+                line-height: 1.6;
+                color: var(--color-text-muted);
+                font-weight: 400;
+            }
+
+            .feature-description strong {
+                color: var(--color-white);
+                font-weight: 600;
+            }
+
+            /* Hero Responsive */
+            @media (max-width: 1200px) {
+                .hero {
+                    padding: 60px 40px;
+                }
+                .hero-decoration {
+                    width: 300px;
+                    height: 300px;
+                }
+                .feature-ordnung {
+                    padding: 60px 40px;
+                }
+            }
+
+            @media (max-width: 768px) {
+                .hero {
+                    flex-direction: column;
+                    text-align: center;
+                    padding: 40px 24px;
+                }
+                .hero-content {
+                    max-width: 100%;
+                }
+                .hero-headline {
+                    font-size: 42px;
+                }
+                .hero-decoration {
+                    margin-top: 40px;
+                }
+                .feature-ordnung {
+                    padding: 40px 24px;
+                }
+                .feature-headline {
+                    font-size: 28px;
+                }
+                .feature-icon {
+                    font-size: 1.8em;
+                }
+                .feature-description {
+                    font-size: 16px;
+                }
+                .hero-diagonal {
+                    display: none;
+                }
+            }
+        </style>
+
+        <section class="hero-wrapper">
+            <div class="hero-diagonal" aria-hidden="true"></div>
+            <div class="hero">
+                <div class="hero-content">
+                    <h1 class="hero-headline">
+                        Daten 99% schneller.<br>
+                        <span class="hero-accent">Intelligenz</span> im System.
+                    </h1>
+                    <p class="hero-description">
+                        RowBooster nutzt KI, um Daten automatisch zu sammeln, zu standardisieren und für Ihre Systeme bereitzustellen - zuverlässig, schnell und skalierbar.
+                    </p>
+                    <a href="#demo" class="hero-cta">
+                        Unsere KI testen
+                        <span class="hero-cta-arrow">›</span>
+                    </a>
+                </div>
+
+            </div>
+
+            <section class="feature-ordnung">
+                <div class="feature-container">
+                    <div class="feature-content-inner">
+                        <h2 class="feature-headline">
+                            <span class="feature-icon">›</span>
+                            RowBooster sorgt für Ordnung
+                        </h2>
+                        <p class="feature-description">
+                            Automatisierte Datenerfassung, intelligente Strukturierung<br>
+                            und Exportbereitstellung - <strong>saubere, konsistente Daten</strong> sind<br>
+                            zentral für Sichtbarkeit, Conversion und operative Effizienz.
+                        </p>
+                    </div>
+                </div>
+            </section>
+        </section>
+
+        <!-- ========================================
+             DATENCHAOS SECTION
+        ======================================== -->
+        <style>
+            .datenchaos-section {
+                padding: clamp(80px, 12vw, 140px) clamp(24px, 6vw, 100px);
+                background: var(--color-light);
+                position: relative;
+                overflow: hidden;
+            }
+
+            .datenchaos-section::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-image: 
+                    radial-gradient(circle at 20% 80%, rgba(23, 195, 206, 0.03) 0%, transparent 50%),
+                    radial-gradient(circle at 80% 20%, rgba(12, 36, 67, 0.02) 0%, transparent 40%);
+                pointer-events: none;
+            }
+
+            .datenchaos-container {
+                max-width: 1320px;
+                margin: 0 auto;
+                display: grid;
+                grid-template-columns: 1fr 1.1fr;
+                gap: clamp(48px, 8vw, 120px);
+                align-items: center;
+                position: relative;
+                z-index: 1;
+            }
+
+            .datenchaos-content {
+                opacity: 0;
+                transform: translateY(50px);
+                animation: dcRevealUp 1s var(--ease-out-expo) 0.2s forwards;
+            }
+
+            @keyframes dcRevealUp {
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            .datenchaos-headline {
+                font-family: var(--font-heading);
+                font-size: clamp(34px, 4.5vw, 52px);
+                font-weight: 600;
+                color: var(--color-primary);
+                margin-bottom: clamp(20px, 3vw, 32px);
+                display: flex;
+                align-items: center;
+                gap: clamp(14px, 2vw, 24px);
+                line-height: 1.1;
+            }
+
+            .headline-arrow {
+                display: inline-flex;
+                align-items: center;
+                flex-shrink: 0;
+                font-size: 1.8em;
+                color: var(--color-primary);
+                position: relative;
+                top: -0.05em;
+            }
+
+            .datenchaos-description {
+                font-size: clamp(16px, 1.2vw, 19px);
+                line-height: 1.9;
+                color: var(--color-text-muted-dark);
+                max-width: 540px;
+            }
+
+            .datenchaos-description strong {
+                color: var(--color-text-dark);
+                font-weight: 700;
+            }
+
+            .highlight-error {
+                color: var(--color-error);
+                font-weight: 700;
+            }
+
+            .chaos-visual {
+                position: relative;
+                width: 100%;
+                aspect-ratio: 1.1;
+                max-width: 520px;
+                margin-left: auto;
+                opacity: 0;
+                transform: translateX(60px) scale(0.95);
+                animation: dcRevealRight 1.2s var(--ease-out-expo) 0.4s forwards;
+            }
+
+            @keyframes dcRevealRight {
+                to {
+                    opacity: 1;
+                    transform: translateX(0) scale(1);
+                }
+            }
+
+            .chaos-container-box {
+                position: absolute;
+                bottom: 8%;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 58%;
+                height: 42%;
+                background: var(--color-white);
+                border: 2.5px solid var(--color-primary);
+                border-radius: 16px;
+                box-shadow: 
+                    0 20px 60px rgba(12, 36, 67, 0.12),
+                    0 8px 24px rgba(12, 36, 67, 0.08);
+                overflow: hidden;
+                z-index: 10;
+            }
+
+            .chaos-container-box::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: 28px;
+                background: var(--color-primary);
+            }
+
+            .chaos-container-box::after {
+                content: '';
+                position: absolute;
+                top: 10px;
+                left: 12px;
+                width: 8px;
+                height: 8px;
+                background: var(--color-cyan);
+                border-radius: 50%;
+                box-shadow: 
+                    14px 0 0 rgba(255,255,255,0.3),
+                    28px 0 0 rgba(255,255,255,0.3);
+            }
+
+            .chaos-inner {
+                position: absolute;
+                top: 36px;
+                left: 12px;
+                right: 12px;
+                bottom: 12px;
+                display: flex;
+                flex-direction: column;
+                gap: 6px;
+                padding: 8px;
+            }
+
+            .chaos-row {
+                display: flex;
+                gap: 8px;
+                align-items: center;
+            }
+
+            .chaos-cell {
+                height: 6px;
+                border-radius: 3px;
+                background: var(--color-cyan);
+                opacity: 0.6;
+            }
+
+            .chaos-cell.w1 { width: 25%; }
+            .chaos-cell.w2 { width: 40%; }
+            .chaos-cell.w3 { width: 55%; }
+            .chaos-cell.w4 { width: 35%; }
+            .chaos-cell.error { background: var(--color-primary); opacity: 0.4; }
+            .chaos-cell.warning { background: var(--color-primary); opacity: 0.3; }
+
+            .floating-doc {
+                position: absolute;
+                background: var(--color-white);
+                border-radius: 8px;
+                box-shadow: 
+                    0 8px 32px rgba(12, 36, 67, 0.15),
+                    0 2px 8px rgba(12, 36, 67, 0.1);
+                z-index: 5;
+            }
+
+            .floating-doc::before {
+                content: '';
+                position: absolute;
+                top: 8px;
+                left: 8px;
+                right: 8px;
+                height: 4px;
+                background: var(--color-cyan);
+                border-radius: 2px;
+                opacity: 0.5;
+            }
+
+            .floating-doc::after {
+                content: '';
+                position: absolute;
+                top: 16px;
+                left: 8px;
+                width: 60%;
+                height: 3px;
+                background: var(--color-primary);
+                border-radius: 2px;
+                opacity: 0.2;
+            }
+
+            .doc-1 {
+                width: 70px;
+                height: 55px;
+                top: 5%;
+                left: 8%;
+                animation: floatDoc1 6s ease-in-out infinite;
+                transform: rotate(-12deg);
+            }
+
+            .doc-2 {
+                width: 60px;
+                height: 48px;
+                top: 12%;
+                right: 15%;
+                animation: floatDoc2 7s ease-in-out infinite 0.5s;
+                transform: rotate(8deg);
+            }
+
+            .doc-3 {
+                width: 55px;
+                height: 44px;
+                top: 28%;
+                left: 5%;
+                animation: floatDoc3 5.5s ease-in-out infinite 1s;
+                transform: rotate(-6deg);
+            }
+
+            .doc-4 {
+                width: 50px;
+                height: 40px;
+                top: 22%;
+                right: 8%;
+                animation: floatDoc2 6.5s ease-in-out infinite 1.5s;
+                transform: rotate(15deg);
+            }
+
+            @keyframes floatDoc1 {
+                0%, 100% { transform: rotate(-12deg) translateY(0) translateX(0); }
+                33% { transform: rotate(-8deg) translateY(-12px) translateX(5px); }
+                66% { transform: rotate(-15deg) translateY(8px) translateX(-3px); }
+            }
+
+            @keyframes floatDoc2 {
+                0%, 100% { transform: rotate(8deg) translateY(0) translateX(0); }
+                50% { transform: rotate(12deg) translateY(-15px) translateX(-8px); }
+            }
+
+            @keyframes floatDoc3 {
+                0%, 100% { transform: rotate(-6deg) translateY(0); }
+                50% { transform: rotate(-10deg) translateY(-10px); }
+            }
+
+            .chaos-connections {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                z-index: 3;
+                pointer-events: none;
+            }
+
+            .connection-line {
+                fill: none;
+                stroke: var(--color-cyan);
+                stroke-width: 2;
+                stroke-linecap: round;
+                opacity: 0.4;
+                stroke-dasharray: 8 4;
+                animation: dashMove 20s linear infinite;
+            }
+
+            .connection-line.error-line {
+                stroke: var(--color-primary);
+                opacity: 0.3;
+                stroke-dasharray: 4 6;
+            }
+
+            @keyframes dashMove {
+                to { stroke-dashoffset: -100; }
+            }
+
+            .data-point {
+                position: absolute;
+                width: 10px;
+                height: 10px;
+                border-radius: 50%;
+                z-index: 4;
+            }
+
+            .data-point::after {
+                content: '';
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                width: 100%;
+                height: 100%;
+                border-radius: 50%;
+                background: inherit;
+                animation: dpPulse 2s ease-in-out infinite;
+            }
+
+            @keyframes dpPulse {
+                0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+                50% { transform: translate(-50%, -50%) scale(1.8); opacity: 0; }
+            }
+
+            .point-1 { top: 18%; left: 35%; background: var(--color-cyan); animation: floatPoint 4s ease-in-out infinite; }
+            .point-2 { top: 35%; left: 70%; background: var(--color-primary); animation: floatPoint 5s ease-in-out infinite 0.5s; }
+            .point-3 { top: 8%; left: 55%; background: var(--color-cyan); animation: floatPoint 4.5s ease-in-out infinite 1s; }
+            .point-4 { top: 42%; left: 25%; background: var(--color-primary); animation: floatPoint 5.5s ease-in-out infinite 1.5s; }
+            .point-5 { top: 25%; left: 82%; background: var(--color-cyan); animation: floatPoint 4s ease-in-out infinite 2s; }
+
+            @keyframes floatPoint {
+                0%, 100% { transform: translateY(0); }
+                50% { transform: translateY(-8px); }
+            }
+
+            .chaos-question {
+                position: absolute;
+                top: 2%;
+                right: 25%;
+                font-family: var(--font-heading);
+                font-size: 42px;
+                color: var(--color-primary);
+                opacity: 0.15;
+                animation: questionPulse 3s ease-in-out infinite;
+                z-index: 2;
+            }
+
+            @keyframes questionPulse {
+                0%, 100% { opacity: 0.15; transform: scale(1) rotate(-5deg); }
+                50% { opacity: 0.25; transform: scale(1.1) rotate(5deg); }
+            }
+
+            /* Solution Section */
+            .solution-section {
+                padding: clamp(80px, 12vw, 140px) clamp(24px, 6vw, 100px);
+                background: linear-gradient(180deg, var(--color-white) 0%, var(--color-light) 100%);
+                position: relative;
+            }
+
+            .solution-container {
+                max-width: 1320px;
+                margin: 0 auto;
+                display: grid;
+                grid-template-columns: 1.2fr 1fr;
+                gap: clamp(48px, 8vw, 100px);
+                align-items: center;
+            }
+
+            .spreadsheet-wrapper {
+                position: relative;
+                opacity: 0;
+                transform: translateY(40px);
+                animation: dcRevealUp 1s var(--ease-out-expo) 0.3s forwards;
+            }
+
+            .spreadsheet-card {
+                background: var(--color-white);
+                border-radius: 20px;
+                box-shadow: 
+                    0 4px 6px rgba(12, 36, 67, 0.03),
+                    0 20px 60px rgba(12, 36, 67, 0.1);
+                overflow: hidden;
+                border: 1px solid rgba(12, 36, 67, 0.06);
+            }
+
+            .spreadsheet-header {
+                display: flex;
+                background: var(--color-primary);
+                padding: 0;
+            }
+
+            .spreadsheet-col {
+                flex: 1;
+                padding: clamp(14px, 2vw, 20px);
+                font-size: clamp(12px, 1vw, 14px);
+                font-weight: 700;
+                color: var(--color-white);
+                text-align: center;
+                border-right: 1px solid rgba(255,255,255,0.1);
+                letter-spacing: 1px;
+            }
+
+            .spreadsheet-col:last-child {
+                border-right: none;
+            }
+
+            .spreadsheet-body {
+                padding: 4px 0;
+            }
+
+            .spreadsheet-row {
+                display: flex;
+                border-bottom: 1px solid rgba(12, 36, 67, 0.05);
+                transition: all 0.3s var(--ease-out-expo);
+            }
+
+            .spreadsheet-row:hover {
+                background: rgba(23, 195, 206, 0.05);
+            }
+
+            .spreadsheet-row:last-child {
+                border-bottom: none;
+            }
+
+            .spreadsheet-cell {
+                flex: 1;
+                padding: clamp(14px, 2vw, 20px);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .clean-data {
+                height: 5px;
+                border-radius: 5px;
+                background: linear-gradient(90deg, var(--color-cyan) 0%, rgba(23, 195, 206, 0.4) 100%);
+                position: relative;
+                overflow: hidden;
+            }
+
+            .clean-data::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 60%;
+                height: 100%;
+                background: linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent);
+                animation: shimmer 2.5s ease-in-out infinite;
+            }
+
+            @keyframes shimmer {
+                0% { left: -100%; }
+                100% { left: 200%; }
+            }
+
+            .clean-data.w1 { width: 70%; }
+            .clean-data.w2 { width: 55%; }
+            .clean-data.w3 { width: 80%; }
+            .clean-data.w4 { width: 45%; }
+            .clean-data.w5 { width: 65%; }
+
+            .solution-content {
+                opacity: 0;
+                transform: translateX(50px);
+                animation: dcRevealRight 1s var(--ease-out-expo) 0.5s forwards;
+            }
+
+            .solution-headline {
+                font-family: var(--font-heading);
+                font-size: clamp(30px, 4vw, 46px);
+                font-weight: 600;
+                color: var(--color-primary);
+                margin-bottom: clamp(18px, 2.5vw, 28px);
+                display: flex;
+                align-items: center;
+                gap: clamp(14px, 2vw, 24px);
+                line-height: 1.15;
+            }
+
+            .solution-arrow {
+                display: inline-flex;
+                align-items: center;
+                flex-shrink: 0;
+                font-size: 1.8em;
+                color: var(--color-primary);
+                position: relative;
+                top: -0.05em;
+            }
+
+            .solution-description {
+                font-size: clamp(16px, 1.2vw, 19px);
+                line-height: 1.9;
+                color: var(--color-text-muted-dark);
+                max-width: 480px;
+            }
+
+            .solution-description strong {
+                color: var(--color-text-dark);
+                font-weight: 700;
+            }
+
+            /* Datenchaos Responsive */
+            @media (max-width: 1024px) {
+                .datenchaos-container,
+                .solution-container {
+                    grid-template-columns: 1fr 1fr;
+                    gap: 48px;
+                }
+                .chaos-visual {
+                    max-width: 400px;
+                }
+            }
+
+            @media (max-width: 768px) {
+                .datenchaos-container {
+                    grid-template-columns: 1fr;
+                    gap: 48px;
+                    text-align: center;
+                }
+                .datenchaos-content {
+                    order: 1;
+                }
+                .chaos-visual {
+                    order: 0;
+                    margin: 0 auto;
+                    max-width: 320px;
+                }
+                .datenchaos-headline,
+                .solution-headline {
+                    justify-content: center;
+                }
+                .datenchaos-description,
+                .solution-description {
+                    max-width: 100%;
+                    margin: 0 auto;
+                }
+                .solution-container {
+                    grid-template-columns: 1fr;
+                    gap: 40px;
+                }
+                .solution-content {
+                    text-align: center;
+                    order: -1;
+                }
+                .spreadsheet-wrapper {
+                    width: 100%;
+                    max-width: 420px;
+                    margin: 0 auto;
+                }
+            }
+
+            @media (max-width: 480px) {
+                .datenchaos-section,
+                .solution-section {
+                    padding: 56px 20px;
+                }
+                .datenchaos-headline,
+                .solution-headline {
+                    flex-direction: row;
+                    gap: 12px;
+                    font-size: 26px;
+                }
+                .headline-arrow,
+                .solution-arrow {
+                    font-size: 1.8em;
+                }
+                .chaos-visual {
+                    max-width: 260px;
+                }
+                .floating-doc {
+                    display: none;
+                }
+                .doc-1, .doc-2 {
+                    display: block;
+                }
+            }
+        </style>
+
+        <section class="datenchaos-section" aria-labelledby="datenchaos-title">
+            <div class="datenchaos-container">
+                <div class="datenchaos-content">
+                    <h2 id="datenchaos-title" class="datenchaos-headline">
+                        <span class="headline-arrow">›</span>
+                        <span>Sie haben Datenchaos?</span>
+                    </h2>
+                    <p class="datenchaos-description">
+                        Unternehmen stehen täglich vor der <strong>Herausforderung</strong>, Daten aus unterschiedlichen Quellen und Formaten zu verarbeiten. Excel, CSV, XML, APIs oder Lieferantenportale bringen oft unvollständige, fehlerhafte oder doppelte Daten. Das kostet Zeit, <span class="highlight-error">verursacht Fehler</span> und <strong>bremst die Skalierung</strong>.
+                    </p>
+                </div>
+                
+                <div class="chaos-visual" aria-hidden="true">
+                    <span class="chaos-question">?</span>
+                    <div class="floating-doc doc-1"></div>
+                    <div class="floating-doc doc-2"></div>
+                    <div class="floating-doc doc-3"></div>
+                    <div class="floating-doc doc-4"></div>
+                    <div class="data-point point-1"></div>
+                    <div class="data-point point-2"></div>
+                    <div class="data-point point-3"></div>
+                    <div class="data-point point-4"></div>
+                    <div class="data-point point-5"></div>
+                    <svg class="chaos-connections" viewBox="0 0 400 400">
+                        <path class="connection-line" d="M80,60 Q150,120 200,80 T320,140"/>
+                        <path class="connection-line" d="M60,140 Q120,200 180,160 T280,200"/>
+                        <path class="connection-line error-line" d="M100,80 Q180,150 240,100 T340,180"/>
+                        <path class="connection-line" d="M40,180 Q100,100 160,180 T260,120"/>
+                    </svg>
+                    <div class="chaos-container-box">
+                        <div class="chaos-inner">
+                            <div class="chaos-row">
+                                <div class="chaos-cell w2"></div>
+                                <div class="chaos-cell w3 error"></div>
+                            </div>
+                            <div class="chaos-row">
+                                <div class="chaos-cell w3"></div>
+                                <div class="chaos-cell w1 warning"></div>
+                            </div>
+                            <div class="chaos-row">
+                                <div class="chaos-cell w1 error"></div>
+                                <div class="chaos-cell w4"></div>
+                            </div>
+                            <div class="chaos-row">
+                                <div class="chaos-cell w4"></div>
+                                <div class="chaos-cell w2"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="solution-section" aria-labelledby="solution-title">
+            <div class="solution-container">
+                <div class="spreadsheet-wrapper">
+                    <div class="spreadsheet-card" aria-hidden="true">
+                        <div class="spreadsheet-header">
+                            <div class="spreadsheet-col">I</div>
+                            <div class="spreadsheet-col">J</div>
+                        </div>
+                        <div class="spreadsheet-body">
+                            <div class="spreadsheet-row">
+                                <div class="spreadsheet-cell"><div class="clean-data w1"></div></div>
+                                <div class="spreadsheet-cell"><div class="clean-data w2"></div></div>
+                            </div>
+                            <div class="spreadsheet-row">
+                                <div class="spreadsheet-cell"><div class="clean-data w3"></div></div>
+                                <div class="spreadsheet-cell"><div class="clean-data w1"></div></div>
+                            </div>
+                            <div class="spreadsheet-row">
+                                <div class="spreadsheet-cell"><div class="clean-data w2"></div></div>
+                                <div class="spreadsheet-cell"><div class="clean-data w3"></div></div>
+                            </div>
+                            <div class="spreadsheet-row">
+                                <div class="spreadsheet-cell"><div class="clean-data w4"></div></div>
+                                <div class="spreadsheet-cell"><div class="clean-data w5"></div></div>
+                            </div>
+                            <div class="spreadsheet-row">
+                                <div class="spreadsheet-cell"><div class="clean-data w5"></div></div>
+                                <div class="spreadsheet-cell"><div class="clean-data w4"></div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="solution-content">
+                    <h2 id="solution-title" class="solution-headline">
+                        <span class="solution-arrow">›</span>
+                        <span>RowBooster ist die Lösung</span>
+                    </h2>
+                    <p class="solution-description">
+                        Unsere KI erkennt Muster, harmonisiert Datensätze automatisch und überträgt sie strukturiert in Ihre Systeme – von ERP über PIM bis zum Online-Shop. So wird aus Datenchaos <strong>verlässliche Information</strong>, die Ihr <strong>Geschäft antreibt</strong>.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================
+             EFFEKTIV SECTION
+        ======================================== -->
+        <style>
+            .effektiv-section {
+                position: relative;
+                display: block;
+                padding: 100px 0;
+                overflow: hidden;
+                background: linear-gradient(180deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+            }
+
+            .effektiv-container {
+                position: relative;
+                z-index: 10;
+                max-width: 1440px;
+                margin: 0 auto;
+                padding: 0 80px;
+                display: grid;
+                grid-template-columns: 1fr 1.2fr;
+                gap: 80px;
+                align-items: center;
+            }
+
+            .effektiv-content {
+                position: relative;
+            }
+
+            .effektiv-badge {
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                padding: 8px 16px;
+                background: rgba(23, 195, 206, 0.1);
+                border: 1px solid rgba(23, 195, 206, 0.3);
+                border-radius: 50px;
+                font-size: 12px;
+                font-weight: 700;
+                letter-spacing: 1.5px;
+                text-transform: uppercase;
+                color: var(--color-cyan);
+                margin-bottom: 32px;
+            }
+
+            .effektiv-headline {
+                font-family: var(--font-heading);
+                font-size: clamp(42px, 5vw, 64px);
+                font-weight: 600;
+                line-height: 1.15;
+                margin-bottom: 32px;
+                color: var(--color-white);
+            }
+
+            .effektiv-headline .brand-booster {
+                color: var(--color-lime);
+            }
+
+            .effektiv-subheadline {
+                font-size: clamp(16px, 1.3vw, 20px);
+                font-weight: 400;
+                line-height: 1.7;
+                color: var(--color-text-muted);
+                margin-bottom: 28px;
+                max-width: 480px;
+            }
+
+            .effektiv-subheadline strong {
+                color: var(--color-white);
+                font-weight: 700;
+            }
+
+            .eff-feature-tags {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 10px;
+                margin-bottom: 48px;
+            }
+
+            .eff-feature-tag {
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+                padding: 6px 14px;
+                background: rgba(255, 255, 255, 0.05);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                border-radius: 20px;
+                font-size: 13px;
+                font-weight: 500;
+                color: var(--color-text-muted);
+            }
+
+            .eff-cta-button {
+                display: inline-flex;
+                align-items: center;
+                gap: 12px;
+                padding: 18px 36px;
+                background: transparent;
+                border: 2px solid rgba(255, 255, 255, 0.9);
+                border-radius: 60px;
+                color: var(--color-white);
+                font-size: 15px;
+                font-weight: 700;
+                text-decoration: none;
+                transition: all 0.5s var(--ease-smooth);
+            }
+
+            .eff-cta-button:hover {
+                background: var(--color-lime);
+                border-color: var(--color-lime);
+                color: var(--color-primary);
+            }
+
+            .screenshots-showcase {
+                position: relative;
+                height: 500px;
+            }
+
+            .screenshot-card-eff {
+                position: absolute;
+                width: 100%;
+                max-width: 480px;
+                background: linear-gradient(145deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                border-radius: 20px;
+                overflow: hidden;
+                box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+            }
+
+            .screenshot-card-eff:nth-child(1) { top: 0; left: 0; z-index: 3; }
+            .screenshot-card-eff:nth-child(2) { top: 60px; left: 40px; z-index: 2; }
+            .screenshot-card-eff:nth-child(3) { top: 120px; left: 80px; z-index: 1; }
+
+            .screenshot-header-eff {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                padding: 14px 18px;
+                background: rgba(0, 0, 0, 0.3);
+            }
+
+            .screenshot-dots-eff {
+                display: flex;
+                gap: 6px;
+            }
+
+            .screenshot-dots-eff span:nth-child(1) { width: 10px; height: 10px; border-radius: 50%; background: #ff5f57; }
+            .screenshot-dots-eff span:nth-child(2) { width: 10px; height: 10px; border-radius: 50%; background: #ffbd2e; }
+            .screenshot-dots-eff span:nth-child(3) { width: 10px; height: 10px; border-radius: 50%; background: #28ca42; }
+
+            .screenshot-content-eff {
+                aspect-ratio: 16/10;
+                background: rgba(12, 36, 67, 0.9);
+                padding: 20px;
+            }
+
+            .ui-placeholder {
+                background: rgba(255, 255, 255, 0.02);
+                border-radius: 8px;
+                height: 100%;
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+                padding: 12px;
+            }
+
+            .ui-placeholder-row {
+                height: 24px;
+                background: rgba(255, 255, 255, 0.05);
+                border-radius: 4px;
+            }
+
+            @media (max-width: 1024px) {
+                .effektiv-section {
+                    padding: 80px 0;
+                }
+                .effektiv-container {
+                    grid-template-columns: 1fr;
+                    gap: 40px;
+                    text-align: center;
+                    padding: 0 48px;
+                }
+                .effektiv-subheadline {
+                    max-width: 100%;
+                    margin: 0 auto 28px;
+                }
+                .eff-feature-tags {
+                    justify-content: center;
+                }
+                .screenshots-showcase {
+                    height: 400px;
+                    max-width: 500px;
+                    margin: 0 auto;
+                }
+            }
+
+            @media (max-width: 768px) {
+                .effektiv-section {
+                    padding: 60px 0;
+                }
+                .effektiv-container {
+                    padding: 0 24px;
+                }
+                .eff-cta-button {
+                    width: 100%;
+                    justify-content: center;
+                }
+                .screenshots-showcase {
+                    height: 320px;
+                }
+                .screenshot-card-eff:nth-child(2),
+                .screenshot-card-eff:nth-child(3) {
+                    display: none;
+                }
+                .screenshot-card-eff:nth-child(1) {
+                    position: relative;
+                    max-width: 100%;
+                }
+            }
+        </style>
+
+        <section class="effektiv-section" id="vision" aria-labelledby="effektiv-title">
+            <div class="effektiv-container">
+                <div class="effektiv-content">
+                    <div class="effektiv-badge">KI-Powered</div>
+                    <h2 id="effektiv-title" class="effektiv-headline">
+                        <span class="brand-booster">RowBooster</span> ist effektiv.
+                    </h2>
+                    <p class="effektiv-subheadline">
+                        KI-gestützte Funktionen für maximale <strong>Effizienz</strong> und <strong>Qualität</strong>. 
+                        Automatisieren Sie Ihre Datenverarbeitung und gewinnen Sie wertvolle Zeit.
+                    </p>
+                    <div class="eff-feature-tags">
+                        <span class="eff-feature-tag">✓ Automatische Erkennung</span>
+                        <span class="eff-feature-tag">✓ Intelligente Zuordnung</span>
+                        <span class="eff-feature-tag">✓ Qualitätsprüfung</span>
+                        <span class="eff-feature-tag">✓ Export-Ready</span>
+                    </div>
+                    <a href="#demo" class="eff-cta-button">Jetzt Demo anfragen ›</a>
+                </div>
+                <div class="screenshots-showcase" aria-hidden="true">
+                    <div class="screenshot-card-eff">
+                        <div class="screenshot-header-eff">
+                            <div class="screenshot-dots-eff"><span></span><span></span><span></span></div>
+                        </div>
+                        <div class="screenshot-content-eff">
+                            <div class="ui-placeholder">
+                                <div class="ui-placeholder-row"></div>
+                                <div class="ui-placeholder-row"></div>
+                                <div class="ui-placeholder-row"></div>
+                                <div class="ui-placeholder-row"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="screenshot-card-eff">
+                        <div class="screenshot-header-eff">
+                            <div class="screenshot-dots-eff"><span></span><span></span><span></span></div>
+                        </div>
+                        <div class="screenshot-content-eff">
+                            <div class="ui-placeholder">
+                                <div class="ui-placeholder-row"></div>
+                                <div class="ui-placeholder-row"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="screenshot-card-eff">
+                        <div class="screenshot-header-eff">
+                            <div class="screenshot-dots-eff"><span></span><span></span><span></span></div>
+                        </div>
+                        <div class="screenshot-content-eff">
+                            <div class="ui-placeholder">
+                                <div class="ui-placeholder-row"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================
+             FEATURES KI SECTION
+        ======================================== -->
+        <style>
+            .features-ki-section {
+                padding: clamp(80px, 12vw, 160px) clamp(24px, 6vw, 100px);
+                position: relative;
+                overflow: hidden;
+                background: var(--color-secondary);
+            }
+
+            .features-ki-container {
+                max-width: 1400px;
+                margin: 0 auto;
+            }
+
+            .features-ki-header {
+                text-align: center;
+                margin-bottom: clamp(60px, 8vw, 100px);
+            }
+
+            .features-ki-eyebrow {
+                display: inline-flex;
+                align-items: center;
+                gap: 12px;
+                font-size: 13px;
+                font-weight: 700;
+                letter-spacing: 3px;
+                text-transform: uppercase;
+                color: var(--color-lime);
+                margin-bottom: 20px;
+            }
+
+            .features-ki-title {
+                font-family: var(--font-heading);
+                font-size: clamp(36px, 5vw, 64px);
+                font-weight: 600;
+                color: var(--color-white);
+                margin-bottom: 24px;
+            }
+
+            .features-ki-title .ki-accent {
+                color: var(--color-lime);
+            }
+
+            .features-ki-subtitle {
+                font-size: clamp(16px, 1.3vw, 20px);
+                color: var(--color-text-muted);
+                max-width: 600px;
+                margin: 0 auto;
+            }
+
+            .features-ki-grid {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: clamp(20px, 2.5vw, 32px);
+            }
+
+            .ki-feature-card {
+                position: relative;
+                padding: clamp(32px, 4vw, 48px);
+                background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+                border: 1px solid rgba(255, 255, 255, 0.08);
+                border-radius: 24px;
+                backdrop-filter: blur(20px);
+                -webkit-backdrop-filter: blur(20px);
+                overflow: hidden;
+                transition: all 0.5s var(--ease-out-expo);
+            }
+
+            .ki-feature-card::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: linear-gradient(135deg, rgba(23, 195, 206, 0.1) 0%, rgba(200, 250, 100, 0.05) 100%);
+                opacity: 0;
+                transition: opacity 0.5s ease;
+                z-index: 0;
+            }
+
+            .ki-feature-card:hover::before {
+                opacity: 1;
+            }
+
+            .ki-feature-card:hover {
+                border-color: rgba(200, 250, 100, 0.2);
+                transform: translateY(-8px) scale(1.02);
+                box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3), 0 0 80px rgba(23, 195, 206, 0.1);
+            }
+
+            .ki-card-content {
+                position: relative;
+                z-index: 1;
+            }
+
+            .ki-card-icon {
+                width: clamp(56px, 5vw, 72px);
+                height: clamp(56px, 5vw, 72px);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background: linear-gradient(135deg, var(--color-lime) 0%, #a8e063 100%);
+                border-radius: 16px;
+                margin-bottom: clamp(24px, 3vw, 32px);
+                position: relative;
+                transition: all 0.4s var(--ease-out-expo);
+            }
+
+            .ki-feature-card:hover .ki-card-icon {
+                transform: scale(1.1) rotate(-5deg);
+                box-shadow: 0 15px 40px rgba(200, 250, 100, 0.4);
+            }
+
+            .ki-card-icon::before {
+                content: '';
+                position: absolute;
+                top: -4px;
+                left: -4px;
+                right: -4px;
+                bottom: -4px;
+                border: 2px solid var(--color-lime);
+                border-radius: 20px;
+                opacity: 0;
+                transform: scale(0.8);
+                transition: all 0.4s var(--ease-out-expo);
+            }
+
+            .ki-feature-card:hover .ki-card-icon::before {
+                opacity: 0.5;
+                transform: scale(1);
+            }
+
+            .ki-card-icon svg {
+                width: clamp(28px, 2.5vw, 36px);
+                height: clamp(28px, 2.5vw, 36px);
+                fill: var(--color-primary);
+            }
+
+            .ki-card-title {
+                font-family: var(--font-heading);
+                font-size: clamp(22px, 2.2vw, 30px);
+                font-weight: 600;
+                color: var(--color-white);
+                margin-bottom: clamp(12px, 1.5vw, 18px);
+                line-height: 1.2;
+            }
+
+            .ki-card-title .ki-highlight {
+                color: var(--color-lime);
+            }
+
+            .ki-card-description {
+                font-size: clamp(15px, 1.1vw, 17px);
+                color: var(--color-text-muted);
+                line-height: 1.8;
+                max-width: 400px;
+            }
+
+            .ki-card-number {
+                position: absolute;
+                top: clamp(24px, 3vw, 36px);
+                right: clamp(24px, 3vw, 36px);
+                font-family: var(--font-heading);
+                font-size: clamp(48px, 5vw, 72px);
+                font-weight: 700;
+                color: var(--color-lime);
+                opacity: 0.08;
+                line-height: 1;
+                z-index: 0;
+            }
+
+            .ki-card-decoration {
+                position: absolute;
+                bottom: -20px;
+                right: -20px;
+                width: 120px;
+                height: 120px;
+                opacity: 0.03;
+                z-index: 0;
+            }
+
+            .ki-card-decoration svg {
+                width: 100%;
+                height: 100%;
+                fill: var(--color-lime);
+            }
+
+            @media (max-width: 768px) {
+                .features-ki-grid {
+                    grid-template-columns: 1fr;
+                }
+            }
+        </style>
+
+        <section class="features-ki-section">
+            <div class="features-ki-container">
+                <header class="features-ki-header">
+                    <div class="features-ki-eyebrow">— Intelligente Features —</div>
+                    <h2 class="features-ki-title">Die <span class="ki-accent">Kraft</span> hinter RowBooster</h2>
+                    <p class="features-ki-subtitle">Modernste KI-Technologie für maximale Datenqualität und Effizienz.</p>
+                </header>
+                <div class="features-ki-grid">
+                    <article class="ki-feature-card">
+                        <span class="ki-card-number">01</span>
+                        <div class="ki-card-content">
+                            <div class="ki-card-icon">
+                                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+                                </svg>
+                            </div>
+                            <h3 class="ki-card-title"><span class="ki-highlight">KI-gestützte</span> Datenanalyse</h3>
+                            <p class="ki-card-description">Muster erkennen und intelligente Zuordnungen vorschlagen</p>
+                        </div>
+                        <div class="ki-card-decoration">
+                            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                                <circle cx="50" cy="50" r="45" fill="none" stroke="currentColor" stroke-width="2"/>
+                                <circle cx="50" cy="50" r="30" fill="none" stroke="currentColor" stroke-width="2"/>
+                                <circle cx="50" cy="50" r="15" fill="currentColor"/>
+                            </svg>
+                        </div>
+                    </article>
+                    <article class="ki-feature-card">
+                        <span class="ki-card-number">02</span>
+                        <div class="ki-card-content">
+                            <div class="ki-card-icon">
+                                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
+                                </svg>
+                            </div>
+                            <h3 class="ki-card-title"><span class="ki-highlight">Automatische</span> Strukturierung & Validierung</h3>
+                            <p class="ki-card-description">Fehlerfreie und konsistente Datensätze in allen Formaten.</p>
+                        </div>
+                        <div class="ki-card-decoration">
+                            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                                <rect x="10" y="10" width="80" height="80" rx="8" fill="none" stroke="currentColor" stroke-width="2"/>
+                                <line x1="10" y1="35" x2="90" y2="35" stroke="currentColor" stroke-width="2"/>
+                                <line x1="10" y1="60" x2="90" y2="60" stroke="currentColor" stroke-width="2"/>
+                            </svg>
+                        </div>
+                    </article>
+                    <article class="ki-feature-card">
+                        <span class="ki-card-number">03</span>
+                        <div class="ki-card-content">
+                            <div class="ki-card-icon">
+                                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/>
+                                </svg>
+                            </div>
+                            <h3 class="ki-card-title"><span class="ki-highlight">Flexible</span> Dateiformate (csv)</h3>
+                            <p class="ki-card-description">Für schnelle Integration in ERP-, PIM- und Shop-Systeme.</p>
+                        </div>
+                        <div class="ki-card-decoration">
+                            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M20 10 L80 10 L80 90 L20 90 Z" fill="none" stroke="currentColor" stroke-width="2"/>
+                                <path d="M60 10 L60 30 L80 30" fill="none" stroke="currentColor" stroke-width="2"/>
+                            </svg>
+                        </div>
+                    </article>
+                    <article class="ki-feature-card">
+                        <span class="ki-card-number">04</span>
+                        <div class="ki-card-content">
+                            <div class="ki-card-icon">
+                                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3z"/>
+                                    <path d="M12 13.5L5.74 10.09 5 14.5c0 2.21 3.13 4 7 4s7-1.79 7-4l-.74-4.41L12 13.5z"/>
+                                </svg>
+                            </div>
+                            <h3 class="ki-card-title"><span class="ki-highlight">Lernende</span> Systeme</h3>
+                            <p class="ki-card-description">Kontinuierliche Optimierung und steigende Datenqualität mit jedem Durchlauf</p>
+                        </div>
+                        <div class="ki-card-decoration">
+                            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M10 80 Q30 60 50 50 T90 20" fill="none" stroke="currentColor" stroke-width="3"/>
+                                <circle cx="90" cy="20" r="8" fill="currentColor"/>
+                            </svg>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================
+             UNTERNEHMEN LIEBEN SECTION
+        ======================================== -->
+        <style>
+            .unternehmen-section {
+                background: var(--color-secondary);
+                padding: 100px 80px 120px;
+                position: relative;
+            }
+
+            .unternehmen-container {
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 0 40px;
+            }
+
+            .section-top-headline {
+                text-align: right;
+                margin-bottom: 80px;
+            }
+
+            .section-top-headline h2 {
+                font-size: clamp(20px, 2.5vw, 28px);
+                font-weight: 400;
+                color: var(--color-white);
+                display: flex;
+                align-items: center;
+                justify-content: flex-end;
+                gap: 12px;
+            }
+
+            .section-icon {
+                font-size: 1.8em;
+                color: var(--color-white);
+                position: relative;
+                top: -0.05em;
+            }
+
+            .section-top-headline strong {
+                font-weight: 700;
+            }
+
+            .brand-accent-unt {
+                color: var(--color-lime);
+            }
+
+            .benefits-column {
+                max-width: 600px;
+            }
+
+            .benefits-headline {
+                font-family: var(--font-heading);
+                font-size: clamp(24px, 2.8vw, 36px);
+                font-weight: 600;
+                color: var(--color-white);
+                margin-bottom: 48px;
+            }
+
+            .benefits-headline .unt-accent {
+                color: var(--color-lime);
+            }
+
+            .benefits-list {
+                list-style: none;
+                display: flex;
+                flex-direction: column;
+                gap: 24px;
+            }
+
+            .benefit-item {
+                display: flex;
+                align-items: flex-start;
+                gap: 16px;
+            }
+
+            .benefit-icon {
+                width: 8px;
+                height: 8px;
+                background: var(--color-lime);
+                border-radius: 2px;
+                margin-top: 8px;
+                transform: rotate(45deg);
+                flex-shrink: 0;
+            }
+
+            .benefit-title {
+                font-size: 15px;
+                font-weight: 700;
+                color: var(--color-lime);
+            }
+
+            .benefit-description {
+                font-size: 15px;
+                color: var(--color-text-muted);
+            }
+
+            .counter-column {
+                margin-top: 80px;
+            }
+
+            .counter-wrapper {
+                padding-top: 40px;
+                border-top: 2px solid var(--color-lime);
+                max-width: 200px;
+            }
+
+            .counter-number {
+                font-family: var(--font-heading);
+                font-size: clamp(48px, 8vw, 100px);
+                font-weight: 600;
+                color: var(--color-lime);
+                line-height: 1;
+                margin-bottom: 16px;
+            }
+
+            .counter-label {
+                font-size: clamp(16px, 1.5vw, 20px);
+                font-weight: 700;
+                color: var(--color-lime);
+            }
+
+            @media (max-width: 768px) {
+                .unternehmen-section {
+                    padding: 60px 24px 80px;
+                }
+                .section-top-headline {
+                    text-align: center;
+                }
+                .benefits-column {
+                    max-width: 100%;
+                }
+                .benefits-headline {
+                    text-align: center;
+                }
+                .benefit-item {
+                    flex-direction: column;
+                    align-items: center;
+                    text-align: center;
+                }
+                .benefit-icon {
+                    margin-top: 0;
+                }
+                .counter-wrapper {
+                    text-align: center;
+                    margin: 0 auto;
+                }
+            }
+        </style>
+
+        <section class="unternehmen-section">
+            <div class="unternehmen-container">
+                <div class="section-top-headline">
+                    <h2><span class="section-icon">›</span> Unternehmen <strong>lieben</strong> <span class="brand-accent-unt">RowBooster</span></h2>
+                </div>
+                <div class="benefits-column">
+                    <h3 class="benefits-headline">Effizienz, Qualität und Wachstum – alles mit <span class="unt-accent">einem Tool.</span></h3>
+                    <ul class="benefits-list">
+                        <li class="benefit-item">
+                            <span class="benefit-icon"></span>
+                            <div><span class="benefit-title">80 % weniger manueller Aufwand</span> <span class="benefit-description">– Ihre Teams fokussieren sich auf wertschöpfende Aufgaben.</span></div>
+                        </li>
+                        <li class="benefit-item">
+                            <span class="benefit-icon"></span>
+                            <div><span class="benefit-title">100 % Datenkonsistenz</span> <span class="benefit-description">– Keine doppelte Arbeit, keine fehlerhaften Datensätze mehr.</span></div>
+                        </li>
+                        <li class="benefit-item">
+                            <span class="benefit-icon"></span>
+                            <div><span class="benefit-title">Schnellere Time-to-Market</span> <span class="benefit-description">– Produkte und Informationen schneller bereitstellen.</span></div>
+                        </li>
+                        <li class="benefit-item">
+                            <span class="benefit-icon"></span>
+                            <div><span class="benefit-title">Zukunftssichere Automatisierung</span> <span class="benefit-description">– Skalierbar für wachsende Datenmengen.</span></div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="counter-column">
+                    <div class="counter-wrapper">
+                        <div class="counter-number">142.000.000+</div>
+                        <p class="counter-label">Daten strukturiert</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================
+             TESTIMONIALS SECTION
+        ======================================== -->
+        <style>
+            .testimonials-section {
+                padding: 80px 48px;
+                background: var(--color-secondary);
+            }
+
+            .testimonials-container {
+                max-width: 1200px;
+                margin: 0 auto;
+            }
+
+            .testimonials-header {
+                text-align: center;
+                margin-bottom: 64px;
+            }
+
+            .testimonials-headline {
+                font-size: clamp(24px, 4vw, 32px);
+                font-weight: 600;
+                color: var(--color-white);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 16px;
+            }
+
+            .testimonials-icon {
+                font-size: 1.8em;
+                color: var(--color-white);
+                position: relative;
+                top: -0.05em;
+            }
+
+            .testimonials-grid {
+                display: flex;
+                flex-direction: column;
+                gap: 32px;
+                max-width: 800px;
+                margin: 0 auto 64px;
+            }
+
+            .testimonial-card {
+                position: relative;
+                background: rgba(22, 33, 48, 0.8);
+                border: 1px solid rgba(168, 221, 91, 0.15);
+                border-radius: 20px;
+                padding: 48px 48px 32px;
+                text-align: center;
+            }
+
+            .testimonial-card:hover {
+                border-color: rgba(168, 221, 91, 0.3);
+            }
+
+            .quote-icon {
+                position: absolute;
+                font-size: 72px;
+                color: var(--color-lime);
+                opacity: 0.6;
+                font-family: Georgia, serif;
+            }
+
+            .quote-open {
+                top: 20px;
+                left: 28px;
+            }
+
+            .quote-close {
+                bottom: 20px;
+                right: 28px;
+            }
+
+            .testimonial-text {
+                font-size: 17px;
+                color: var(--color-text-muted);
+                line-height: 1.7;
+                margin-bottom: 24px;
+                padding: 0 32px;
+            }
+
+            .testimonial-text strong {
+                color: var(--color-white);
+                font-weight: 600;
+            }
+
+            .testimonial-text .tm-highlight {
+                color: var(--color-lime);
+                font-weight: 600;
+            }
+
+            .testimonial-author {
+                font-size: 14px;
+                color: var(--color-lime);
+            }
+
+            .testimonials-cta {
+                text-align: center;
+            }
+
+            .testimonials-cta-button {
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                background: var(--color-lime);
+                color: var(--color-primary-dark);
+                font-size: 16px;
+                font-weight: 600;
+                padding: 16px 32px;
+                border: none;
+                border-radius: 50px;
+                text-decoration: none;
+                transition: all 0.3s ease;
+            }
+
+            .testimonials-cta-button:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 30px rgba(168, 221, 91, 0.3);
+            }
+
+            @media (max-width: 768px) {
+                .testimonials-section {
+                    padding: 60px 24px;
+                }
+                .testimonial-card {
+                    padding: 32px 24px 24px;
+                }
+                .testimonial-text {
+                    padding: 0 16px;
+                    font-size: 16px;
+                }
+                .quote-icon {
+                    font-size: 48px;
+                }
+            }
+        </style>
+
+        <section class="testimonials-section">
+            <div class="testimonials-container">
+            <header class="testimonials-header">
+                <h2 class="testimonials-headline">
+                    <span class="testimonials-icon">›</span>
+                    Wie wir RowBooster selbst nutzen und lieben lernten
+                </h2>
+            </header>
+            <div class="testimonials-grid">
+                <article class="testimonial-card">
+                    <span class="quote-icon quote-open">"</span>
+                    <p class="testimonial-text">
+                        Noch vor einem Jahr haben wir <strong>pro Woche 30-40</strong> neue komplexe Artikel in 
+                        den Webshop bringen können. Jetzt sind es <strong>400 Artikel pro Woche</strong> inkl. aller 
+                        technischer Daten, PDFs, Bilddaten und suchmaschinenoptimierten Produktbeschreibungen.
+                    </p>
+                    <footer class="testimonial-author">Vivien Singh, Artikelanlage Webkatalog bei handl24</footer>
+                    <span class="quote-icon quote-close">"</span>
+                </article>
+                <article class="testimonial-card">
+                    <span class="quote-icon quote-open">"</span>
+                    <p class="testimonial-text">
+                        Mit RowBooster konnten wir endlich unsere Produktdaten automatisiert 
+                        harmonisieren und haben <strong>70 % Zeit</strong> bei der Datenpflege eingespart. Die KI 
+                        lernt mit jeder Nutzung dazu – ein <span class="tm-highlight">echter Gamechanger</span>.
+                    </p>
+                    <footer class="testimonial-author">Juliane Lieberickel, Artikelanlage Webkatalog bei handl24</footer>
+                    <span class="quote-icon quote-close">"</span>
+                </article>
+            </div>
+            <div class="testimonials-cta">
+                <a href="#demo" class="testimonials-cta-button">Kostenlos testen ›</a>
+            </div>
+            </div>
+        </section>
+
+        <!-- ========================================
+             PRICING SECTION
+        ======================================== -->
+        <style>
+            .pricing-section {
+                padding: 80px 24px;
+                background: var(--color-secondary);
+                position: relative;
+            }
+
+            .pricing-container {
+                max-width: 1440px;
+                margin: 0 auto;
+            }
+
+            .pricing-header {
+                text-align: center;
+                margin-bottom: 60px;
+            }
+
+            .pricing-badge {
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                background: rgba(168, 221, 91, 0.1);
+                border: 1px solid rgba(168, 221, 91, 0.3);
+                padding: 8px 20px;
+                border-radius: 50px;
+                font-size: 14px;
+                font-weight: 700;
+                color: var(--color-lime);
+                margin-bottom: 24px;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+            }
+
+            .pricing-title {
+                font-family: var(--font-heading);
+                font-size: 42px;
+                font-weight: 700;
+                color: var(--color-white);
+                margin-bottom: 16px;
+            }
+
+            .pricing-title .pr-accent {
+                color: var(--color-lime);
+            }
+
+            .pricing-subtitle {
+                font-size: 18px;
+                color: var(--color-text-muted);
+                max-width: 500px;
+                margin: 0 auto;
+            }
+
+            .pricing-toggle {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 16px;
+                margin-top: 32px;
+            }
+
+            .toggle-label {
+                font-size: 15px;
+                color: var(--color-text-muted);
+                font-weight: 500;
+            }
+
+            .toggle-label.active {
+                color: var(--color-white);
+            }
+
+            .toggle-switch {
+                position: relative;
+                width: 56px;
+                height: 30px;
+                background: rgba(168, 221, 91, 0.2);
+                border-radius: 50px;
+                cursor: pointer;
+                border: 2px solid rgba(168, 221, 91, 0.4);
+            }
+
+            .toggle-switch::after {
+                content: '';
+                position: absolute;
+                top: 3px;
+                left: 3px;
+                width: 20px;
+                height: 20px;
+                background: var(--color-lime);
+                border-radius: 50%;
+                transition: transform 0.3s ease;
+            }
+
+            .save-badge {
+                background: var(--color-lime);
+                color: var(--color-primary-dark);
+                padding: 4px 10px;
+                border-radius: 20px;
+                font-size: 12px;
+                font-weight: 700;
+            }
+
+            .pricing-cards {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 24px;
+                max-width: 1200px;
+                margin: 0 auto;
+            }
+
+            .pricing-card {
+                background: rgba(255, 255, 255, 0.03);
+                border: 1px solid rgba(255, 255, 255, 0.08);
+                border-radius: 24px;
+                padding: 40px 36px;
+                transition: all 0.4s ease;
+            }
+
+            .pricing-card:hover {
+                transform: translateY(-8px);
+                border-color: rgba(168, 221, 91, 0.3);
+            }
+
+            .pricing-card.featured {
+                background: linear-gradient(135deg, rgba(23, 195, 206, 0.15) 0%, rgba(23, 195, 206, 0.05) 100%);
+                border-color: rgba(23, 195, 206, 0.4);
+                transform: scale(1.05);
+            }
+
+            .pricing-card.featured:hover {
+                transform: scale(1.08) translateY(-8px);
+            }
+
+            .featured-badge {
+                background: linear-gradient(135deg, var(--color-cyan) 0%, #0fa8b2 100%);
+                color: var(--color-white);
+                padding: 8px 24px;
+                border-radius: 0 0 16px 16px;
+                font-size: 12px;
+                font-weight: 700;
+                text-transform: uppercase;
+                display: inline-block;
+                margin-bottom: 16px;
+                margin-top: -40px;
+                margin-left: -36px;
+                width: calc(100% + 72px);
+                text-align: center;
+            }
+
+            .card-header-pr {
+                text-align: center;
+                margin-bottom: 28px;
+            }
+
+            .plan-name {
+                font-family: var(--font-heading);
+                font-size: 24px;
+                font-weight: 700;
+                color: var(--color-white);
+                margin-bottom: 16px;
+            }
+
+            .plan-price {
+                display: flex;
+                align-items: baseline;
+                justify-content: center;
+                gap: 4px;
+            }
+
+            .currency {
+                font-size: 24px;
+                font-weight: 700;
+                color: var(--color-lime);
+            }
+
+            .amount {
+                font-size: 52px;
+                font-weight: 700;
+                color: var(--color-white);
+            }
+
+            .pricing-card.featured .amount {
+                color: var(--color-cyan);
+            }
+
+            .period {
+                font-size: 16px;
+                color: var(--color-text-muted);
+            }
+
+            .plan-description {
+                font-size: 14px;
+                color: var(--color-text-muted);
+                margin-top: 8px;
+            }
+
+            .features-list-pr {
+                list-style: none;
+                margin-bottom: 32px;
+            }
+
+            .features-list-pr li {
+                display: flex;
+                align-items: flex-start;
+                gap: 12px;
+                padding: 12px 0;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+                font-size: 15px;
+                color: var(--color-text-muted);
+            }
+
+            .features-list-pr li:last-child {
+                border-bottom: none;
+            }
+
+            .feature-check {
+                width: 20px;
+                height: 20px;
+                background: rgba(168, 221, 91, 0.15);
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: var(--color-lime);
+                font-size: 12px;
+                font-weight: 700;
+                flex-shrink: 0;
+            }
+
+            .pricing-card.featured .feature-check {
+                background: rgba(23, 195, 206, 0.2);
+                color: var(--color-cyan);
+            }
+
+            .cta-button-pr {
+                display: block;
+                width: 100%;
+                padding: 16px 32px;
+                border-radius: 50px;
+                font-size: 16px;
+                font-weight: 700;
+                text-align: center;
+                text-decoration: none;
+                transition: all 0.3s ease;
+                border: 2px solid rgba(255, 255, 255, 0.3);
+                background: transparent;
+                color: var(--color-white);
+            }
+
+            .cta-button-pr:hover {
+                background: rgba(255, 255, 255, 0.1);
+            }
+
+            .cta-button-pr.primary {
+                background: linear-gradient(135deg, var(--color-cyan) 0%, #0fa8b2 100%);
+                border: none;
+            }
+
+            .cta-button-pr.enterprise {
+                border-color: var(--color-lime);
+                color: var(--color-lime);
+            }
+
+            .pricing-footer {
+                text-align: center;
+                margin-top: 60px;
+            }
+
+            .guarantee-badge {
+                display: inline-flex;
+                align-items: center;
+                gap: 12px;
+                background: rgba(168, 221, 91, 0.08);
+                border: 1px solid rgba(168, 221, 91, 0.2);
+                padding: 16px 28px;
+                border-radius: 16px;
+            }
+
+            .guarantee-icon {
+                font-size: 24px;
+            }
+
+            .guarantee-text {
+                text-align: left;
+            }
+
+            .guarantee-title {
+                font-size: 14px;
+                font-weight: 700;
+                color: var(--color-white);
+            }
+
+            .guarantee-desc {
+                font-size: 13px;
+                color: var(--color-text-muted);
+            }
+
+            @media (max-width: 1024px) {
+                .pricing-cards {
+                    grid-template-columns: 1fr;
+                    max-width: 400px;
+                }
+                .pricing-card.featured {
+                    transform: none;
+                }
+                .pricing-card.featured:hover {
+                    transform: translateY(-8px);
+                }
+            }
+
+            @media (max-width: 768px) {
+                .pricing-section {
+                    padding: 60px 24px;
+                }
+                .pricing-title {
+                    font-size: 32px;
+                }
+            }
+        </style>
+
+        <section class="pricing-section" id="preise">
+            <div class="pricing-container">
+            <header class="pricing-header">
+                <div class="pricing-badge">› Preise</div>
+                <h2 class="pricing-title"><span class="pr-accent">Flexible Lösungen</span> für jedes Unternehmen.</h2>
+                <p class="pricing-subtitle">Lassen Sie die KI Ihre Daten verstehen. Wählen Sie den Plan, der zu Ihnen passt.</p>
+                <div class="pricing-toggle">
+                    <span class="toggle-label active">Monatlich</span>
+                    <div class="toggle-switch"></div>
+                    <span class="toggle-label">Jährlich</span>
+                    <span class="save-badge">-20%</span>
+                </div>
+            </header>
+
+            <div class="pricing-cards">
+                <div class="pricing-card">
+                    <div class="card-header-pr">
+                        <h3 class="plan-name">Starter</h3>
+                        <div class="plan-price">
+                            <span class="currency">€</span>
+                            <span class="amount">99</span>
+                            <span class="period">/Monat</span>
+                        </div>
+                        <p class="plan-description">Perfekt für kleine Teams</p>
+                    </div>
+                    <ul class="features-list-pr">
+                        <li><span class="feature-check">✓</span>Bis zu 1.000 Datensätze/Monat</li>
+                        <li><span class="feature-check">✓</span>Basis KI-Funktionen</li>
+                        <li><span class="feature-check">✓</span>E-Mail Support</li>
+                        <li><span class="feature-check">✓</span>1 Benutzer</li>
+                    </ul>
+                    <a href="#" class="cta-button-pr">Auswählen</a>
+                </div>
+
+                <div class="pricing-card featured">
+                    <div class="featured-badge">Beliebt</div>
+                    <div class="card-header-pr">
+                        <h3 class="plan-name">Professional</h3>
+                        <div class="plan-price">
+                            <span class="currency">€</span>
+                            <span class="amount">299</span>
+                            <span class="period">/Monat</span>
+                        </div>
+                        <p class="plan-description">Für wachsende Unternehmen</p>
+                    </div>
+                    <ul class="features-list-pr">
+                        <li><span class="feature-check">✓</span>Bis zu 10.000 Datensätze/Monat</li>
+                        <li><span class="feature-check">✓</span>Erweiterte KI-Funktionen</li>
+                        <li><span class="feature-check">✓</span>Prioritäts-Support</li>
+                        <li><span class="feature-check">✓</span>5 Benutzer</li>
+                        <li><span class="feature-check">✓</span>API-Zugang</li>
+                    </ul>
+                    <a href="#" class="cta-button-pr primary">Auswählen</a>
+                </div>
+
+                <div class="pricing-card">
+                    <div class="card-header-pr">
+                        <h3 class="plan-name">Enterprise</h3>
+                        <div class="plan-price">
+                            <span class="amount" style="font-size: 36px;">Individuell</span>
+                        </div>
+                        <p class="plan-description">Maßgeschneiderte Lösungen</p>
+                    </div>
+                    <ul class="features-list-pr">
+                        <li><span class="feature-check">✓</span>Unbegrenzte Datensätze</li>
+                        <li><span class="feature-check">✓</span>Alle KI-Funktionen</li>
+                        <li><span class="feature-check">✓</span>Dedizierter Account Manager</li>
+                        <li><span class="feature-check">✓</span>Unbegrenzte Benutzer</li>
+                        <li><span class="feature-check">✓</span>Custom Integrationen</li>
+                    </ul>
+                    <a href="#kontakt" class="cta-button-pr enterprise">Kontaktieren</a>
+                </div>
+            </div>
+
+            <footer class="pricing-footer">
+                <div class="guarantee-badge">
+                    <span class="guarantee-icon">🛡️</span>
+                    <div class="guarantee-text">
+                        <div class="guarantee-title">30 Tage Geld-zurück-Garantie</div>
+                        <div class="guarantee-desc">Kein Risiko. Jederzeit kündbar.</div>
+                    </div>
+                </div>
+            </footer>
+            </div>
+        </section>
+
+        <!-- ========================================
+             KONTAKT SECTION
+        ======================================== -->
+        <style>
+            .kontakt-section {
+                background: var(--color-light);
+                padding: 80px 80px 120px;
+                position: relative;
+                z-index: 1;
+            }
+
+            .kontakt-container {
+                max-width: 1200px;
+                margin: 0 auto;
+            }
+
+            .kontakt-header {
+                text-align: center;
+                margin-bottom: 60px;
+            }
+
+            .kontakt-headline {
+                font-family: var(--font-heading);
+                font-size: 48px;
+                font-weight: 700;
+                color: var(--color-primary);
+                margin-bottom: 16px;
+            }
+
+            .kontakt-headline .kt-accent {
+                color: var(--color-cyan);
+            }
+
+            .kontakt-subheadline {
+                font-size: 18px;
+                color: var(--color-text-dark);
+                opacity: 0.8;
+                max-width: 600px;
+                margin: 0 auto;
+            }
+
+            .kontakt-content {
+                max-width: 700px;
+                margin: 0 auto;
+            }
+
+            .kontakt-form {
+                background: var(--color-white);
+                padding: 48px;
+                border-radius: 16px;
+                box-shadow: 0 4px 24px rgba(12, 36, 67, 0.08);
+            }
+
+            .form-row {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 20px;
+                margin-bottom: 20px;
+            }
+
+            .form-group {
+                margin-bottom: 20px;
+            }
+
+            .form-label {
+                display: block;
+                font-size: 14px;
+                font-weight: 700;
+                color: var(--color-primary);
+                margin-bottom: 8px;
+            }
+
+            .form-label .required {
+                color: var(--color-cyan);
+            }
+
+            .form-input,
+            .form-select,
+            .form-textarea {
+                width: 100%;
+                padding: 14px 16px;
+                font-family: var(--font-body);
+                font-size: 15px;
+                color: var(--color-text-dark);
+                background: #f8fbfc;
+                border: 2px solid transparent;
+                border-radius: 8px;
+                transition: all 0.3s ease;
+            }
+
+            .form-input:focus,
+            .form-select:focus,
+            .form-textarea:focus {
+                outline: none;
+                border-color: var(--color-cyan);
+                background: var(--color-white);
+            }
+
+            .form-textarea {
+                min-height: 140px;
+                resize: vertical;
+            }
+
+            .checkbox-group {
+                display: flex;
+                align-items: flex-start;
+                gap: 12px;
+                margin-bottom: 24px;
+            }
+
+            .checkbox-input {
+                width: 20px;
+                height: 20px;
+                accent-color: var(--color-cyan);
+                cursor: pointer;
+                flex-shrink: 0;
+            }
+
+            .checkbox-label {
+                font-size: 14px;
+                color: var(--color-text-dark);
+                line-height: 1.5;
+            }
+
+            .checkbox-label a {
+                color: var(--color-cyan);
+                text-decoration: none;
+                font-weight: 700;
+            }
+
+            .submit-button {
+                display: inline-flex;
+                align-items: center;
+                gap: 12px;
+                padding: 16px 40px;
+                font-family: var(--font-body);
+                font-size: 16px;
+                font-weight: 700;
+                color: var(--color-white);
+                background: var(--color-primary);
+                border: none;
+                border-radius: 50px;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                width: 100%;
+                justify-content: center;
+            }
+
+            .submit-button:hover {
+                background: var(--color-cyan);
+                transform: translateY(-2px);
+            }
+
+            @media (max-width: 768px) {
+                .kontakt-section {
+                    padding: 40px 24px 60px;
+                }
+                .kontakt-headline {
+                    font-size: 36px;
+                }
+                .kontakt-form {
+                    padding: 28px 24px;
+                }
+                .form-row {
+                    grid-template-columns: 1fr;
+                    gap: 0;
+                }
+            }
+        </style>
+
+        <section class="kontakt-section" id="kontakt">
+            <div class="kontakt-container">
+                <div class="kontakt-header">
+                    <h2 class="kontakt-headline">Jetzt <span class="kt-accent">Kontakt</span> aufnehmen</h2>
+                    <p class="kontakt-subheadline">Haben Sie Fragen zu RowBooster? Wir freuen uns auf Ihre Nachricht.</p>
+                </div>
+                <div class="kontakt-content">
+                    <form class="kontakt-form" id="demo">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Vorname <span class="required">*</span></label>
+                                <input type="text" class="form-input" placeholder="Max" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Nachname <span class="required">*</span></label>
+                                <input type="text" class="form-input" placeholder="Mustermann" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">E-Mail-Adresse <span class="required">*</span></label>
+                            <input type="email" class="form-input" placeholder="max.mustermann@unternehmen.de" required>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Telefon</label>
+                                <input type="tel" class="form-input" placeholder="+49 123 456789">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Unternehmen <span class="required">*</span></label>
+                                <input type="text" class="form-input" placeholder="Ihr Unternehmen" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Betreff <span class="required">*</span></label>
+                            <select class="form-select" required>
+                                <option value="" disabled selected>Bitte wählen...</option>
+                                <option value="demo">Demo anfragen</option>
+                                <option value="preise">Preisanfrage</option>
+                                <option value="support">Technischer Support</option>
+                                <option value="partnerschaft">Partnerschaft</option>
+                                <option value="sonstiges">Sonstiges</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Ihre Nachricht <span class="required">*</span></label>
+                            <textarea class="form-textarea" placeholder="Wie können wir Ihnen helfen?" required></textarea>
+                        </div>
+                        <div class="checkbox-group">
+                            <input type="checkbox" class="checkbox-input" required>
+                            <label class="checkbox-label">Ich habe die <a href="#">Datenschutzerklärung</a> gelesen und stimme der Verarbeitung meiner Daten zu. <span class="required">*</span></label>
+                        </div>
+                        <button type="submit" class="submit-button">Nachricht senden ›</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================
+             FOOTER SECTION
+        ======================================== -->
+        <style>
+            .footer {
+                background: var(--color-secondary);
+                padding: 60px 80px 40px;
+                border-top: 1px solid rgba(255, 255, 255, 0.08);
+                position: relative;
+                z-index: 1;
+            }
+
+            .footer-container {
+                max-width: 1440px;
+                margin: 0 auto;
+            }
+
+            .footer-content {
+                display: flex;
+                justify-content: space-between;
+                align-items: flex-start;
+                gap: 60px;
+            }
+
+            .footer-links {
+                display: flex;
+                gap: 100px;
+            }
+
+            .footer-column {
+                display: flex;
+                flex-direction: column;
+                gap: 16px;
+            }
+
+            .footer-column-title {
+                font-family: var(--font-heading);
+                font-size: 16px;
+                font-weight: 700;
+                color: var(--color-white);
+                margin-bottom: 8px;
+            }
+
+            .footer-column a {
+                font-size: 14px;
+                color: var(--color-text-muted);
+                text-decoration: none;
+                transition: color 0.3s ease;
+            }
+
+            .footer-column a:hover {
+                color: var(--color-white);
+            }
+
+            .footer-logo {
+                display: flex;
+                align-items: center;
+            }
+
+            .footer-logo-img {
+                height: 48px;
+                width: auto;
+            }
+
+            .footer-bottom {
+                margin-top: 50px;
+                padding-top: 24px;
+                border-top: 1px solid rgba(255, 255, 255, 0.08);
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .footer-copyright {
+                font-size: 13px;
+                color: #6B7280;
+            }
+
+            .footer-social {
+                display: flex;
+                gap: 16px;
+            }
+
+            .footer-social a {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 36px;
+                height: 36px;
+                border-radius: 50%;
+                background: rgba(255, 255, 255, 0.05);
+                color: var(--color-text-muted);
+                text-decoration: none;
+                transition: all 0.3s ease;
+            }
+
+            .footer-social a:hover {
+                background: rgba(168, 221, 91, 0.15);
+                color: var(--color-lime);
+            }
+
+            @media (max-width: 768px) {
+                .footer {
+                    padding: 40px 24px 30px;
+                }
+                .footer-content {
+                    flex-direction: column;
+                    gap: 40px;
+                }
+                .footer-links {
+                    width: 100%;
+                    justify-content: space-between;
+                    gap: 30px;
+                    flex-wrap: wrap;
+                }
+                .footer-bottom {
+                    flex-direction: column;
+                    gap: 20px;
+                    text-align: center;
+                }
+            }
+        </style>
+
+        <footer class="footer">
+            <div class="footer-container">
+                <div class="footer-content">
+                    <div class="footer-links">
+                        <div class="footer-column">
+                            <h4 class="footer-column-title">Produkt</h4>
+                            <a href="#features">Features</a>
+                            <a href="#preise">Preise</a>
+                            <a href="#demo">Demo</a>
+                        </div>
+                        <div class="footer-column">
+                            <h4 class="footer-column-title">Unternehmen</h4>
+                            <a href="#">Über uns</a>
+                            <a href="#kontakt">Kontakt</a>
+                        </div>
+                        <div class="footer-column">
+                            <h4 class="footer-column-title">Rechtliches</h4>
+                            <a href="#">Impressum</a>
+                            <a href="#">Datenschutz</a>
+                            <a href="#">AGB</a>
+                        </div>
+                    </div>
+                    <div class="footer-logo">
+                        <img src="Logos/RowBooster_Bildmarke.png" alt="RowBooster" class="footer-logo-img">
+                    </div>
+                </div>
+                <div class="footer-bottom">
+                    <p class="footer-copyright">© 2025 RowBooster. Alle Rechte vorbehalten.</p>
+                    <div class="footer-social">
+                        <a href="#" aria-label="LinkedIn">in</a>
+                        <a href="#" aria-label="Twitter">X</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+
+    </main>
+
+    <!-- ========================================
+         JAVASCRIPT
+    ======================================== -->
+    <script>
+        // Navbar scroll effect
+        const navbar = document.querySelector('.navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Burger menu toggle
+        const burgerMenu = document.querySelector('.burger-menu');
+        const mobileMenu = document.querySelector('.mobile-menu');
+        
+        burgerMenu.addEventListener('click', () => {
+            burgerMenu.classList.toggle('active');
+            mobileMenu.classList.toggle('active');
+            document.body.style.overflow = mobileMenu.classList.contains('active') ? 'hidden' : '';
+        });
+
+        // Close mobile menu on link click
+        mobileMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                burgerMenu.classList.remove('active');
+                mobileMenu.classList.remove('active');
+                document.body.style.overflow = '';
+            });
+        });
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
