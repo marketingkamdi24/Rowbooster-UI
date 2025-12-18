@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -505,42 +504,42 @@ export default function UnifiedPropertiesManager() {
   const selectedTable = tables.find((t: PropertyTable) => t.id === selectedTableId);
 
   return (
-    <Card className="border border-gray-200 shadow-sm">
-      <CardHeader className="pb-4">
-        <div className="flex items-center gap-3">
-          <div className="h-10 w-10 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-lg flex items-center justify-center shadow-sm">
+    <div className="p-5 sm:p-6">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center gap-4 mb-6 pb-4 border-b border-white/[0.08]">
+        <div className="flex items-center gap-3 flex-1">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#17c3ce] to-[#0ea5e9] shadow-[0_0_20px_rgba(23,195,206,0.4)] flex items-center justify-center">
             <Database className="h-5 w-5 text-white" />
           </div>
-          <div className="flex-1">
-            <CardTitle className="text-lg text-gray-900">Eigenschaftentabellen</CardTitle>
-            <CardDescription className="text-sm text-gray-600">
-              Erstellen und verwalten Sie Eigenschaftentabellen für verschiedene Produkttypen
-            </CardDescription>
-          </div>
-          {/* Table count badge */}
-          <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium ${
-            tableCount >= MAX_TABLES_PER_USER
-              ? 'bg-red-100 text-red-700 border border-red-200'
-              : tableCount >= MAX_TABLES_PER_USER - 5
-                ? 'bg-amber-100 text-amber-700 border border-amber-200'
-                : 'bg-emerald-100 text-emerald-700 border border-emerald-200'
-          }`}>
-            <Table2 className="h-3.5 w-3.5" />
-            <span>{tableCount} / {MAX_TABLES_PER_USER} Tabellen</span>
+          <div>
+            <h3 className="text-lg font-bold text-white">Eigenschaftentabellen</h3>
+            <p className="text-sm text-white/50">Erstellen und verwalten Sie Eigenschaftentabellen für verschiedene Produkttypen</p>
           </div>
         </div>
-      </CardHeader>
-      <CardContent className="space-y-6">
+        {/* Table count badge */}
+        <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium ${
+          tableCount >= MAX_TABLES_PER_USER
+            ? 'bg-red-500/20 text-red-400 border border-red-500/30'
+            : tableCount >= MAX_TABLES_PER_USER - 5
+              ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
+              : 'bg-[#c8fa64]/20 text-[#c8fa64] border border-[#c8fa64]/30'
+        }`}>
+          <Table2 className="h-3.5 w-3.5" />
+          <span>{tableCount} / {MAX_TABLES_PER_USER} Tabellen</span>
+        </div>
+      </div>
+      
+      <div className="space-y-6">
         
         {/* Limit warnings */}
         {tableCount >= MAX_TABLES_PER_USER - 3 && tableCount < MAX_TABLES_PER_USER && (
-          <div className="flex items-center gap-2 p-3 bg-amber-50 border border-amber-200 rounded-lg text-sm text-amber-800">
+          <div className="flex items-center gap-2 p-3 bg-amber-500/10 border border-amber-500/20 rounded-xl text-sm text-amber-400">
             <AlertCircle className="h-4 w-4 flex-shrink-0" />
             <span>Sie nähern sich dem Limit von {MAX_TABLES_PER_USER} Tabellen. Noch {MAX_TABLES_PER_USER - tableCount} verfügbar.</span>
           </div>
         )}
         {tableCount >= MAX_TABLES_PER_USER && (
-          <div className="flex items-center gap-2 p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-800">
+          <div className="flex items-center gap-2 p-3 bg-red-500/10 border border-red-500/20 rounded-xl text-sm text-red-400">
             <AlertCircle className="h-4 w-4 flex-shrink-0" />
             <span>Tabellenlimit erreicht ({MAX_TABLES_PER_USER}/{MAX_TABLES_PER_USER}). Löschen Sie eine Tabelle, um eine neue zu erstellen.</span>
           </div>
@@ -548,7 +547,7 @@ export default function UnifiedPropertiesManager() {
 
         {/* ===== CREATE NEW TABLE SECTION ===== */}
         {!showCreateSection ? (
-          <Button
+          <button
             onClick={() => {
               if (!canCreateMoreTables) {
                 toast({
@@ -561,56 +560,56 @@ export default function UnifiedPropertiesManager() {
               setShowCreateSection(true);
             }}
             disabled={!canCreateMoreTables}
-            className="w-full h-14 gap-3 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white shadow-md"
+            className="w-full h-14 flex items-center justify-center gap-3 bg-gradient-to-r from-[#17c3ce] to-[#0ea5e9] hover:from-[#14b8c4] hover:to-[#0284c7] text-white font-semibold rounded-xl transition-all duration-300 shadow-[0_0_20px_rgba(23,195,206,0.3)] hover:shadow-[0_0_30px_rgba(23,195,206,0.5)] disabled:opacity-50"
           >
             <PlusCircle className="h-5 w-5" />
-            <span className="font-medium">Neue Eigenschaftentabelle erstellen</span>
-          </Button>
+            <span>Neue Eigenschaftentabelle erstellen</span>
+          </button>
         ) : (
-          <div className="border-2 border-purple-200 rounded-xl p-6 bg-gradient-to-br from-purple-50 to-indigo-50">
+          <div className="border border-[#17c3ce]/30 rounded-xl p-6 bg-[#17c3ce]/10">
             {/* Create Mode Selection */}
             {createMode === 'choice' && (
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-lg font-semibold text-gray-900">Neue Tabelle erstellen</h3>
-                  <Button variant="ghost" size="sm" onClick={resetCreateForm} className="text-gray-500 hover:text-gray-700">
+                  <h3 className="text-lg font-semibold text-white">Neue Tabelle erstellen</h3>
+                  <Button variant="ghost" size="sm" onClick={resetCreateForm} className="text-white/50 hover:text-white hover:bg-white/10">
                     <X className="h-4 w-4" />
                   </Button>
                 </div>
-                <p className="text-sm text-gray-600">Wählen Sie, wie Sie Ihre Eigenschaftentabelle erstellen möchten:</p>
+                <p className="text-sm text-white/60">Wählen Sie, wie Sie Ihre Eigenschaftentabelle erstellen möchten:</p>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {/* Manual Option */}
                   <button
                     onClick={() => setCreateMode('manual')}
-                    className="group relative flex flex-col items-center p-6 bg-white rounded-xl border-2 border-gray-200 hover:border-purple-400 hover:shadow-lg transition-all text-left"
+                    className="group relative flex flex-col items-center p-6 bg-white/[0.03] rounded-xl border border-white/[0.1] hover:border-[#c8fa64]/50 hover:bg-white/[0.06] transition-all text-left"
                   >
-                    <div className="h-14 w-14 bg-purple-100 rounded-xl flex items-center justify-center mb-4 group-hover:bg-purple-200 transition-colors">
-                      <FolderPlus className="h-7 w-7 text-purple-600" />
+                    <div className="h-14 w-14 bg-[#c8fa64]/20 rounded-xl flex items-center justify-center mb-4 group-hover:bg-[#c8fa64]/30 transition-colors">
+                      <FolderPlus className="h-7 w-7 text-[#c8fa64]" />
                     </div>
-                    <h4 className="font-semibold text-gray-900 mb-1">Leere Tabelle erstellen</h4>
-                    <p className="text-sm text-gray-500 text-center">
+                    <h4 className="font-semibold text-white mb-1">Leere Tabelle erstellen</h4>
+                    <p className="text-sm text-white/50 text-center">
                       Beginnen Sie mit einer leeren Tabelle und fügen Sie Eigenschaften manuell hinzu
                     </p>
                     <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <ArrowRight className="h-5 w-5 text-purple-500" />
+                      <ArrowRight className="h-5 w-5 text-[#c8fa64]" />
                     </div>
                   </button>
                   
                   {/* Import Option */}
                   <button
                     onClick={() => setCreateMode('import')}
-                    className="group relative flex flex-col items-center p-6 bg-white rounded-xl border-2 border-gray-200 hover:border-blue-400 hover:shadow-lg transition-all text-left"
+                    className="group relative flex flex-col items-center p-6 bg-white/[0.03] rounded-xl border border-white/[0.1] hover:border-[#17c3ce]/50 hover:bg-white/[0.06] transition-all text-left"
                   >
-                    <div className="h-14 w-14 bg-blue-100 rounded-xl flex items-center justify-center mb-4 group-hover:bg-blue-200 transition-colors">
-                      <FileSpreadsheet className="h-7 w-7 text-blue-600" />
+                    <div className="h-14 w-14 bg-[#17c3ce]/20 rounded-xl flex items-center justify-center mb-4 group-hover:bg-[#17c3ce]/30 transition-colors">
+                      <FileSpreadsheet className="h-7 w-7 text-[#17c3ce]" />
                     </div>
-                    <h4 className="font-semibold text-gray-900 mb-1">Aus Excel importieren</h4>
-                    <p className="text-sm text-gray-500 text-center">
+                    <h4 className="font-semibold text-white mb-1">Aus Excel importieren</h4>
+                    <p className="text-sm text-white/50 text-center">
                       Laden Sie eine Excel-Datei mit Ihrer Eigenschaftenliste hoch, um schnell eine Tabelle zu erstellen
                     </p>
                     <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <ArrowRight className="h-5 w-5 text-blue-500" />
+                      <ArrowRight className="h-5 w-5 text-[#17c3ce]" />
                     </div>
                   </button>
                 </div>
@@ -622,31 +621,31 @@ export default function UnifiedPropertiesManager() {
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <Button variant="ghost" size="sm" onClick={() => setCreateMode('choice')} className="text-gray-500 hover:text-gray-700 p-1">
+                    <Button variant="ghost" size="sm" onClick={() => setCreateMode('choice')} className="text-white/50 hover:text-white hover:bg-white/10 p-1">
                       <ChevronRight className="h-4 w-4 rotate-180" />
                     </Button>
-                    <h3 className="text-lg font-semibold text-gray-900">Leere Tabelle erstellen</h3>
+                    <h3 className="text-lg font-semibold text-white">Leere Tabelle erstellen</h3>
                   </div>
-                  <Button variant="ghost" size="sm" onClick={resetCreateForm} className="text-gray-500 hover:text-gray-700">
+                  <Button variant="ghost" size="sm" onClick={resetCreateForm} className="text-white/50 hover:text-white hover:bg-white/10">
                     <X className="h-4 w-4" />
                   </Button>
                 </div>
                 
-                <div className="bg-white rounded-lg p-4 space-y-4 border border-gray-200">
+                <div className="bg-black/20 rounded-xl p-4 space-y-4 border border-white/[0.1]">
                   <div className="space-y-2">
-                    <Label htmlFor="manual-table-name" className="text-sm font-medium text-gray-700">
-                      Tabellenname <span className="text-red-500">*</span>
+                    <Label htmlFor="manual-table-name" className="text-sm font-medium text-white/70">
+                      Tabellenname <span className="text-red-400">*</span>
                     </Label>
                     <Input
                       id="manual-table-name"
                       value={newTableName}
                       onChange={(e) => setNewTableName(e.target.value)}
                       placeholder="e.g., Kamin, Grill, Pelletofen"
-                      className="h-10"
+                      className="h-10 bg-black/30 border-white/[0.1] text-white placeholder:text-white/40 rounded-lg"
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="manual-table-desc" className="text-sm font-medium text-gray-700">
+                    <Label htmlFor="manual-table-desc" className="text-sm font-medium text-white/70">
                       Beschreibung (optional)
                     </Label>
                     <Input
@@ -654,19 +653,19 @@ export default function UnifiedPropertiesManager() {
                       value={newTableDescription}
                       onChange={(e) => setNewTableDescription(e.target.value)}
                       placeholder="Kurze Beschreibung dieser Tabelle"
-                      className="h-10"
+                      className="h-10 bg-black/30 border-white/[0.1] text-white placeholder:text-white/40 rounded-lg"
                     />
                   </div>
                 </div>
 
                 <div className="flex justify-end gap-3">
-                  <Button variant="outline" onClick={resetCreateForm}>
+                  <Button variant="outline" onClick={resetCreateForm} className="border-white/[0.1] text-white/70 hover:bg-white/10 hover:text-white">
                     Abbrechen
                   </Button>
                   <Button
                     onClick={handleCreateManualTable}
                     disabled={!newTableName.trim() || createTableMutation.isPending}
-                    className="bg-purple-600 hover:bg-purple-700"
+                    className="bg-[#17c3ce] hover:bg-[#14b8c4]"
                   >
                     {createTableMutation.isPending ? (
                       <>
@@ -916,9 +915,9 @@ export default function UnifiedPropertiesManager() {
         {/* ===== EXISTING TABLES SECTION ===== */}
         {tables.length > 0 && (
           <>
-            <div className="border-t border-gray-200 pt-6">
-              <h3 className="text-sm font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                <Table2 className="h-4 w-4 text-purple-600" />
+            <div className="border-t border-white/[0.08] pt-6">
+              <h3 className="text-sm font-semibold text-white/80 mb-4 flex items-center gap-2">
+                <Table2 className="h-4 w-4 text-[#17c3ce]" />
                 Ihre Eigenschaftentabellen
               </h3>
               
@@ -928,17 +927,17 @@ export default function UnifiedPropertiesManager() {
                   value={selectedTableId?.toString() || ''} 
                   onValueChange={(value) => setSelectedTableId(parseInt(value))}
                 >
-                  <SelectTrigger className="h-11 flex-1">
+                  <SelectTrigger className="h-11 flex-1 bg-black/30 border-white/[0.1] text-white rounded-xl">
                     <SelectValue placeholder="Eigenschaftentabelle auswählen" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-[#1a2332] border-white/[0.1] rounded-xl">
                     {tables.map((table: PropertyTable) => (
-                      <SelectItem key={table.id} value={table.id.toString()}>
+                      <SelectItem key={table.id} value={table.id.toString()} className="text-white focus:bg-white/[0.1] focus:text-white rounded-lg">
                         <div className="flex items-center gap-2">
                           {table.isDefault && <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />}
                           <span>{table.name}</span>
                           {table.description && (
-                            <span className="text-gray-400 text-xs">- {table.description}</span>
+                            <span className="text-white/40 text-xs">- {table.description}</span>
                           )}
                         </div>
                       </SelectItem>
@@ -949,25 +948,25 @@ export default function UnifiedPropertiesManager() {
 
               {/* Selected table info and actions */}
               {selectedTable && (
-                <div className="flex flex-wrap items-center justify-between gap-3 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                <div className="flex flex-wrap items-center justify-between gap-3 p-4 bg-white/[0.03] rounded-xl border border-white/[0.08]">
                   <div className="flex items-center gap-3">
-                    <div className="h-10 w-10 bg-purple-100 rounded-lg flex items-center justify-center">
-                      <Table2 className="h-5 w-5 text-purple-600" />
+                    <div className="h-10 w-10 bg-[#17c3ce]/20 rounded-xl flex items-center justify-center">
+                      <Table2 className="h-5 w-5 text-[#17c3ce]" />
                     </div>
                     <div>
                       <div className="flex items-center gap-2">
-                        <span className="font-medium text-gray-900">{selectedTable.name}</span>
+                        <span className="font-medium text-white">{selectedTable.name}</span>
                         {selectedTable.isDefault && (
-                          <span className="px-2 py-0.5 bg-amber-100 text-amber-800 text-xs rounded-full flex items-center gap-1">
-                            <Star className="h-3 w-3 fill-amber-600 text-amber-600" />
+                          <span className="px-2 py-0.5 bg-amber-500/20 text-amber-400 text-xs rounded-full flex items-center gap-1 border border-amber-500/30">
+                            <Star className="h-3 w-3 fill-amber-400 text-amber-400" />
                             Default
                           </span>
                         )}
                       </div>
                       {selectedTable.description && (
-                        <p className="text-xs text-gray-500">{selectedTable.description}</p>
+                        <p className="text-xs text-white/50">{selectedTable.description}</p>
                       )}
-                      <p className="text-xs text-gray-400 mt-0.5">{properties.length} Eigenschaften</p>
+                      <p className="text-xs text-white/40 mt-0.5">{properties.length} Eigenschaften</p>
                     </div>
                   </div>
                   <div className="flex gap-2">
@@ -989,7 +988,7 @@ export default function UnifiedPropertiesManager() {
                       }}
                       variant="outline"
                       size="sm"
-                      className="h-8 hover:bg-emerald-50 hover:border-emerald-200 hover:text-emerald-600"
+                      className="h-8 border-[#c8fa64]/30 text-[#c8fa64] hover:bg-[#c8fa64]/20 hover:border-[#c8fa64]/50"
                     >
                       <Download className="h-3.5 w-3.5 mr-1" />
                       Exportieren
@@ -999,7 +998,7 @@ export default function UnifiedPropertiesManager() {
                         onClick={() => setDefaultMutation.mutate(selectedTable.id)}
                         variant="outline"
                         size="sm"
-                        className="h-8"
+                        className="h-8 border-white/[0.1] text-white/70 hover:bg-white/10 hover:text-white"
                         disabled={setDefaultMutation.isPending}
                       >
                         <Star className="h-3.5 w-3.5 mr-1" />
@@ -1014,7 +1013,7 @@ export default function UnifiedPropertiesManager() {
                       }}
                       variant="outline"
                       size="sm"
-                      className="h-8 hover:bg-red-50 hover:border-red-200 hover:text-red-600"
+                      className="h-8 border-red-500/30 text-red-400 hover:bg-red-500/20 hover:border-red-500/50"
                       disabled={selectedTable.isDefault || deleteTableMutation.isPending}
                     >
                       <Trash2 className="h-3.5 w-3.5" />
@@ -1029,75 +1028,73 @@ export default function UnifiedPropertiesManager() {
         {/* ===== PROPERTIES SECTION ===== */}
         {selectedTableId && (
           <>
-            <div className="border-t border-gray-200 pt-6">
+            <div className="border-t border-white/[0.08] pt-6">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-sm font-semibold text-gray-900 flex items-center gap-2">
-                  <List className="h-4 w-4 text-purple-600" />
+                <h3 className="text-sm font-semibold text-white/80 flex items-center gap-2">
+                  <List className="h-4 w-4 text-[#17c3ce]" />
                   Eigenschaften in {selectedTable?.name}
                 </h3>
                 {!isAddingNew && properties.length > 0 && (
-                  <Button
+                  <button
                     onClick={() => setIsAddingNew(true)}
-                    variant="outline"
-                    size="sm"
-                    className="gap-1"
+                    className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#c8fa64]/20 hover:bg-[#c8fa64]/30 text-[#c8fa64] font-medium text-sm rounded-lg transition-all border border-[#c8fa64]/30"
                   >
                     <Plus className="h-4 w-4" />
                     Eigenschaft hinzufügen
-                  </Button>
+                  </button>
                 )}
               </div>
 
               {/* Empty state */}
               {properties.length === 0 && !isAddingNew && (
-                <div className="text-center py-12 bg-gray-50 rounded-lg border-2 border-dashed border-gray-200">
-                  <div className="mx-auto h-14 w-14 bg-gray-100 rounded-xl flex items-center justify-center mb-4">
-                    <List className="h-7 w-7 text-gray-400" />
+                <div className="text-center py-12 bg-white/[0.02] rounded-xl border border-dashed border-white/[0.1]">
+                  <div className="mx-auto h-14 w-14 bg-white/[0.05] rounded-xl flex items-center justify-center mb-4">
+                    <List className="h-7 w-7 text-white/30" />
                   </div>
-                  <h4 className="text-lg font-medium text-gray-900 mb-2">Noch keine Eigenschaften</h4>
-                  <p className="text-gray-500 mb-4 max-w-sm mx-auto">
+                  <h4 className="text-lg font-medium text-white mb-2">Noch keine Eigenschaften</h4>
+                  <p className="text-white/50 mb-4 max-w-sm mx-auto">
                     Diese Tabelle ist leer. Fügen Sie Eigenschaften hinzu, um zu definieren, welche Daten für Produkte extrahiert werden sollen.
                   </p>
-                  <Button onClick={() => setIsAddingNew(true)} className="gap-2">
+                  <button onClick={() => setIsAddingNew(true)} className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-[#17c3ce] to-[#0ea5e9] text-white font-semibold rounded-xl shadow-[0_0_20px_rgba(23,195,206,0.3)]">
                     <Plus className="h-4 w-4" />
                     Erste Eigenschaft hinzufügen
-                  </Button>
+                  </button>
                 </div>
               )}
 
               {/* Add new property form */}
               {isAddingNew && (
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-5 mb-4 space-y-4">
-                  <h4 className="font-medium text-gray-900">Neue Eigenschaft hinzufügen</h4>
+                <div className="bg-[#17c3ce]/10 border border-[#17c3ce]/20 rounded-xl p-5 mb-4 space-y-4">
+                  <h4 className="font-medium text-white">Neue Eigenschaft hinzufügen</h4>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="new-name" className="text-sm font-medium text-gray-700">Name *</Label>
+                      <Label htmlFor="new-name" className="text-sm font-medium text-white/70">Name *</Label>
                       <Input
                         id="new-name"
                         value={newProperty.name}
                         onChange={(e) => setNewProperty({ ...newProperty, name: e.target.value })}
                         placeholder="Eigenschaftsname"
-                        className="h-10"
+                        className="h-10 bg-black/30 border-white/[0.1] text-white placeholder:text-white/40 rounded-lg"
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="new-description" className="text-sm font-medium text-gray-700">Beschreibung</Label>
+                      <Label htmlFor="new-description" className="text-sm font-medium text-white/70">Beschreibung</Label>
                       <Input
                         id="new-description"
                         value={newProperty.description}
                         onChange={(e) => setNewProperty({ ...newProperty, description: e.target.value })}
                         placeholder="Kurze Beschreibung"
-                        className="h-10"
+                        className="h-10 bg-black/30 border-white/[0.1] text-white placeholder:text-white/40 rounded-lg"
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="new-format" className="text-sm font-medium text-gray-700">Format</Label>
+                      <Label htmlFor="new-format" className="text-sm font-medium text-white/70">Format</Label>
                       <Input
                         id="new-format"
                         value={newProperty.expectedFormat}
                         onChange={(e) => setNewProperty({ ...newProperty, expectedFormat: e.target.value })}
                         placeholder="Erwartetes Format"
-                        className="h-10"
+                        className="h-10 bg-black/30 border-white/[0.1] text-white placeholder:text-white/40 rounded-lg"
                       />
                     </div>
                   </div>
@@ -1106,18 +1103,20 @@ export default function UnifiedPropertiesManager() {
                       id="new-required"
                       checked={newProperty.isRequired}
                       onCheckedChange={(checked) => setNewProperty({ ...newProperty, isRequired: !!checked })}
+                      className="border-white/30 data-[state=checked]:bg-[#17c3ce] data-[state=checked]:border-[#17c3ce]"
                     />
-                    <Label htmlFor="new-required" className="text-sm font-medium text-gray-700">
+                    <Label htmlFor="new-required" className="text-sm font-medium text-white/70">
                       Pflichtfeld
                     </Label>
                   </div>
-                  <div className="flex justify-end gap-3 pt-2 border-t border-blue-200">
+                  <div className="flex justify-end gap-3 pt-2 border-t border-[#17c3ce]/20">
                     <Button
                       onClick={() => {
                         setIsAddingNew(false);
                         setNewProperty({ name: '', description: '', expectedFormat: '', isRequired: false });
                       }}
                       variant="outline"
+                      className="border-white/[0.1] text-white/70 hover:bg-white/10 hover:text-white"
                     >
                       <X className="h-4 w-4 mr-1" />
                       Abbrechen
@@ -1125,7 +1124,7 @@ export default function UnifiedPropertiesManager() {
                     <Button
                       onClick={handleAddNew}
                       disabled={!newProperty.name.trim() || addPropertyMutation.isPending}
-                      className="bg-blue-600 hover:bg-blue-700"
+                      className="bg-[#17c3ce] hover:bg-[#14b8c4]"
                     >
                       <Save className="h-4 w-4 mr-1" />
                       Eigenschaft hinzufügen
@@ -1136,36 +1135,36 @@ export default function UnifiedPropertiesManager() {
 
               {/* Properties table */}
               {properties.length > 0 && (
-                <div className="border border-gray-200 rounded-lg overflow-hidden">
+                <div className="border border-white/[0.08] rounded-xl overflow-hidden">
                   <div className="overflow-x-auto">
-                    <table className="w-full divide-y divide-gray-200">
-                      <thead className="bg-gray-50">
+                    <table className="w-full divide-y divide-white/[0.08]">
+                      <thead className="bg-white/[0.03]">
                         <tr>
-                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-12">
+                          <th className="px-4 py-3 text-left text-xs font-medium text-white/50 uppercase tracking-wider w-12">
                             #
                           </th>
-                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          <th className="px-4 py-3 text-left text-xs font-medium text-white/50 uppercase tracking-wider">
                             Eigenschaftsname
                           </th>
-                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                          <th className="px-4 py-3 text-left text-xs font-medium text-white/50 uppercase tracking-wider">
                             Beschreibung
                           </th>
-                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-28">
+                          <th className="px-4 py-3 text-left text-xs font-medium text-white/50 uppercase tracking-wider w-28">
                             Format
                           </th>
-                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-20">
+                          <th className="px-4 py-3 text-left text-xs font-medium text-white/50 uppercase tracking-wider w-20">
                             Pflicht
                           </th>
-                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-24">
+                          <th className="px-4 py-3 text-left text-xs font-medium text-white/50 uppercase tracking-wider w-24">
                             Aktionen
                           </th>
                         </tr>
                       </thead>
-                      <tbody className="bg-white divide-y divide-gray-200">
+                      <tbody className="divide-y divide-white/[0.05]">
                         {properties.map((property: Property, index: number) => (
-                          <tr key={property.id} className="hover:bg-gray-50 transition-colors">
+                          <tr key={property.id} className="hover:bg-white/[0.02] transition-colors">
                             <td className="px-4 py-3">
-                              <span className="inline-flex items-center justify-center w-6 h-6 bg-purple-100 text-purple-800 rounded-full text-xs font-medium">
+                              <span className="inline-flex items-center justify-center w-6 h-6 bg-[#17c3ce]/20 text-[#17c3ce] rounded-full text-xs font-medium">
                                 {index + 1}
                               </span>
                             </td>
@@ -1174,10 +1173,10 @@ export default function UnifiedPropertiesManager() {
                                 <Input
                                   value={editForm.name}
                                   onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
-                                  className="h-9"
+                                  className="h-9 bg-black/30 border-white/[0.1] text-white rounded-lg"
                                 />
                               ) : (
-                                <span className="text-sm font-medium text-gray-900">{property.name}</span>
+                                <span className="text-sm font-medium text-white">{property.name}</span>
                               )}
                             </td>
                             <td className="px-4 py-3">
@@ -1185,10 +1184,10 @@ export default function UnifiedPropertiesManager() {
                                 <Input
                                   value={editForm.description}
                                   onChange={(e) => setEditForm({ ...editForm, description: e.target.value })}
-                                  className="h-9"
+                                  className="h-9 bg-black/30 border-white/[0.1] text-white rounded-lg"
                                 />
                               ) : (
-                                <span className="text-sm text-gray-600">{property.description || '-'}</span>
+                                <span className="text-sm text-white/60">{property.description || '-'}</span>
                               )}
                             </td>
                             <td className="px-4 py-3">
@@ -1196,10 +1195,10 @@ export default function UnifiedPropertiesManager() {
                                 <Input
                                   value={editForm.expectedFormat}
                                   onChange={(e) => setEditForm({ ...editForm, expectedFormat: e.target.value })}
-                                  className="h-9"
+                                  className="h-9 bg-black/30 border-white/[0.1] text-white rounded-lg"
                                 />
                               ) : (
-                                <span className="inline-flex items-center px-2 py-1 bg-gray-100 text-gray-800 rounded text-xs">
+                                <span className="inline-flex items-center px-2 py-1 bg-white/[0.05] text-white/70 rounded text-xs border border-white/[0.1]">
                                   {property.expectedFormat || 'Auto'}
                                 </span>
                               )}
@@ -1209,6 +1208,7 @@ export default function UnifiedPropertiesManager() {
                                 <Checkbox
                                   checked={editForm.isRequired}
                                   onCheckedChange={(checked) => setEditForm({ ...editForm, isRequired: !!checked })}
+                                  className="border-white/30 data-[state=checked]:bg-[#17c3ce] data-[state=checked]:border-[#17c3ce]"
                                 />
                               ) : (
                                 <Checkbox
@@ -1219,6 +1219,7 @@ export default function UnifiedPropertiesManager() {
                                       data: { isRequired: !!checked }
                                     });
                                   }}
+                                  className="border-white/30 data-[state=checked]:bg-[#17c3ce] data-[state=checked]:border-[#17c3ce]"
                                 />
                               )}
                             </td>
@@ -1230,7 +1231,7 @@ export default function UnifiedPropertiesManager() {
                                     size="sm"
                                     variant="outline"
                                     disabled={updatePropertyMutation.isPending}
-                                    className="h-8 w-8 p-0"
+                                    className="h-8 w-8 p-0 border-[#c8fa64]/30 text-[#c8fa64] hover:bg-[#c8fa64]/20"
                                   >
                                     <Save className="h-3.5 w-3.5" />
                                   </Button>
@@ -1238,7 +1239,7 @@ export default function UnifiedPropertiesManager() {
                                     onClick={() => setEditingId(null)}
                                     size="sm"
                                     variant="outline"
-                                    className="h-8 w-8 p-0"
+                                    className="h-8 w-8 p-0 border-white/[0.1] text-white/60 hover:bg-white/10"
                                   >
                                     <X className="h-3.5 w-3.5" />
                                   </Button>
@@ -1249,7 +1250,7 @@ export default function UnifiedPropertiesManager() {
                                     onClick={() => handleEdit(property)}
                                     size="sm"
                                     variant="outline"
-                                    className="h-8 w-8 p-0"
+                                    className="h-8 w-8 p-0 border-white/[0.1] text-white/60 hover:bg-white/10 hover:text-white"
                                   >
                                     <Edit2 className="h-3.5 w-3.5" />
                                   </Button>
@@ -1258,7 +1259,7 @@ export default function UnifiedPropertiesManager() {
                                     size="sm"
                                     variant="outline"
                                     disabled={deletePropertyMutation.isPending}
-                                    className="h-8 w-8 p-0 hover:bg-red-50 hover:border-red-200 hover:text-red-600"
+                                    className="h-8 w-8 p-0 border-red-500/30 text-red-400 hover:bg-red-500/20 hover:border-red-500/50"
                                   >
                                     <Trash2 className="h-3.5 w-3.5" />
                                   </Button>
@@ -1278,15 +1279,15 @@ export default function UnifiedPropertiesManager() {
 
         {/* Empty state when no tables exist */}
         {tables.length === 0 && !showCreateSection && (
-          <div className="text-center py-8 text-gray-500 text-sm">
-            <div className="mx-auto h-16 w-16 bg-gray-100 rounded-xl flex items-center justify-center mb-4">
-              <Database className="h-8 w-8 text-gray-400" />
+          <div className="text-center py-8 text-white/50 text-sm">
+            <div className="mx-auto h-16 w-16 bg-white/[0.05] rounded-xl flex items-center justify-center mb-4">
+              <Database className="h-8 w-8 text-white/30" />
             </div>
-            <p className="mb-2">Noch keine Eigenschaftentabellen.</p>
-            <p className="text-xs text-gray-400">Klicken Sie auf die Schaltfläche oben, um Ihre erste Tabelle zu erstellen.</p>
+            <p className="mb-2 text-white/60">Noch keine Eigenschaftentabellen.</p>
+            <p className="text-xs text-white/40">Klicken Sie auf die Schaltfläche oben, um Ihre erste Tabelle zu erstellen.</p>
           </div>
         )}
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }

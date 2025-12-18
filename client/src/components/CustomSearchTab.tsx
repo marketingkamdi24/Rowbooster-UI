@@ -16,7 +16,8 @@ import { toast } from "@/hooks/use-toast";
 import {
   Loader2, FileText, Globe, FolderOpen,
   FileSpreadsheet, Table2, CheckCircle2,
-  Play, AlertCircle, Check, X, Upload, Square
+  Play, AlertCircle, Check, X, Upload, Square,
+  Sparkles, Zap, Database
 } from "lucide-react";
 import * as XLSX from 'xlsx';
 import { extractTextFromPDF, sanitizeTextContent } from "@/lib/pdf-utils";
@@ -959,290 +960,414 @@ export default function CustomSearchTab({
   const withPdf = extractionMode === 'url+pdf';
 
   return (
-    <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
-      {/* Main upload zone */}
-      <div className="p-3 sm:p-4 space-y-3 sm:space-y-4">
-        {/* Excel Drop Zone with Sample */}
-        <div
-          className={`relative rounded-lg border-2 border-dashed transition-all cursor-pointer ${
-            excelFile
-              ? 'border-green-400 bg-green-50'
-              : 'border-gray-300 hover:border-violet-400 hover:bg-violet-50/30'
-          }`}
-          onClick={() => excelInputRef.current?.click()}
-        >
-          {(excelFile || customTabExcelFileName) ? (
-            // Uploaded state
-            <div className="p-3 sm:p-4 flex items-center gap-3">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-green-100 flex items-center justify-center flex-shrink-0">
-                <CheckCircle2 className="h-5 w-5 sm:h-6 sm:w-6 text-green-600" />
+    <div className="relative overflow-hidden">
+      {/* Ambient Background Glow - Premium Touch */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden rounded-2xl">
+        <div className="absolute -top-24 -right-24 w-48 h-48 bg-[#17c3ce]/10 rounded-full blur-3xl" />
+        <div className="absolute -bottom-24 -left-24 w-48 h-48 bg-[#c8fa64]/8 rounded-full blur-3xl" />
+      </div>
+      
+      {/* Main Container with Dark Glassmorphism */}
+      <div className="relative bg-white/[0.02] backdrop-blur-xl rounded-2xl border border-white/[0.06] overflow-hidden">
+        {/* Header Section with Gradient */}
+        <div className="relative px-4 sm:px-6 pt-5 sm:pt-6 pb-4">
+          <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-[#17c3ce] via-[#0c2443] to-[#c8fa64]" />
+          <div className="flex items-center gap-3">
+            <div className="relative">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br from-[color:var(--rb-lime)]/20 to-[color:var(--rb-cyan)]/20 flex items-center justify-center">
+                <Sparkles className="h-5 w-5 sm:h-6 sm:w-6 text-[color:var(--rb-lime)]" />
+              </div>
+              <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-[color:var(--rb-cyan)] rounded-full flex items-center justify-center">
+                <Zap className="h-2.5 w-2.5 text-white" />
+              </div>
+            </div>
+            <div>
+              <h3 className="text-base sm:text-lg font-bold text-white">Batch-Extraktion</h3>
+              <p className="text-xs sm:text-sm text-white/50">Excel hochladen • Daten automatisch extrahieren</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Main Content Area - Dark Theme */}
+        <div className="px-4 sm:px-6 pb-4 sm:pb-5 space-y-4">
+          {/* Excel Upload Zone - Dark Glass Style */}
+          <div
+            className={`group relative rounded-xl transition-all duration-300 cursor-pointer overflow-hidden ${
+              excelFile
+                ? 'bg-[color:var(--rb-lime)]/10 border-2 border-[color:var(--rb-lime)]/30'
+                : 'bg-white/[0.02] border-2 border-dashed border-white/20 hover:border-[color:var(--rb-cyan)]/50 hover:bg-white/[0.04]'
+            }`}
+            onClick={() => excelInputRef.current?.click()}
+          >
+            {/* Hover Glow Effect */}
+            {!excelFile && (
+              <div className="absolute inset-0 bg-gradient-to-br from-[color:var(--rb-cyan)]/5 to-[color:var(--rb-lime)]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            )}
+            
+            {(excelFile || customTabExcelFileName) ? (
+              // Success State - File Uploaded - Dark Theme
+              <div className="relative p-4 sm:p-5">
+                <div className="flex items-start gap-4">
+                  {/* Success Icon */}
+                  <div className="relative flex-shrink-0">
+                    <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl bg-[color:var(--rb-lime)]/20 flex items-center justify-center">
+                      <CheckCircle2 className="h-6 w-6 sm:h-7 sm:w-7 text-[color:var(--rb-lime)]" />
+                    </div>
+                    <div className="absolute -top-1 -right-1 w-5 h-5 bg-[color:var(--rb-lime)] rounded-full flex items-center justify-center">
+                      <FileSpreadsheet className="h-3 w-3 text-[#0c2443]" />
+                    </div>
+                  </div>
+                  
+                  {/* File Info */}
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm sm:text-base font-bold text-white truncate">
+                      {excelFile?.name || customTabExcelFileName}
+                    </p>
+                    <div className="flex flex-wrap items-center gap-2 mt-2">
+                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-[color:var(--rb-lime)]/20 text-[color:var(--rb-lime)]">
+                        <span className="w-1.5 h-1.5 bg-[color:var(--rb-lime)] rounded-full animate-pulse" />
+                        {excelData.length} Produkte
+                      </span>
+                      {excelColumns.hasProduktname && (
+                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] sm:text-xs font-medium bg-blue-500/20 text-blue-400">
+                          Name ✓
+                        </span>
+                      )}
+                      {excelColumns.hasUrl && (
+                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] sm:text-xs font-medium bg-violet-500/20 text-violet-400">
+                          URL ✓
+                        </span>
+                      )}
+                      {excelColumns.hasArtikelnummer && (
+                        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] sm:text-xs font-medium bg-amber-500/20 text-amber-400">
+                          Art.Nr. ✓
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                  
+                  {/* Remove Button */}
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleClearExcel();
+                    }}
+                    className="p-2 rounded-xl bg-white/10 hover:bg-red-500/20 text-white/40 hover:text-red-400 transition-all duration-200"
+                  >
+                    <X className="h-4 w-4 sm:h-5 sm:w-5" />
+                  </button>
+                </div>
+              </div>
+            ) : (
+              // Empty State - Upload Prompt - Dark Theme
+              <div className="relative p-4 sm:p-5">
+                {/* Header */}
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-[color:var(--rb-cyan)]/20 flex items-center justify-center">
+                      <FileSpreadsheet className="h-4 w-4 sm:h-5 sm:w-5 text-[color:var(--rb-cyan)]" />
+                    </div>
+                    <div>
+                      <span className="text-sm sm:text-base font-semibold text-white">Excel-Datei</span>
+                      <p className="text-[10px] sm:text-xs text-white/50">Produktliste hochladen</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[color:var(--rb-cyan)]/10 text-[color:var(--rb-cyan)]">
+                    <Upload className="h-3.5 w-3.5" />
+                    <span className="text-[10px] sm:text-xs font-medium">Drag & Drop</span>
+                  </div>
+                </div>
+                
+                {/* Sample Table Preview - Dark Theme */}
+                <div className="bg-white/[0.03] rounded-xl border border-white/[0.08] overflow-hidden">
+                  <table className="w-full text-[10px] sm:text-xs">
+                    <thead>
+                      <tr className="bg-white/[0.03]">
+                        <th className="px-3 py-2 text-left font-semibold text-white/50 border-r border-white/[0.06]">
+                          <span>Artikelnummer</span>
+                          <span className="ml-1 text-[8px] text-white/30 italic">(optional)</span>
+                        </th>
+                        <th className="px-3 py-2 text-left font-semibold text-white/70 border-r border-white/[0.06]">Produktname</th>
+                        <th className="px-3 py-2 text-left font-semibold text-white/70">URL</th>
+                      </tr>
+                    </thead>
+                    <tbody className="text-white/60">
+                      <tr className="border-t border-white/[0.04] hover:bg-white/[0.02] transition-colors">
+                        <td className="px-3 py-2 border-r border-white/[0.04] font-mono text-[color:var(--rb-cyan)]">TV-001</td>
+                        <td className="px-3 py-2 border-r border-white/[0.04]">Samsung TV 55"</td>
+                        <td className="px-3 py-2 text-[color:var(--rb-cyan)] truncate max-w-[100px] sm:max-w-[160px]">https://samsung.de/...</td>
+                      </tr>
+                      <tr className="border-t border-white/[0.04] opacity-60">
+                        <td className="px-3 py-2 border-r border-white/[0.04] font-mono text-[color:var(--rb-cyan)]">TV-002</td>
+                        <td className="px-3 py-2 border-r border-white/[0.04]">LG OLED 65"</td>
+                        <td className="px-3 py-2 text-[color:var(--rb-cyan)]">https://lg.com/...</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                
+                {/* Upload Hint - Dark Theme */}
+                <div className="mt-4 text-center">
+                  <p className="text-xs sm:text-sm text-white/60 font-medium">
+                    Klicken oder Datei hierher ziehen
+                  </p>
+                  <p className="text-[10px] sm:text-xs text-white/40 mt-1">
+                    Unterstützt: .xlsx, .xls, .csv
+                  </p>
+                </div>
+              </div>
+            )}
+          </div>
+          
+          <input
+            ref={excelInputRef}
+            type="file"
+            accept=".xlsx,.xls,.csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,text/csv"
+            className="hidden"
+            onChange={handleExcelUpload}
+          />
+
+          {/* PDF Enhancement Option - Dark Theme Toggle Card */}
+          <div className={`relative rounded-xl transition-all duration-300 overflow-hidden ${
+            withPdf
+              ? 'bg-purple-500/10 border-2 border-purple-500/30'
+              : 'bg-white/[0.02] border border-white/[0.08] hover:border-white/20'
+          }`}>
+            <button
+              onClick={() => handleModeChange(withPdf ? 'url' : 'url+pdf')}
+              className="w-full px-4 py-3 sm:py-4 flex items-center justify-between group"
+            >
+              <div className="flex items-center gap-3">
+                {/* Custom Checkbox - Dark Theme */}
+                <div className={`relative w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-all duration-300 ${
+                  withPdf
+                    ? 'bg-purple-500 border-purple-500'
+                    : 'border-white/30 bg-transparent group-hover:border-[color:var(--rb-cyan)]'
+                }`}>
+                  {withPdf && (
+                    <Check className="h-4 w-4 text-white animate-in zoom-in-50 duration-200" />
+                  )}
+                </div>
+                
+                <div className="text-left">
+                  <div className="flex items-center gap-2">
+                    <span className={`text-sm sm:text-base font-semibold transition-colors ${
+                      withPdf ? 'text-purple-400' : 'text-white/90'
+                    }`}>
+                      PDF-Dateien hinzufügen
+                    </span>
+                    <span className={`text-[9px] sm:text-[10px] px-2 py-0.5 rounded-full font-semibold uppercase tracking-wide ${
+                      withPdf
+                        ? 'bg-purple-500/20 text-purple-400'
+                        : 'bg-white/10 text-white/50'
+                    }`}>
+                      Optional
+                    </span>
+                  </div>
+                  <p className="text-[10px] sm:text-xs text-white/50 mt-0.5">
+                    Ergänzt Web-Daten mit lokalen PDF-Dokumenten
+                  </p>
+                </div>
+              </div>
+              
+              {/* Enhancement Badge - Dark Theme */}
+              <div className={`hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full transition-all ${
+                withPdf
+                  ? 'bg-[color:var(--rb-lime)]/20 text-[color:var(--rb-lime)]'
+                  : 'bg-white/10 text-white/40'
+              }`}>
+                <Zap className="h-3.5 w-3.5" />
+                <span className="text-xs font-medium">+Genauigkeit</span>
+              </div>
+            </button>
+            
+            {/* PDF Upload Zone - Animated Expand */}
+            {withPdf && (
+              <div className="px-4 pb-4 pt-1 animate-in slide-in-from-top-2 duration-300">
+                <div
+                  className={`rounded-xl transition-all duration-300 cursor-pointer overflow-hidden ${
+                    pdfFolder
+                      ? 'bg-[color:var(--rb-lime)]/10 border-2 border-[color:var(--rb-lime)]/30'
+                      : 'bg-white/[0.03] border-2 border-dashed border-white/20 hover:border-[color:var(--rb-cyan)]/50 hover:bg-white/[0.05]'
+                  }`}
+                  onClick={() => folderInputRef.current?.click()}
+                >
+                  {(pdfFolder || customTabPdfCount > 0) ? (
+                    // PDF Success State - Dark Theme
+                    <div className="p-3 sm:p-4 flex items-center gap-3">
+                      <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-[color:var(--rb-lime)]/20 flex items-center justify-center">
+                        <CheckCircle2 className="h-5 w-5 sm:h-6 sm:w-6 text-[color:var(--rb-lime)]" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2">
+                          <p className="text-sm sm:text-base font-bold text-white">
+                            {pdfFolder ? pdfCount : customTabPdfCount} PDF-Datei{(pdfFolder ? pdfCount : customTabPdfCount) !== 1 ? 'en' : ''}
+                          </p>
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] sm:text-xs font-semibold bg-[color:var(--rb-lime)]/20 text-[color:var(--rb-lime)]">
+                            <span className="w-1.5 h-1.5 bg-[color:var(--rb-lime)] rounded-full animate-pulse" />
+                            Bereit
+                          </span>
+                        </div>
+                        <p className="text-[10px] sm:text-xs text-white/50 mt-0.5">Wird mit Web-Daten kombiniert</p>
+                      </div>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleClearPdfFolder();
+                        }}
+                        className="p-2 rounded-xl bg-white/10 hover:bg-red-500/20 text-white/40 hover:text-red-400 transition-all duration-200"
+                      >
+                        <X className="h-4 w-4" />
+                      </button>
+                    </div>
+                  ) : (
+                    // PDF Empty State - Dark Theme
+                    <div className="p-3 sm:p-4">
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-2">
+                          <div className="w-8 h-8 rounded-lg bg-orange-500/20 flex items-center justify-center">
+                            <FileText className="h-4 w-4 text-orange-400" />
+                          </div>
+                          <span className="text-xs sm:text-sm font-semibold text-white">PDF-Dateien</span>
+                        </div>
+                        <div className="flex items-center gap-1 px-2 py-1 rounded-full bg-[color:var(--rb-cyan)]/10 text-[color:var(--rb-cyan)]">
+                          <Upload className="h-3 w-3" />
+                          <span className="text-[10px] font-medium">Mehrfachauswahl</span>
+                        </div>
+                      </div>
+                      
+                      {/* Sample PDF Preview - Dark Theme */}
+                      <div className="bg-white/[0.03] rounded-lg p-2.5 space-y-1.5 border border-white/[0.06]">
+                        <div className="flex items-center gap-2 text-[10px] sm:text-xs">
+                          <FileText className="h-3.5 w-3.5 text-orange-400 flex-shrink-0" />
+                          <span className="font-mono text-white/60">
+                            <span className="text-[color:var(--rb-cyan)] font-semibold">TV-001</span>_Datenblatt.pdf
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-2 text-[10px] sm:text-xs">
+                          <FileText className="h-3.5 w-3.5 text-orange-400 flex-shrink-0" />
+                          <span className="font-mono text-white/60">
+                            <span className="text-[color:var(--rb-cyan)] font-semibold">TV-001</span>_Manual.pdf
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-2 text-[10px] sm:text-xs opacity-50">
+                          <FileText className="h-3.5 w-3.5 text-orange-400 flex-shrink-0" />
+                          <span className="font-mono text-white/60">
+                            <span className="text-[color:var(--rb-cyan)] font-semibold">TV-002</span>_Specs.pdf
+                          </span>
+                        </div>
+                      </div>
+                      
+                      <p className="text-[10px] sm:text-xs text-white/40 mt-2 text-center">
+                        Dateiname muss mit <span className="font-semibold text-[color:var(--rb-cyan)]">Artikelnummer</span> beginnen
+                      </p>
+                    </div>
+                  )}
+                </div>
+                
+                <input
+                  ref={folderInputRef}
+                  type="file"
+                  accept=".pdf,application/pdf"
+                  multiple
+                  className="hidden"
+                  onChange={handlePdfSelect}
+                />
+              </div>
+            )}
+          </div>
+
+          {/* Validation Messages - Dark Theme Alert Style */}
+          {validation.errors.length > 0 && (
+            <div className="flex items-start gap-3 p-3 sm:p-4 bg-amber-500/10 rounded-xl border border-amber-500/20 animate-in slide-in-from-top-2 duration-300">
+              <div className="w-8 h-8 rounded-lg bg-amber-500/20 flex items-center justify-center flex-shrink-0">
+                <AlertCircle className="h-4 w-4 text-amber-400" />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm sm:text-base font-semibold text-green-800 truncate">{excelFile?.name || customTabExcelFileName}</p>
-                <p className="text-xs sm:text-sm text-green-600 mt-0.5">
-                  ✓ {excelData.length} Produkte geladen
-                  <span className="mx-1.5 text-green-400">•</span>
-                  {[
-                    excelColumns.hasProduktname && 'Name',
-                    excelColumns.hasUrl && 'URL',
-                    excelColumns.hasArtikelnummer && 'Art.Nr.'
-                  ].filter(Boolean).join(', ') || 'Keine Spalten erkannt'}
-                </p>
-              </div>
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleClearExcel();
-                }}
-                className="p-1.5 sm:p-2 rounded-full hover:bg-red-100 text-gray-400 hover:text-red-500 transition-colors"
-              >
-                <X className="h-4 w-4 sm:h-5 sm:w-5" />
-              </button>
-            </div>
-          ) : (
-            // Empty state with sample table
-            <div className="p-3 sm:p-4">
-              <div className="flex items-center gap-2 mb-2 sm:mb-3">
-                <FileSpreadsheet className="h-4 w-4 sm:h-5 sm:w-5 text-violet-600" />
-                <span className="text-sm sm:text-base font-medium text-gray-700">Excel-Datei hochladen</span>
-                <Upload className="h-4 w-4 sm:h-5 sm:w-5 text-gray-300 ml-auto" />
-              </div>
-              
-              {/* Sample Table Preview */}
-              <div className="bg-white rounded border border-gray-200 overflow-hidden text-[10px] sm:text-xs">
-                <table className="w-full">
-                  <thead className="bg-gray-100">
-                    <tr>
-                      <th className="px-2 sm:px-3 py-1 sm:py-2 text-left font-semibold text-gray-500 border-r border-gray-200">
-                        <span>Artikelnummer</span>
-                        <span className="ml-1 text-[8px] sm:text-[9px] text-gray-400 italic">(optional)</span>
-                      </th>
-                      <th className="px-2 sm:px-3 py-1 sm:py-2 text-left font-semibold text-violet-700 border-r border-gray-200">Produktname</th>
-                      <th className="px-2 sm:px-3 py-1 sm:py-2 text-left font-semibold text-violet-700 border-r border-gray-200">URL</th>
-                    </tr>
-                  </thead>
-                  <tbody className="text-gray-500">
-                    <tr className="border-t border-gray-100">
-                      <td className="px-2 sm:px-3 py-1 sm:py-1.5 border-r border-gray-100 font-mono text-gray-400">TV-001</td>
-                      <td className="px-2 sm:px-3 py-1 sm:py-1.5 border-r border-gray-100">Samsung TV 55"</td>
-                      <td className="px-2 sm:px-3 py-1 sm:py-1.5 border-r border-gray-100 text-blue-500 truncate max-w-[120px] sm:max-w-[180px]">https://samsung.de/...</td>
-                    </tr>
-                    <tr className="border-t border-gray-100 opacity-50">
-                      <td className="px-2 sm:px-3 py-1 sm:py-1.5 border-r border-gray-100 font-mono text-gray-400">TV-002</td>
-                      <td className="px-2 sm:px-3 py-1 sm:py-1.5 border-r border-gray-100">LG OLED 65"</td>
-                      <td className="px-2 sm:px-3 py-1 sm:py-1.5 border-r border-gray-100 text-blue-500">https://lg.com/...</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <p className="text-xs sm:text-sm md:text-base text-gray-600 mt-2 sm:mt-3 text-center font-medium">
-                Klicken oder Datei hierher ziehen (.xlsx, .csv)
-              </p>
-            </div>
-          )}
-        </div>
-        
-        <input
-          ref={excelInputRef}
-          type="file"
-          accept=".xlsx,.xls,.csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,text/csv"
-          className="hidden"
-          onChange={handleExcelUpload}
-        />
-
-        {/* PDF Option - Collapsible/Toggle */}
-        <div className={`rounded-lg border transition-all ${
-          withPdf
-            ? 'border-violet-300 bg-violet-50/50'
-            : 'border-gray-200 hover:border-gray-300 bg-gray-50/50'
-        }`}>
-          <button
-            onClick={() => handleModeChange(withPdf ? 'url' : 'url+pdf')}
-            className="w-full px-3 sm:px-4 py-2.5 sm:py-3 flex items-center justify-between"
-          >
-            <div className="flex items-center gap-2 sm:gap-3">
-              <div className={`w-5 h-5 sm:w-6 sm:h-6 rounded border-2 flex items-center justify-center transition-all ${
-                withPdf
-                  ? 'bg-violet-600 border-violet-600'
-                  : 'border-gray-300 bg-white hover:border-gray-400'
-              }`}>
-                {withPdf && <Check className="h-3 w-3 sm:h-4 sm:w-4 text-white" />}
-              </div>
-              <div className="text-left">
-                <span className={`text-xs sm:text-sm font-medium ${withPdf ? 'text-violet-700' : 'text-gray-700'}`}>
-                  PDF-Dateien hinzufügen
-                </span>
-                <p className="text-[10px] sm:text-xs text-gray-500">Ergänzt Web-Daten mit lokalen PDFs</p>
-              </div>
-            </div>
-            <span className={`text-[9px] sm:text-xs px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full font-medium ${
-              withPdf
-                ? 'bg-violet-200 text-violet-700'
-                : 'bg-gray-200 text-gray-500'
-            }`}>
-              Optional
-            </span>
-          </button>
-          
-          {/* PDF Files Upload Zone - Only when enabled */}
-          {withPdf && (
-            <div className="px-3 sm:px-4 pb-3 sm:pb-4 pt-1">
-              <div
-                className={`rounded-lg border-2 border-dashed transition-all cursor-pointer ${
-                  pdfFolder
-                    ? 'border-green-400 bg-green-50'
-                    : 'border-gray-300 hover:border-orange-400 hover:bg-orange-50/30'
-                }`}
-                onClick={() => folderInputRef.current?.click()}
-              >
-                {(pdfFolder || customTabPdfCount > 0) ? (
-                  // Uploaded state - Success indicator
-                  <div className="p-2.5 sm:p-3 flex items-center gap-2 sm:gap-3">
-                    <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center flex-shrink-0 shadow-md shadow-green-200">
-                      <CheckCircle2 className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2">
-                        <p className="text-xs sm:text-sm font-bold text-green-800">{pdfFolder ? pdfCount : customTabPdfCount} PDF-Datei{(pdfFolder ? pdfCount : customTabPdfCount) !== 1 ? 'en' : ''}</p>
-                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] sm:text-xs font-semibold bg-green-100 text-green-700 border border-green-200">
-                          <svg className="w-2.5 h-2.5 sm:w-3 sm:h-3" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                          </svg>
-                          Hochgeladen
-                        </span>
-                      </div>
-                      <p className="text-[10px] sm:text-xs text-green-600 mt-0.5">Bereit zur Verarbeitung</p>
-                    </div>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleClearPdfFolder();
-                      }}
-                      className="p-1 sm:p-1.5 hover:bg-red-100 rounded-full text-gray-400 hover:text-red-500 transition-colors"
-                    >
-                      <X className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                    </button>
-                  </div>
-                ) : (
-                  // Empty state with instructions
-                  <div className="p-2.5 sm:p-3">
-                    <div className="flex items-center gap-2 mb-2 sm:mb-3">
-                      <FileText className="h-4 w-4 sm:h-5 sm:w-5 text-orange-500" />
-                      <span className="text-xs sm:text-sm font-medium text-gray-700">PDF-Dateien auswählen</span>
-                      <Upload className="h-4 w-4 sm:h-5 sm:w-5 text-gray-300 ml-auto" />
-                    </div>
-                    
-                    {/* Sample PDF Files Preview */}
-                    <div className="bg-white rounded border border-gray-200 p-2 sm:p-3 space-y-1 sm:space-y-1.5">
-                      <div className="flex items-center gap-2 text-[10px] sm:text-xs">
-                        <FileText className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-red-500 flex-shrink-0" />
-                        <span className="font-mono"><span className="text-orange-600 font-semibold">TV-001</span>_Datenblatt.pdf</span>
-                      </div>
-                      <div className="flex items-center gap-2 text-[10px] sm:text-xs">
-                        <FileText className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-red-500 flex-shrink-0" />
-                        <span className="font-mono"><span className="text-orange-600 font-semibold">TV-001</span>_Manual.pdf</span>
-                      </div>
-                      <div className="flex items-center gap-2 text-[10px] sm:text-xs opacity-50">
-                        <FileText className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-red-500 flex-shrink-0" />
-                        <span className="font-mono"><span className="text-orange-600 font-semibold">TV-002</span>_Specs.pdf</span>
-                      </div>
-                    </div>
-                    <p className="text-[10px] sm:text-xs text-gray-400 mt-1.5 sm:mt-2 text-center">
-                      Dateiname muss mit <span className="font-semibold text-orange-600">Artikelnummer</span> beginnen • Mehrfachauswahl möglich
-                    </p>
-                  </div>
+                <span className="text-sm font-semibold text-amber-400">{validation.errors[0].message}</span>
+                {validation.errors[0].details && (
+                  <p className="text-xs text-amber-400/70 mt-1 leading-relaxed">{validation.errors[0].details}</p>
                 )}
               </div>
-              
-              <input
-                ref={folderInputRef}
-                type="file"
-                accept=".pdf,application/pdf"
-                multiple
-                className="hidden"
-                onChange={handlePdfSelect}
-              />
             </div>
           )}
+          
+          {/* Validation Error Dialog */}
+          <ExcelValidationErrorDialog
+            open={showValidationDialog}
+            onOpenChange={setShowValidationDialog}
+            error={validationDialogError}
+          />
         </div>
 
-        {/* Validation messages - show when there are errors */}
-        {validation.errors.length > 0 && (
-          <div className="flex items-start gap-2 px-2 sm:px-3 py-1.5 sm:py-2 bg-amber-50 rounded-lg text-amber-700 border border-amber-200">
-            <AlertCircle className="h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0 mt-0.5" />
-            <div className="flex-1">
-              <span className="text-xs sm:text-sm font-medium">{validation.errors[0].message}</span>
-              {validation.errors[0].details && (
-                <p className="text-xs text-amber-600 mt-0.5">{validation.errors[0].details}</p>
-              )}
+        {/* Action Footer - Dark Theme */}
+        <div className="relative px-4 sm:px-6 py-4 bg-white/[0.02] border-t border-white/[0.06]">
+          <div className="flex items-center justify-between gap-4">
+            {/* Property Table Selector - Dark Theme */}
+            <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-white/[0.04] border border-white/[0.08]">
+                <Database className="h-3.5 w-3.5 text-[color:var(--rb-cyan)]" />
+                <span className="hidden sm:inline text-xs font-medium text-white/60">Tabelle:</span>
+              </div>
+              <Select
+                value={currentDefaultTable?.id?.toString() || ''}
+                onValueChange={(value) => {
+                  const tableId = parseInt(value);
+                  if (!isNaN(tableId)) {
+                    setDefaultTableMutation.mutate(tableId);
+                  }
+                }}
+              >
+                <SelectTrigger className="h-8 sm:h-9 w-[90px] sm:w-[150px] text-xs sm:text-sm bg-white/[0.04] border-white/[0.12] text-white/80 rounded-lg hover:border-[color:var(--rb-cyan)]/50 transition-colors">
+                  <SelectValue placeholder="Wählen..." />
+                </SelectTrigger>
+                <SelectContent className="rounded-xl bg-[#0c2443] border-white/10">
+                  {propertyTables.map((table) => (
+                    <SelectItem key={table.id} value={table.id.toString()} className="text-xs sm:text-sm text-white/80 rounded-lg focus:bg-white/10">
+                      {table.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
-          </div>
-        )}
-        
-        {/* Validation Error Dialog - shows when file has column errors */}
-        <ExcelValidationErrorDialog
-          open={showValidationDialog}
-          onOpenChange={setShowValidationDialog}
-          error={validationDialogError}
-        />
-      </div>
-
-      {/* Start action */}
-      <div className="px-3 sm:px-4 py-2.5 sm:py-3 bg-gray-50 border-t flex items-center justify-between gap-3">
-        <div className="flex items-center gap-2 sm:gap-3">
-          {/* Property Table Selector with Label - matching SearchTabs style */}
-          <div className="flex items-center gap-1 sm:gap-2">
-            <div className="flex items-center gap-1">
-              <Table2 className="h-3 w-3 sm:h-4 sm:w-4 text-blue-600" />
-              <span className="hidden sm:inline text-xs sm:text-sm font-medium text-blue-700">Produkt:</span>
-            </div>
-            <Select
-              value={currentDefaultTable?.id?.toString() || ''}
-              onValueChange={(value) => {
-                const tableId = parseInt(value);
-                if (!isNaN(tableId)) {
-                  setDefaultTableMutation.mutate(tableId);
-                }
-              }}
-            >
-              <SelectTrigger className="h-6 sm:h-8 w-[80px] sm:w-[140px] text-xs sm:text-sm bg-white border-gray-300">
-                <SelectValue placeholder="Wählen..." />
-              </SelectTrigger>
-              <SelectContent>
-                {propertyTables.map((table) => (
-                  <SelectItem key={table.id} value={table.id.toString()} className="text-xs sm:text-sm">
-                    {table.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            
+            {/* Action Button - Dark Theme */}
+            {isProcessing ? (
+              <button
+                onClick={handleStopExtraction}
+                className="h-10 sm:h-11 px-5 sm:px-7 text-sm sm:text-base font-semibold bg-red-500 hover:bg-red-600 text-white rounded-xl transition-all duration-300 flex items-center"
+              >
+                <Square className="h-4 w-4 sm:h-5 sm:w-5 mr-2 fill-current" />
+                Stoppen
+              </button>
+            ) : (
+              <button
+                onClick={handleBatchExtraction}
+                disabled={!validation.isValid}
+                className={`h-10 sm:h-11 px-5 sm:px-7 text-sm sm:text-base font-semibold rounded-xl transition-all duration-300 flex items-center ${
+                  validation.isValid
+                    ? 'bg-[color:var(--rb-lime)] hover:bg-[color:var(--rb-lime)]/90 text-[#0c2443]'
+                    : 'bg-white/10 text-white/30 cursor-not-allowed'
+                }`}
+              >
+                {validation.isValid ? (
+                  <>
+                    <Sparkles className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
+                    <span>Extraktion starten</span>
+                    <span className="ml-2 px-2 py-0.5 rounded-full bg-[#0c2443]/20 text-[#0c2443] text-xs font-bold">
+                      {excelData.length}
+                    </span>
+                  </>
+                ) : (
+                  <>
+                    <Play className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
+                    Daten extrahieren
+                  </>
+                )}
+              </button>
+            )}
           </div>
         </div>
-        
-        {isProcessing ? (
-          <Button
-            onClick={handleStopExtraction}
-            size="sm"
-            className="h-8 sm:h-10 px-4 sm:px-6 text-sm sm:text-base font-medium bg-red-600 hover:bg-red-700 text-white shadow-sm"
-          >
-            <Square className="h-4 w-4 sm:h-5 sm:w-5 mr-2 fill-current" />
-            Stop
-          </Button>
-        ) : (
-          <Button
-            onClick={handleBatchExtraction}
-            disabled={!validation.isValid}
-            size="sm"
-            className={`h-8 sm:h-10 px-4 sm:px-6 text-sm sm:text-base font-medium ${
-              validation.isValid
-                ? 'bg-violet-600 hover:bg-violet-700 text-white shadow-sm'
-                : 'bg-gray-100 text-gray-400 shadow-none'
-            }`}
-          >
-            <Play className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
-            Daten extrahieren
-          </Button>
-        )}
       </div>
     </div>
   );

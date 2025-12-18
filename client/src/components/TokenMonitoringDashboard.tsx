@@ -185,397 +185,259 @@ export function TokenMonitoringDashboard({ compact = false, onExpand }: TokenMon
 
   if (isLoading) {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 animate-pulse">
-        <div className="h-20 bg-gray-200 rounded-lg"></div>
-        <div className="h-20 bg-gray-200 rounded-lg"></div>
-        <div className="h-20 bg-gray-200 rounded-lg"></div>
+      <div className="space-y-3 animate-pulse">
+        <div className="h-20 bg-white/[0.05] rounded-xl border border-white/[0.08]"></div>
+        <div className="h-20 bg-white/[0.05] rounded-xl border border-white/[0.08]"></div>
+        <div className="h-20 bg-white/[0.05] rounded-xl border border-white/[0.08]"></div>
       </div>
     );
   }
 
   if (isError) {
     return (
-      <div className="text-center py-8 text-red-500">
-        <BarChart3 className="h-12 w-12 mx-auto mb-2 opacity-50" />
-        <p>Fehler beim Laden der Token-Nutzung</p>
-        <p className="text-xs mt-2">{(error as Error)?.message || 'Unbekannter Fehler'}</p>
+      <div className="text-center py-8">
+        <div className="w-12 h-12 mx-auto mb-3 rounded-xl bg-red-500/10 flex items-center justify-center">
+          <BarChart3 className="h-6 w-6 text-red-400" />
+        </div>
+        <p className="text-white/80 text-sm">Fehler beim Laden</p>
+        <p className="text-white/40 text-xs mt-1">{(error as Error)?.message || 'Unbekannter Fehler'}</p>
       </div>
     );
   }
 
   if (!tokenStats) {
     return (
-      <div className="text-center py-8 text-gray-500">
-        <BarChart3 className="h-12 w-12 mx-auto mb-2 opacity-50" />
-        <p>Keine Token-Nutzungsdaten verfügbar</p>
-        <p className="text-xs mt-2">Benutzer-ID: {user?.id}</p>
+      <div className="text-center py-8">
+        <div className="w-12 h-12 mx-auto mb-3 rounded-xl bg-white/[0.05] flex items-center justify-center">
+          <BarChart3 className="h-6 w-6 text-white/40" />
+        </div>
+        <p className="text-white/60 text-sm">Keine Daten verfügbar</p>
+        <p className="text-white/30 text-xs mt-1">Starten Sie eine Extraktion</p>
       </div>
     );
   }
 
-  // Compact view for the navigation dropdown
+  // Compact view - Simple & Clean
   if (compact) {
+    const todayTokens = tokenStats.todayUsage.inputTokens + tokenStats.todayUsage.outputTokens;
+    const weekTokens = tokenStats.weeklyUsage.inputTokens + tokenStats.weeklyUsage.outputTokens;
+    const monthTokens = tokenStats.monthlyUsage.inputTokens + tokenStats.monthlyUsage.outputTokens;
+    const avgTokensPerCall = tokenStats.totalCalls > 0 ? Math.round(tokenStats.totalTokens / tokenStats.totalCalls) : 0;
+    const costPerCall = tokenStats.totalCalls > 0 ? tokenStats.costEstimate / tokenStats.totalCalls : 0;
+    const inputOutputRatio = tokenStats.totalOutputTokens > 0 ? (tokenStats.totalInputTokens / tokenStats.totalOutputTokens).toFixed(1) : '0';
+    const inputPercent = tokenStats.totalTokens > 0 ? Math.round((tokenStats.totalInputTokens / tokenStats.totalTokens) * 100) : 0;
+
     return (
-      <div className="space-y-4">
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-2">
-            <BarChart3 className="h-5 w-5 text-blue-600" />
-            <h3 className="text-lg font-semibold text-gray-900">Meine Token-Nutzung</h3>
+      <div className="space-y-3">
+        {/* Stats Cards - Vertical Layout for Sidebar */}
+        <div className="space-y-3">
+          {/* Total Tokens */}
+          <div className="rounded-xl border border-[#17c3ce]/20 bg-white/[0.02] p-4 transition-all duration-300 hover:bg-white/[0.04] hover:border-[#17c3ce]/40">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-lg bg-[#17c3ce]/10 flex items-center justify-center flex-shrink-0">
+                <Zap className="h-5 w-5 text-[#17c3ce]" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-xs font-medium text-white/50 uppercase tracking-wider">Gesamt-Tokens</p>
+                <p className="text-xl font-bold text-white">{formatNumber(tokenStats.totalTokens)}</p>
+              </div>
+            </div>
           </div>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setOpen(true)}
-            className="flex items-center gap-2"
-          >
-            <Maximize2 className="h-4 w-4" />
-            Erweitern
-          </Button>
-        </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <Card>
-            <CardContent className="p-4">
-              <div className="flex items-center gap-2">
-                <div className="p-2 bg-blue-100 rounded-lg">
-                  <Zap className="h-4 w-4 text-blue-600" />
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-gray-600">Meine Gesamt-Tokens</p>
-                  <p className="text-lg font-bold text-gray-900">{formatNumber(tokenStats.totalTokens)}</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
 
-          <Card>
-            <CardContent className="p-4">
-              <div className="flex items-center gap-2">
-                <div className="p-2 bg-green-100 rounded-lg">
-                  <DollarSign className="h-4 w-4 text-green-600" />
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-gray-600">Meine Gesamtkosten</p>
-                  <p className="text-lg font-bold text-gray-900">{formatCurrency(tokenStats.costEstimate)}</p>
-                </div>
+          {/* Total Cost */}
+          <div className="rounded-xl border border-[#c8fa64]/20 bg-white/[0.02] p-4 transition-all duration-300 hover:bg-white/[0.04] hover:border-[#c8fa64]/40">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-lg bg-[#c8fa64]/10 flex items-center justify-center flex-shrink-0">
+                <DollarSign className="h-5 w-5 text-[#c8fa64]" />
               </div>
-            </CardContent>
-          </Card>
+              <div className="flex-1 min-w-0">
+                <p className="text-xs font-medium text-white/50 uppercase tracking-wider">Gesamtkosten</p>
+                <p className="text-xl font-bold text-white">{formatCurrency(tokenStats.costEstimate)}</p>
+              </div>
+            </div>
+          </div>
 
-          <Card>
-            <CardContent className="p-4">
-              <div className="flex items-center gap-2">
-                <div className="p-2 bg-purple-100 rounded-lg">
-                  <Activity className="h-4 w-4 text-purple-600" />
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-gray-600">Meine API-Aufrufe</p>
-                  <p className="text-lg font-bold text-gray-900">{formatNumber(tokenStats.totalCalls)}</p>
-                </div>
+          {/* API Calls */}
+          <div className="rounded-xl border border-[#17c3ce]/20 bg-white/[0.02] p-4 transition-all duration-300 hover:bg-white/[0.04] hover:border-[#17c3ce]/40">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-lg bg-[#17c3ce]/10 flex items-center justify-center flex-shrink-0">
+                <Activity className="h-5 w-5 text-[#17c3ce]" />
               </div>
-            </CardContent>
-          </Card>
+              <div className="flex-1 min-w-0">
+                <p className="text-xs font-medium text-white/50 uppercase tracking-wider">API-Aufrufe</p>
+                <p className="text-xl font-bold text-white">{formatNumber(tokenStats.totalCalls)}</p>
+              </div>
+            </div>
+          </div>
         </div>
+
+        {/* Expand Button */}
+        <button
+          onClick={() => setOpen(true)}
+          className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-gradient-to-r from-[#17c3ce]/20 to-[#c8fa64]/10 border border-white/[0.08] text-white/80 hover:text-white hover:border-white/[0.15] transition-all duration-300"
+        >
+          <Maximize2 className="h-4 w-4" />
+          <span className="text-sm font-medium">Detaillierte Analyse</span>
+        </button>
 
         <Dialog open={open} onOpenChange={setOpen}>
-          <DialogContent className="max-w-[95vw] max-h-[95vh] overflow-auto">
-            <DialogHeader>
-              <DialogTitle className="flex items-center gap-2">
-                <BarChart3 className="h-6 w-6 text-blue-600" />
-                Meine Token-Nutzungsanalyse
+          <DialogContent className="max-w-4xl max-h-[90vh] overflow-auto bg-[#0a1628] border-white/[0.08] text-white">
+            <DialogHeader className="border-b border-white/[0.06] pb-4">
+              <DialogTitle className="flex items-center gap-3 text-white">
+                <div className="p-2 rounded-lg bg-[#17c3ce]/10">
+                  <BarChart3 className="h-5 w-5 text-[#17c3ce]" />
+                </div>
+                <div>
+                  <span className="text-base font-semibold">Token-Analyse</span>
+                  <p className="text-xs text-white/40 font-normal mt-0.5">Detaillierte API-Nutzung</p>
+                </div>
               </DialogTitle>
             </DialogHeader>
             
-            <div className="space-y-6 overflow-x-auto">
-              {/* Quick Stats Overview */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <Card>
-                  <CardContent className="p-6">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-sm font-medium text-gray-600">Meine Gesamt-Tokens</p>
-                        <p className="text-2xl font-bold text-gray-900">{formatNumber(tokenStats.totalTokens)}</p>
-                        <div className="flex items-center text-xs text-gray-500 mt-1">
-                          <div className="flex items-center">
-                            <ArrowUpRight className="h-3 w-3 text-green-500 mr-1" />
-                            +{formatNumber(tokenStats.todayUsage.inputTokens + tokenStats.todayUsage.outputTokens)} heute
-                          </div>
-                        </div>
-                      </div>
-                      <div className="p-3 bg-blue-100 rounded-lg">
-                        <Zap className="h-6 w-6 text-blue-600" />
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardContent className="p-6">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-sm font-medium text-gray-600">Meine Gesamtkosten</p>
-                        <p className="text-2xl font-bold text-gray-900">{formatCurrency(tokenStats.costEstimate)}</p>
-                        <div className="flex items-center text-xs text-gray-500 mt-1">
-                          <div className="flex items-center">
-                            <ArrowUpRight className="h-3 w-3 text-green-500 mr-1" />
-                            +{formatCurrency(estimatePeriodCost(tokenStats.todayUsage.inputTokens, tokenStats.todayUsage.outputTokens))} heute
-                          </div>
-                        </div>
-                      </div>
-                      <div className="p-3 bg-green-100 rounded-lg">
-                        <DollarSign className="h-6 w-6 text-green-600" />
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardContent className="p-6">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-sm font-medium text-gray-600">Meine API-Aufrufe</p>
-                        <p className="text-2xl font-bold text-gray-900">{formatNumber(tokenStats.totalCalls)}</p>
-                        <div className="flex items-center text-xs text-gray-500 mt-1">
-                          <div className="flex items-center">
-                            <ArrowUpRight className="h-3 w-3 text-green-500 mr-1" />
-                            +{formatNumber(tokenStats.todayUsage.calls)} heute
-                          </div>
-                        </div>
-                      </div>
-                      <div className="p-3 bg-purple-100 rounded-lg">
-                        <Activity className="h-6 w-6 text-purple-600" />
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
+            <div className="space-y-4 py-4">
+              {/* Stats Grid - Dark */}
+              <div className="grid grid-cols-3 gap-3">
+                <div className="p-4 rounded-xl bg-white/[0.02] border border-white/[0.06]">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Zap className="h-4 w-4 text-[#17c3ce]" />
+                    <span className="text-xs text-white/50">Tokens</span>
+                  </div>
+                  <div className="text-2xl font-bold text-white">{formatNumber(tokenStats.totalTokens)}</div>
+                  <div className="flex items-center gap-1 mt-1">
+                    <ArrowUpRight className="h-3 w-3 text-[#c8fa64]" />
+                    <span className="text-[10px] text-[#c8fa64]">+{formatNumber(todayTokens)} heute</span>
+                  </div>
+                </div>
+                <div className="p-4 rounded-xl bg-white/[0.02] border border-white/[0.06]">
+                  <div className="flex items-center gap-2 mb-2">
+                    <DollarSign className="h-4 w-4 text-[#c8fa64]" />
+                    <span className="text-xs text-white/50">Kosten</span>
+                  </div>
+                  <div className="text-2xl font-bold text-white">{formatCurrency(tokenStats.costEstimate)}</div>
+                  <div className="flex items-center gap-1 mt-1">
+                    <ArrowUpRight className="h-3 w-3 text-[#c8fa64]" />
+                    <span className="text-[10px] text-[#c8fa64]">+{formatCurrency(estimatePeriodCost(tokenStats.todayUsage.inputTokens, tokenStats.todayUsage.outputTokens))} heute</span>
+                  </div>
+                </div>
+                <div className="p-4 rounded-xl bg-white/[0.02] border border-white/[0.06]">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Activity className="h-4 w-4 text-white/60" />
+                    <span className="text-xs text-white/50">Calls</span>
+                  </div>
+                  <div className="text-2xl font-bold text-white">{formatNumber(tokenStats.totalCalls)}</div>
+                  <div className="flex items-center gap-1 mt-1">
+                    <ArrowUpRight className="h-3 w-3 text-[#c8fa64]" />
+                    <span className="text-[10px] text-[#c8fa64]">+{formatNumber(tokenStats.todayUsage.calls)} heute</span>
+                  </div>
+                </div>
               </div>
 
-              {/* Usage Trend and Efficiency Metrics */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <TrendingUp className="h-5 w-5 text-blue-600" />
-                      Nutzungseffizienz
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-4">
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm text-gray-600">Durchschn. Tokens pro Aufruf</span>
-                        <span className="font-semibold">{Math.round(tokenStats.totalTokens / tokenStats.totalCalls)}</span>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm text-gray-600">Kosten pro Aufruf</span>
-                        <span className="font-semibold">{formatCurrency(tokenStats.costEstimate / tokenStats.totalCalls)}</span>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm text-gray-600">Eingabe/Ausgabe-Verhältnis</span>
-                        <span className="font-semibold">{(tokenStats.totalInputTokens / tokenStats.totalOutputTokens).toFixed(2)}</span>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <Clock className="h-5 w-5 text-green-600" />
-                      Aktuelle Leistung
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-4">
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm text-gray-600">Heutige Nutzung</span>
-                        <Badge variant="outline" className="text-blue-600 border-blue-200">
-                          {formatNumber(tokenStats.todayUsage.inputTokens + tokenStats.todayUsage.outputTokens)} Tokens
-                        </Badge>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm text-gray-600">Diese Woche</span>
-                        <Badge variant="outline" className="text-green-600 border-green-200">
-                          {formatNumber(tokenStats.weeklyUsage.inputTokens + tokenStats.weeklyUsage.outputTokens)} Tokens
-                        </Badge>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm text-gray-600">Dieser Monat</span>
-                        <Badge variant="outline" className="text-purple-600 border-purple-200">
-                          {formatNumber(tokenStats.monthlyUsage.inputTokens + tokenStats.monthlyUsage.outputTokens)} Tokens
-                        </Badge>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
+              {/* Efficiency & Performance */}
+              <div className="grid grid-cols-2 gap-3">
+                <div className="p-4 rounded-xl bg-white/[0.02] border border-white/[0.06]">
+                  <div className="flex items-center gap-2 mb-3">
+                    <TrendingUp className="h-4 w-4 text-[#17c3ce]" />
+                    <span className="text-sm font-medium text-white/80">Effizienz</span>
+                  </div>
+                  <div className="space-y-3">
+                    <div className="flex justify-between"><span className="text-xs text-white/50">Ø Tokens/Call</span><span className="text-sm font-semibold text-white">{avgTokensPerCall}</span></div>
+                    <div className="flex justify-between"><span className="text-xs text-white/50">Kosten/Call</span><span className="text-sm font-semibold text-white">{formatCurrency(costPerCall)}</span></div>
+                    <div className="flex justify-between"><span className="text-xs text-white/50">I/O Ratio</span><span className="text-sm font-semibold text-white">{inputOutputRatio}:1</span></div>
+                  </div>
+                </div>
+                <div className="p-4 rounded-xl bg-white/[0.02] border border-white/[0.06]">
+                  <div className="flex items-center gap-2 mb-3">
+                    <Clock className="h-4 w-4 text-[#c8fa64]" />
+                    <span className="text-sm font-medium text-white/80">Zeitraum</span>
+                  </div>
+                  <div className="space-y-3">
+                    <div className="flex justify-between"><span className="text-xs text-white/50">Heute</span><span className="text-sm font-semibold text-[#17c3ce]">{formatNumber(todayTokens)}</span></div>
+                    <div className="flex justify-between"><span className="text-xs text-white/50">Woche</span><span className="text-sm font-semibold text-[#c8fa64]">{formatNumber(weekTokens)}</span></div>
+                    <div className="flex justify-between"><span className="text-xs text-white/50">Monat</span><span className="text-sm font-semibold text-white">{formatNumber(monthTokens)}</span></div>
+                  </div>
+                </div>
               </div>
 
-              <Tabs defaultValue="overview" className="space-y-6">
-                <TabsList className="grid w-full grid-cols-2">
-                  <TabsTrigger value="overview">Nutzungsübersicht</TabsTrigger>
-                  <TabsTrigger value="activity">Letzte Aktivitäten</TabsTrigger>
+              {/* Tabs - Dark */}
+              <Tabs defaultValue="overview" className="space-y-4">
+                <TabsList className="grid w-full grid-cols-2 bg-white/[0.02] border border-white/[0.06] p-1 rounded-lg">
+                  <TabsTrigger value="overview" className="data-[state=active]:bg-white/[0.08] data-[state=active]:text-white text-white/50 text-xs rounded-md">Übersicht</TabsTrigger>
+                  <TabsTrigger value="activity" className="data-[state=active]:bg-white/[0.08] data-[state=active]:text-white text-white/50 text-xs rounded-md">Aktivitäten</TabsTrigger>
                 </TabsList>
 
-                <TabsContent value="overview" className="space-y-6">
-                  {/* Usage Comparison Chart */}
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="flex items-center gap-2">
-                        <BarChart3 className="h-5 w-5 text-blue-600" />
-                        Nutzungsvergleich
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="h-80">
+                <TabsContent value="overview" className="space-y-4">
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="p-4 rounded-xl bg-white/[0.02] border border-white/[0.06]">
+                      <div className="flex items-center gap-2 mb-3">
+                        <BarChart3 className="h-4 w-4 text-white/50" />
+                        <span className="text-sm font-medium text-white/80">Vergleich</span>
+                      </div>
+                      <div className="h-48">
                         <ResponsiveContainer width="100%" height="100%">
                           <BarChart data={getUsageComparisonData()}>
-                            <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                            <XAxis dataKey="period" stroke="#666" fontSize={12} />
-                            <YAxis stroke="#666" fontSize={12} />
-                            <Tooltip content={customTooltip} />
-                            <Legend />
-                            <Bar dataKey="inputTokens" fill="#3b82f6" name="Eingabe-Tokens" radius={[2, 2, 0, 0]} />
-                            <Bar dataKey="outputTokens" fill="#10b981" name="Ausgabe-Tokens" radius={[2, 2, 0, 0]} />
+                            <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
+                            <XAxis dataKey="period" stroke="rgba(255,255,255,0.3)" fontSize={10} />
+                            <YAxis stroke="rgba(255,255,255,0.3)" fontSize={10} />
+                            <Tooltip contentStyle={{ backgroundColor: '#0a1628', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px' }} />
+                            <Bar dataKey="inputTokens" fill="#17c3ce" name="Input" radius={[2, 2, 0, 0]} />
+                            <Bar dataKey="outputTokens" fill="#c8fa64" name="Output" radius={[2, 2, 0, 0]} />
                           </BarChart>
                         </ResponsiveContainer>
                       </div>
-                    </CardContent>
-                  </Card>
-
-                  {/* Token Distribution and API Calls */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <Card>
-                      <CardHeader>
-                        <CardTitle className="flex items-center gap-2">
-                          <div className="h-5 w-5 rounded-full bg-gradient-to-r from-blue-500 to-green-500"></div>
-                          Token-Verteilung
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="h-64">
-                          <ResponsiveContainer width="100%" height="100%">
-                            <PieChart>
-                              <Pie
-                                data={getTokenDistributionData()}
-                                cx="50%"
-                                cy="50%"
-                                innerRadius={60}
-                                outerRadius={100}
-                                paddingAngle={5}
-                                dataKey="value"
-                              >
-                                {getTokenDistributionData().map((entry, index) => (
-                                  <Cell key={`cell-${index}`} fill={entry.color} />
-                                ))}
-                              </Pie>
-                              <Tooltip 
-                                content={({ active, payload }) => {
-                                  if (active && payload && payload.length) {
-                                    const data = payload[0].payload;
-                                    return (
-                                      <div className="bg-white p-3 border border-gray-200 rounded-lg shadow-lg">
-                                        <p className="font-semibold text-gray-900">{data.name}</p>
-                                        <p className="text-blue-600">Tokens: {formatNumber(data.value)}</p>
-                                        <p className="text-gray-600">{data.percentage}% vom Gesamt</p>
-                                      </div>
-                                    );
-                                  }
-                                  return null;
-                                }}
-                              />
-                              <Legend 
-                                verticalAlign="bottom" 
-                                height={36}
-                                formatter={(value, entry) => (
-                                  <span style={{ color: entry.color }}>{value}</span>
-                                )}
-                              />
-                            </PieChart>
-                          </ResponsiveContainer>
-                        </div>
-                      </CardContent>
-                    </Card>
-
-                    <Card>
-                      <CardHeader>
-                        <CardTitle className="flex items-center gap-2">
-                          <Activity className="h-5 w-5 text-purple-600" />
-                          Nutzungszeitstrahl
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="h-64">
-                          <ResponsiveContainer width="100%" height="100%">
-                            <AreaChart data={getUsageComparisonData()}>
-                              <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                              <XAxis dataKey="period" stroke="#666" fontSize={12} />
-                              <YAxis stroke="#666" fontSize={12} />
-                              <Tooltip content={customTooltip} />
-                              <Area
-                                type="monotone"
-                                dataKey="calls"
-                                stroke="#8b5cf6"
-                                fill="#8b5cf6"
-                                fillOpacity={0.3}
-                                name="API-Aufrufe"
-                              />
-                            </AreaChart>
-                          </ResponsiveContainer>
-                        </div>
-                      </CardContent>
-                    </Card>
+                    </div>
+                    <div className="p-4 rounded-xl bg-white/[0.02] border border-white/[0.06]">
+                      <div className="flex items-center gap-2 mb-3">
+                        <Activity className="h-4 w-4 text-white/50" />
+                        <span className="text-sm font-medium text-white/80">Calls</span>
+                      </div>
+                      <div className="h-48">
+                        <ResponsiveContainer width="100%" height="100%">
+                          <AreaChart data={getUsageComparisonData()}>
+                            <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
+                            <XAxis dataKey="period" stroke="rgba(255,255,255,0.3)" fontSize={10} />
+                            <YAxis stroke="rgba(255,255,255,0.3)" fontSize={10} />
+                            <Tooltip contentStyle={{ backgroundColor: '#0a1628', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px' }} />
+                            <Area type="monotone" dataKey="calls" stroke="#17c3ce" fill="#17c3ce" fillOpacity={0.2} name="Calls" />
+                          </AreaChart>
+                        </ResponsiveContainer>
+                      </div>
+                    </div>
                   </div>
                 </TabsContent>
 
-                <TabsContent value="activity" className="space-y-6">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="flex items-center gap-2">
-                        <Clock className="h-5 w-5 text-green-600" />
-                        Letzte Token-Nutzungsaktivitäten
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <ScrollArea className="h-96">
-                        <div className="space-y-4">
-                          {tokenStats.recentCalls && tokenStats.recentCalls.length > 0 ? (
-                            tokenStats.recentCalls.map((usage, index) => (
-                              <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg border">
-                                <div className="flex items-center space-x-3">
-                                  <div className={`p-2 rounded-lg ${getOperationTypeColor(usage.apiCallType)}`}>
-                                    <Activity className="h-4 w-4" />
-                                  </div>
-                                  <div>
-                                    <p className="font-medium text-gray-900">{getOperationTypeLabel(usage.apiCallType)}</p>
-                                    <p className="text-sm text-gray-600">{formatDate(usage.createdAt)}</p>
-                                  </div>
-                                </div>
-                                <div className="text-right">
-                                  <div className="flex items-center space-x-4">
-                                    <div className="text-sm">
-                                      <span className="text-blue-600 font-medium">{formatNumber(usage.inputTokens)}</span>
-                                      <span className="text-gray-500 mx-1">+</span>
-                                      <span className="text-green-600 font-medium">{formatNumber(usage.outputTokens)}</span>
-                                    </div>
-                                    <div className="text-right">
-                                      <p className="font-semibold text-gray-900">{formatNumber(usage.totalTokens)} Tokens</p>
-                                      <Badge variant="outline" className={getOperationTypeColor(usage.apiCallType).replace('bg-', 'border-').replace('-100', '-200')}>
-                                        {usage.modelName}
-                                      </Badge>
-                                    </div>
-                                  </div>
+                <TabsContent value="activity" className="space-y-4">
+                  <div className="p-4 rounded-xl bg-white/[0.02] border border-white/[0.06]">
+                    <div className="flex items-center gap-2 mb-3">
+                      <Clock className="h-4 w-4 text-white/50" />
+                      <span className="text-sm font-medium text-white/80">Letzte Aktivitäten</span>
+                    </div>
+                    <ScrollArea className="h-64">
+                      <div className="space-y-2">
+                        {tokenStats.recentCalls && tokenStats.recentCalls.length > 0 ? (
+                          tokenStats.recentCalls.map((usage, index) => (
+                            <div key={index} className="flex items-center justify-between p-2.5 rounded-lg bg-white/[0.02] border border-white/[0.04]">
+                              <div className="flex items-center gap-2">
+                                <div className={`w-1.5 h-1.5 rounded-full ${usage.apiCallType === 'search' ? 'bg-blue-400' : usage.apiCallType === 'analyze' ? 'bg-green-400' : 'bg-purple-400'}`} />
+                                <div>
+                                  <p className="text-xs font-medium text-white/80">{getOperationTypeLabel(usage.apiCallType)}</p>
+                                  <p className="text-[10px] text-white/40">{formatDate(usage.createdAt)}</p>
                                 </div>
                               </div>
-                            ))
-                          ) : (
-                            <div className="text-center py-8 text-gray-500">
-                              <Activity className="h-12 w-12 mx-auto mb-2 opacity-50" />
-                              <p>Keine aktuellen Aktivitäten vorhanden</p>
+                              <div className="text-right">
+                                <p className="text-xs font-semibold text-white/80">{formatNumber(usage.totalTokens)}</p>
+                                <p className="text-[10px] text-white/40">{usage.modelName}</p>
+                              </div>
                             </div>
-                          )}
-                        </div>
-                      </ScrollArea>
-                    </CardContent>
-                  </Card>
+                          ))
+                        ) : (
+                          <div className="text-center py-8">
+                            <Activity className="h-8 w-8 mx-auto mb-2 text-white/20" />
+                            <p className="text-xs text-white/40">Keine Aktivitäten</p>
+                          </div>
+                        )}
+                      </div>
+                    </ScrollArea>
+                  </div>
                 </TabsContent>
               </Tabs>
             </div>

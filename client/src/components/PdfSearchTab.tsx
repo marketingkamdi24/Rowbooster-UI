@@ -717,62 +717,60 @@ export default function PdfSearchTab({
         <Card>
           <CardContent className="p-6">
             <div className="space-y-6">
-              {/* Header with Info */}
+              {/* Header with Info - Dark Theme */}
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 bg-purple-500 rounded-lg flex items-center justify-center">
-                    <FileText className="h-4 w-4 text-white" />
+                  <div className="w-10 h-10 bg-purple-500/20 rounded-xl flex items-center justify-center">
+                    <FileText className="h-5 w-5 text-purple-400" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-900">PDF-Dokumentverarbeitung</h3>
-                    <p className="text-sm text-gray-600">Bis zu {maxFiles} PDF-Dateien hochladen und Produktspezifikationen mit KI extrahieren</p>
+                    <h3 className="text-base font-semibold text-white/90">PDF-Dokumentverarbeitung</h3>
+                    <p className="text-sm text-white/50">Bis zu {maxFiles} PDF-Dateien hochladen und Produktspezifikationen mit KI extrahieren</p>
                   </div>
                 </div>
                 {pdfs.length > 0 && (
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
+                  <button 
                     onClick={handleClearAll}
-                    className="text-red-600 hover:text-red-700"
+                    className="text-xs font-medium text-red-400 hover:text-red-300 bg-red-500/10 hover:bg-red-500/20 px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1"
                   >
-                    <Trash2 className="h-4 w-4 mr-1" />
+                    <Trash2 className="h-3.5 w-3.5" />
                     Alle löschen
-                  </Button>
+                  </button>
                 )}
               </div>
 
-            {/* File Upload Section */}
+            {/* File Upload Section - Dark Theme */}
             <div className="space-y-3">
               <div className="flex items-center gap-2">
-                <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center text-sm font-medium text-blue-600">1</div>
-                <Label className="text-sm font-medium text-gray-700">PDF-Dateien hochladen ({pdfs.length}/{maxFiles})</Label>
+                <div className="w-6 h-6 bg-[color:var(--rb-cyan)]/20 rounded-full flex items-center justify-center text-xs font-semibold text-[color:var(--rb-cyan)]">1</div>
+                <Label className="text-sm font-medium text-white/70">PDF-Dateien hochladen ({pdfs.length}/{maxFiles})</Label>
               </div>
               
-              {/* Add Files Button */}
+              {/* Add Files Button - Dark Theme */}
               {canAddMore && (
                 <div 
-                  className="flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-lg p-6 bg-gray-50 transition-colors hover:border-purple-400 cursor-pointer"
+                  className="flex flex-col items-center justify-center border-2 border-dashed border-white/20 rounded-xl p-8 bg-white/[0.02] transition-all hover:border-purple-400/50 hover:bg-white/[0.04] cursor-pointer"
                   onClick={() => fileInputRef.current?.click()}
                 >
-                  <Plus className="h-10 w-10 text-gray-400 mb-2" />
-                  <p className="text-sm text-gray-600 mb-1">
+                  <Plus className="h-10 w-10 text-white/30 mb-2" />
+                  <p className="text-sm text-white/60 mb-1">
                     {pdfs.length === 0 ? 'Klicken Sie, um PDF-Dateien auszuwählen' : 'Weitere PDF-Datei hinzufügen'}
                   </p>
-                  <p className="text-xs text-gray-500">Nur PDF-Dateien werden unterstützt (max. 100MB je Datei)</p>
+                  <p className="text-xs text-white/40">Nur PDF-Dateien werden unterstützt (max. 100MB je Datei)</p>
                 </div>
               )}
 
-              {/* List of uploaded PDFs */}
+              {/* List of uploaded PDFs - Dark Theme */}
               {pdfs.length > 0 && (
                 <div className="space-y-2">
                   {pdfs.map((pdf) => (
-                    <div key={pdf.id} className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                    <div key={pdf.id} className="p-3 bg-white/[0.04] border border-white/[0.08] rounded-lg">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
-                          <FileText className={`h-6 w-6 ${pdf.error ? 'text-red-600' : 'text-blue-600'}`} />
+                          <FileText className={`h-5 w-5 ${pdf.error ? 'text-red-400' : 'text-purple-400'}`} />
                           <div>
-                            <p className="text-sm font-medium text-blue-900">{pdf.file.name}</p>
-                            <p className="text-xs text-blue-700">
+                            <p className="text-sm font-medium text-white/90">{pdf.file.name}</p>
+                            <p className="text-xs text-white/50">
                               {(pdf.file.size / 1024 / 1024).toFixed(2)} MB
                               {pdf.pages > 0 && ` • ${pdf.pages} Seiten`}
                             </p>
@@ -780,21 +778,19 @@ export default function PdfSearchTab({
                         </div>
                         <div className="flex items-center gap-2">
                           {pdf.isProcessing && (
-                            <div className="flex items-center gap-2 text-blue-600">
+                            <div className="flex items-center gap-2 text-[color:var(--rb-cyan)]">
                               <Loader2 className="h-4 w-4 animate-spin" />
                               <span className="text-xs">Verarbeitung...</span>
                             </div>
                           )}
                           {pdf.error && (
-                            <Button
-                              variant="outline"
-                              size="sm"
+                            <button
                               onClick={() => retryPDF(pdf.id)}
-                              className="text-blue-600 hover:text-blue-700 h-6 px-2"
+                              className="text-xs font-medium text-[color:var(--rb-cyan)] bg-[color:var(--rb-cyan)]/10 hover:bg-[color:var(--rb-cyan)]/20 px-2 py-1 rounded transition-colors flex items-center gap-1"
                             >
-                              <RefreshCw className="h-3 w-3 mr-1" />
+                              <RefreshCw className="h-3 w-3" />
                               Wiederholen
-                            </Button>
+                            </button>
                           )}
                           <Button
                             variant="outline"
@@ -963,16 +959,16 @@ export default function PdfSearchTab({
             {hasValidPDFs && (
               <div className="space-y-3">
                 <div className="flex items-center gap-2">
-                  <div className="w-6 h-6 bg-purple-100 rounded-full flex items-center justify-center text-sm font-medium text-purple-600">3</div>
-                  <Label className="text-sm font-medium text-gray-700">KI-Datenextraktion</Label>
+                  <div className="w-6 h-6 bg-purple-500/20 rounded-full flex items-center justify-center text-sm font-medium text-purple-400">3</div>
+                  <Label className="text-sm font-medium text-white/70">KI-Datenextraktion</Label>
                 </div>
                 
-                {/* Property Table Selector for Manual Mode */}
-                <div className="flex items-center space-x-3 px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg">
+                {/* Property Table Selector for Manual Mode - Dark Theme */}
+                <div className="flex items-center space-x-3 px-3 py-2 bg-white/[0.02] border border-white/[0.08] rounded-xl">
                   <div className="flex items-center gap-2">
                     <div className="flex items-center gap-1">
-                      <Table2 className="h-3 w-3 text-blue-600" />
-                      <span className="text-xs font-medium text-blue-700">Tabelle:</span>
+                      <Table2 className="h-3 w-3 text-[color:var(--rb-cyan)]" />
+                      <span className="text-xs font-medium text-white/60">Tabelle:</span>
                     </div>
                     <Select
                       value={currentDefaultTable?.id?.toString() || ''}
@@ -983,12 +979,12 @@ export default function PdfSearchTab({
                         }
                       }}
                     >
-                      <SelectTrigger className="h-6 w-[120px] text-xs bg-white border-gray-300">
+                      <SelectTrigger className="h-6 w-[120px] text-xs bg-white/[0.04] border-white/[0.12] text-white/80">
                         <SelectValue placeholder="Tabelle wählen" />
                       </SelectTrigger>
-                      <SelectContent>
+                      <SelectContent className="bg-[#0c2443] border-white/10">
                         {propertyTables.map((table) => (
-                          <SelectItem key={table.id} value={table.id.toString()}>
+                          <SelectItem key={table.id} value={table.id.toString()} className="text-white/80 focus:bg-white/10">
                             {table.name}
                           </SelectItem>
                         ))}
@@ -998,18 +994,18 @@ export default function PdfSearchTab({
                 </div>
                 
                 <div className="flex justify-center pt-2">
-                  <Button
+                  <button
                     onClick={handleExtractData}
                     disabled={extractDataMutation.isPending || !productName || !combinedText || isProcessing}
-                    className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white px-6 py-2"
+                    className="inline-flex items-center gap-2 px-6 py-2 bg-[color:var(--rb-cyan)] hover:bg-[color:var(--rb-cyan)]/90 text-white font-medium text-sm rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {extractDataMutation.isPending ? (
-                      <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                      <Loader2 className="h-4 w-4 animate-spin" />
                     ) : (
-                      <Upload className="h-4 w-4 mr-2" />
+                      <Upload className="h-4 w-4" />
                     )}
                     {extractDataMutation.isPending ? "Verarbeitung..." : "Daten mit KI extrahieren"}
-                  </Button>
+                  </button>
                 </div>
               </div>
             )}
@@ -1026,53 +1022,53 @@ export default function PdfSearchTab({
         </CardContent>
       </Card>
       ) : (
-        /* File Mode - Batch PDF Processing */
+        /* File Mode - Batch PDF Processing - Dark Theme */
         <div className="space-y-4">
-          {/* File Format Instructions Card for PDF Tab */}
-          <div className="bg-gradient-to-r from-orange-50 to-amber-50 border border-orange-200 rounded-lg p-4">
+          {/* File Format Instructions Card for PDF Tab - Dark Theme */}
+          <div className="bg-white/[0.02] border border-white/[0.06] rounded-xl p-4">
             <div className="flex items-start gap-3">
               <div className="flex-shrink-0 w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center">
                 <FileText className="h-4 w-4 text-white" />
               </div>
               <div className="flex-1 min-w-0">
-                <h4 className="text-sm font-semibold text-orange-900 mb-2">PDF Batch-Verarbeitung - Anleitung</h4>
+                <h4 className="text-sm font-semibold text-orange-400 mb-2">PDF Batch-Verarbeitung - Anleitung</h4>
                 
                 {/* Two-column layout for Excel and PDF instructions */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                   {/* Excel Format Section */}
-                  <div className="bg-white/70 rounded-lg p-3 border border-orange-100">
+                  <div className="bg-white/[0.03] rounded-lg p-3 border border-white/[0.08]">
                     <div className="flex items-center gap-2 mb-2">
-                      <FileSpreadsheet className="h-4 w-4 text-orange-600" />
-                      <span className="text-xs font-semibold text-orange-800">1. Excel-Datei Format</span>
+                      <FileSpreadsheet className="h-4 w-4 text-orange-400" />
+                      <span className="text-xs font-semibold text-orange-400">1. Excel-Datei Format</span>
                     </div>
                     <div className="space-y-2">
                       {/* Required Column */}
                       <div className="flex items-center gap-2">
                         <div className="w-2 h-2 bg-red-500 rounded-full"></div>
-                        <span className="text-xs text-gray-700">Erforderlich:</span>
-                        <span className="bg-red-50 rounded px-1.5 py-0.5 font-mono text-xs text-red-700">Produktname</span>
+                        <span className="text-xs text-white/70">Erforderlich:</span>
+                        <span className="bg-red-500/10 rounded px-1.5 py-0.5 font-mono text-xs text-red-400">Produktname</span>
                       </div>
                       {/* Optional Columns */}
                       <div className="flex items-center gap-2 flex-wrap">
-                        <div className="w-2 h-2 bg-gray-400 rounded-full"></div>
-                        <span className="text-xs text-gray-700">Optional:</span>
-                        <span className="bg-gray-100 rounded px-1.5 py-0.5 font-mono text-xs text-gray-600">Artikelnummer</span>
-                        <span className="bg-gray-100 rounded px-1.5 py-0.5 font-mono text-xs text-gray-600">URL</span>
+                        <div className="w-2 h-2 bg-white/40 rounded-full"></div>
+                        <span className="text-xs text-white/70">Optional:</span>
+                        <span className="bg-white/[0.04] rounded px-1.5 py-0.5 font-mono text-xs text-white/60">Artikelnummer</span>
+                        <span className="bg-white/[0.04] rounded px-1.5 py-0.5 font-mono text-xs text-white/60">URL</span>
                       </div>
                     </div>
                     {/* Mini Example Table */}
-                    <div className="mt-2 bg-gray-50 rounded border border-gray-200 overflow-hidden">
+                    <div className="mt-2 bg-white/[0.02] rounded border border-white/[0.08] overflow-hidden">
                       <table className="w-full text-xs">
-                        <thead className="bg-gray-100">
+                        <thead className="bg-white/[0.03]">
                           <tr>
-                            <th className="px-1.5 py-0.5 text-left text-gray-600 border-r border-gray-200">Artikelnr.</th>
-                            <th className="px-1.5 py-0.5 text-left text-red-600">Produktname *</th>
+                            <th className="px-1.5 py-0.5 text-left text-white/50 border-r border-white/[0.06]">Artikelnr.</th>
+                            <th className="px-1.5 py-0.5 text-left text-red-400">Produktname *</th>
                           </tr>
                         </thead>
                         <tbody>
-                          <tr className="border-t border-gray-100">
-                            <td className="px-1.5 py-0.5 text-gray-600 border-r border-gray-200">12345</td>
-                            <td className="px-1.5 py-0.5 text-gray-700">Bosch GSR 18V</td>
+                          <tr className="border-t border-white/[0.04]">
+                            <td className="px-1.5 py-0.5 text-white/50 border-r border-white/[0.06]">12345</td>
+                            <td className="px-1.5 py-0.5 text-white/80">Bosch GSR 18V</td>
                           </tr>
                         </tbody>
                       </table>
@@ -1080,55 +1076,54 @@ export default function PdfSearchTab({
                   </div>
                   
                   {/* PDF Naming Convention Section */}
-                  <div className="bg-white/70 rounded-lg p-3 border border-orange-100">
+                  <div className="bg-white/[0.03] rounded-lg p-3 border border-white/[0.08]">
                     <div className="flex items-center gap-2 mb-2">
-                      <FolderOpen className="h-4 w-4 text-orange-600" />
-                      <span className="text-xs font-semibold text-orange-800">2. PDF-Datei Benennung</span>
+                      <FolderOpen className="h-4 w-4 text-orange-400" />
+                      <span className="text-xs font-semibold text-orange-400">2. PDF-Datei Benennung</span>
                     </div>
                     <div className="space-y-2">
-                      <p className="text-xs text-gray-700">
-                        PDF-Dateien müssen mit der <span className="font-semibold text-orange-700">Artikelnummer beginnen</span>:
+                      <p className="text-xs text-white/70">
+                        PDF-Dateien müssen mit der <span className="font-semibold text-orange-400">Artikelnummer beginnen</span>:
                       </p>
                       {/* Visual Examples of PDF naming */}
-                      <div className="space-y-1.5 bg-gray-50 rounded-lg p-2 border border-gray-200">
+                      <div className="space-y-1.5 bg-white/[0.02] rounded-lg p-2 border border-white/[0.08]">
                         <div className="flex items-center gap-2">
-                          <FileText className="h-4 w-4 text-red-500 flex-shrink-0" />
-                          <code className="text-xs bg-green-100 text-green-800 px-1.5 py-0.5 rounded font-mono">
-                            <span className="text-green-600 font-bold">12345</span>-datasheet.pdf
+                          <FileText className="h-4 w-4 text-red-400 flex-shrink-0" />
+                          <code className="text-xs bg-[color:var(--rb-lime)]/10 text-[color:var(--rb-lime)] px-1.5 py-0.5 rounded font-mono">
+                            <span className="text-[color:var(--rb-lime)] font-bold">12345</span>-datasheet.pdf
                           </code>
-                          <span className="text-xs text-green-600">✓</span>
+                          <span className="text-xs text-[color:var(--rb-lime)]">✓</span>
                         </div>
                         <div className="flex items-center gap-2">
-                          <FileText className="h-4 w-4 text-red-500 flex-shrink-0" />
-                          <code className="text-xs bg-green-100 text-green-800 px-1.5 py-0.5 rounded font-mono">
-                            <span className="text-green-600 font-bold">12345</span>_specs.pdf
+                          <FileText className="h-4 w-4 text-red-400 flex-shrink-0" />
+                          <code className="text-xs bg-[color:var(--rb-lime)]/10 text-[color:var(--rb-lime)] px-1.5 py-0.5 rounded font-mono">
+                            <span className="text-[color:var(--rb-lime)] font-bold">12345</span>_specs.pdf
                           </code>
-                          <span className="text-xs text-green-600">✓</span>
+                          <span className="text-xs text-[color:var(--rb-lime)]">✓</span>
                         </div>
                         <div className="flex items-center gap-2">
-                          <FileText className="h-4 w-4 text-red-500 flex-shrink-0" />
-                          <code className="text-xs bg-green-100 text-green-800 px-1.5 py-0.5 rounded font-mono">
-                            <span className="text-green-600 font-bold">12345</span>.pdf
+                          <FileText className="h-4 w-4 text-red-400 flex-shrink-0" />
+                          <code className="text-xs bg-[color:var(--rb-lime)]/10 text-[color:var(--rb-lime)] px-1.5 py-0.5 rounded font-mono">
+                            <span className="text-[color:var(--rb-lime)] font-bold">12345</span>.pdf
                           </code>
-                          <span className="text-xs text-green-600">✓</span>
+                          <span className="text-xs text-[color:var(--rb-lime)]">✓</span>
                         </div>
                       </div>
-                      <p className="text-xs text-gray-500 italic">
+                      <p className="text-xs text-white/50 italic">
                         💡 Mehrere PDFs pro Artikel werden automatisch zusammengeführt
                       </p>
                     </div>
                   </div>
                 </div>
                 
-                <p className="text-xs text-orange-700 mt-3">
+                <p className="text-xs text-orange-400 mt-3">
                   <span className="font-medium">Unterstützte Formate:</span> Excel (.xlsx, .xls, .csv) + PDF-Ordner
                 </p>
               </div>
             </div>
           </div>
           
-          <Card>
-            <CardContent className="p-6">
+          <div className="bg-white/[0.02] rounded-xl border border-white/[0.06] p-6">
               <div className="space-y-6">
                 {/* Header */}
                 <div className="flex items-center gap-3">
@@ -1136,32 +1131,32 @@ export default function PdfSearchTab({
                     <FileText className="h-4 w-4 text-white" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-900">Batch PDF-Verarbeitung</h3>
-                    <p className="text-sm text-gray-600">Mehrere PDFs gleichzeitig basierend auf Excel-Datei verarbeiten</p>
+                    <h3 className="text-lg font-semibold text-white">Batch PDF-Verarbeitung</h3>
+                    <p className="text-sm text-white/60">Mehrere PDFs gleichzeitig basierend auf Excel-Datei verarbeiten</p>
                   </div>
                 </div>
 
                 {/* Step 1: Excel Upload */}
                 <div className="space-y-3">
                   <div className="flex items-center gap-2">
-                    <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center text-sm font-medium text-blue-600">1</div>
-                    <Label className="text-sm font-medium text-gray-700">Excel-Datei mit Produktliste hochladen</Label>
+                    <div className="w-6 h-6 bg-[color:var(--rb-lime)]/20 rounded-full flex items-center justify-center text-sm font-medium text-[color:var(--rb-lime)]">1</div>
+                    <Label className="text-sm font-medium text-white/80">Excel-Datei mit Produktliste hochladen</Label>
                   </div>
                   
                   <div
-                    className="flex flex-col items-center justify-center border-2 border-dashed border-gray-300 rounded-lg p-6 bg-gray-50 transition-colors hover:border-blue-400 cursor-pointer"
+                    className="flex flex-col items-center justify-center border-2 border-dashed border-white/[0.1] rounded-lg p-6 bg-white/[0.02] transition-colors hover:border-[color:var(--rb-cyan)]/30 hover:bg-[color:var(--rb-cyan)]/5 cursor-pointer"
                     onClick={() => excelInputRef.current?.click()}
                   >
-                    <FileSpreadsheet className="h-10 w-10 text-gray-400 mb-2" />
-                    <p className="text-sm text-gray-600 mb-1">
+                    <FileSpreadsheet className="h-10 w-10 text-white/40 mb-2" />
+                    <p className="text-sm text-white/70 mb-1">
                       {excelFile ? excelFile.name : 'Klicken Sie, um Excel-Datei auszuwählen'}
                     </p>
-                    <p className="text-xs text-gray-500">Excel-Datei mit Spalten "Artikelnummer" und "Produktname"</p>
+                    <p className="text-xs text-white/50">Excel-Datei mit Spalten "Artikelnummer" und "Produktname"</p>
                   </div>
                   
                   {excelData.length > 0 && (
-                    <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
-                      <p className="text-sm text-green-700">{excelData.length} Produkte aus Excel-Datei geladen</p>
+                    <div className="p-3 bg-[color:var(--rb-lime)]/10 border border-[color:var(--rb-lime)]/30 rounded-lg">
+                      <p className="text-sm text-[color:var(--rb-lime)]">{excelData.length} Produkte aus Excel-Datei geladen</p>
                     </div>
                   )}
                 </div>
@@ -1212,11 +1207,11 @@ export default function PdfSearchTab({
                         />
                       </div>
                       
-                      {/* Property Table Selector */}
-                      <div className="flex items-center gap-2 pl-3 ml-2 border-l border-gray-300">
+                      {/* Property Table Selector - Dark Theme */}
+                      <div className="flex items-center gap-2 pl-3 ml-2 border-l border-white/20">
                         <div className="flex items-center gap-1">
-                          <Table2 className="h-3 w-3 text-blue-600" />
-                          <span className="text-xs font-medium text-blue-700">Tabelle:</span>
+                          <Table2 className="h-3 w-3 text-[color:var(--rb-cyan)]" />
+                          <span className="text-xs font-medium text-white/60">Tabelle:</span>
                         </div>
                         <Select
                           value={currentDefaultTable?.id?.toString() || ''}
@@ -1227,12 +1222,12 @@ export default function PdfSearchTab({
                             }
                           }}
                         >
-                          <SelectTrigger className="h-6 w-[120px] text-xs bg-white border-gray-300">
+                          <SelectTrigger className="h-6 w-[120px] text-xs bg-white/[0.04] border-white/[0.12] text-white/80">
                             <SelectValue placeholder="Tabelle wählen" />
                           </SelectTrigger>
-                          <SelectContent>
+                          <SelectContent className="bg-[#0c2443] border-white/10">
                             {propertyTables.map((table) => (
-                              <SelectItem key={table.id} value={table.id.toString()}>
+                              <SelectItem key={table.id} value={table.id.toString()} className="text-white/80 focus:bg-white/10">
                                 {table.name}
                               </SelectItem>
                             ))}
@@ -1241,23 +1236,22 @@ export default function PdfSearchTab({
                       </div>
                     </div>
                     
-                    <Button
+                    <button
                       onClick={handleBatchExtraction}
                       disabled={isProcessingBatch}
-                      className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white"
+                      className="w-full inline-flex items-center justify-center gap-2 px-4 py-2 bg-[color:var(--rb-cyan)] hover:bg-[color:var(--rb-cyan)]/90 text-white font-medium text-sm rounded-lg transition-colors disabled:opacity-50"
                     >
                       {isProcessingBatch ? (
-                        <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                        <Loader2 className="h-4 w-4 animate-spin" />
                       ) : (
-                        <Upload className="h-4 w-4 mr-2" />
+                        <Upload className="h-4 w-4" />
                       )}
                       {isProcessingBatch ? "Verarbeitung läuft..." : "Batch-Extraktion starten"}
-                    </Button>
+                    </button>
                   </div>
                 )}
               </div>
-            </CardContent>
-          </Card>
+          </div>
 
           {/* Processing Status Table - Moved to Suchergebnisse section */}
           {/* The processing status is now displayed in the Suchergebnisse section through PdfBatchResultsTable */}

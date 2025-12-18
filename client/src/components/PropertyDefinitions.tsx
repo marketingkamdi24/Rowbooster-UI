@@ -142,12 +142,12 @@ export default function PropertyDefinitions({ properties }: PropertyDefinitionsP
       <CardContent className="p-4">
         <div className="overflow-x-auto">
           <Table>
-            <TableHeader className="bg-gray-50">
-              <TableRow>
-                <TableHead className="w-1/4">Eigenschaftsname</TableHead>
-                <TableHead className="w-2/5">Beschreibung</TableHead>
-                <TableHead className="w-1/4">Erwartetes Format</TableHead>
-                <TableHead className="w-1/12">Aktionen</TableHead>
+            <TableHeader className="bg-white/[0.02]">
+              <TableRow className="border-white/[0.06]">
+                <TableHead className="w-1/4 text-white/60">Eigenschaftsname</TableHead>
+                <TableHead className="w-2/5 text-white/60">Beschreibung</TableHead>
+                <TableHead className="w-1/4 text-white/60">Erwartetes Format</TableHead>
+                <TableHead className="w-1/12 text-white/60">Aktionen</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>

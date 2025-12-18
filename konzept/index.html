@@ -53,9 +53,32 @@
             -moz-osx-font-smoothing: grayscale;
         }
 
+        /* Smooth Scroll Container for buttery animations */
+        @supports (scroll-behavior: smooth) {
+            html {
+                scroll-behavior: smooth;
+            }
+        }
+
         body {
             font-family: var(--font-body);
             line-height: 1.6;
+        }
+
+        /* Initial hidden state for animated elements - prevents flash */
+        .hero-headline,
+        .hero-description,
+        .hero-cta,
+        .feature-headline,
+        .feature-description,
+        .datenchaos-content,
+        .solution-content,
+        .screenshot-card-eff,
+        .testimonials-headline,
+        .testimonial-card,
+        .testimonials-cta,
+        .kontakt-headline {
+            opacity: 0;
         }
 
         /* ========================================
@@ -302,7 +325,6 @@
             <a href="#preise">Preise</a>
             <a href="#kontakt">Kontakt</a>
             <a href="#login">Login</a>
-            <a href="#demo" class="navbar-cta">Demo anfragen</a>
         </div>
 
         <button class="burger-menu" aria-label="Menü öffnen" aria-expanded="false">
@@ -318,7 +340,6 @@
         <a href="#preise">Preise</a>
         <a href="#kontakt">Kontakt</a>
         <a href="#login">Login</a>
-        <a href="#demo">Demo anfragen</a>
     </div>
 
     <!-- Fixed Grid Background -->
@@ -348,7 +369,7 @@
 
             /* Hero Section Styles */
             .hero-wrapper {
-                background: var(--color-primary);
+                background: linear-gradient(180deg, var(--color-primary) 0%, #050d18 100%);
                 position: relative;
             }
 
@@ -357,7 +378,7 @@
                 top: 0;
                 right: 0;
                 width: 50%;
-                height: 100%;
+                height: calc(100% - 280px);
                 background: linear-gradient(180deg, #0a1a2e 0%, #050d18 100%);
                 clip-path: polygon(30% 0, 100% 0, 100% 100%, 0% 100%);
                 z-index: 0;
@@ -371,7 +392,7 @@
                 max-width: 1440px;
                 margin: 0 auto;
                 position: relative;
-                min-height: 600px;
+                min-height: 800px;
                 z-index: 1;
             }
 
@@ -441,6 +462,73 @@
                 justify-content: center;
             }
 
+            .hero-screenshots-showcase {
+                position: relative;
+                z-index: 10;
+                flex-shrink: 0;
+                width: 700px;
+                height: 480px;
+                margin-right: -180px;
+            }
+
+            .hero-screenshot-card {
+                position: absolute;
+                width: 100%;
+                max-width: 540px;
+                background: linear-gradient(145deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.04) 100%);
+                border: 1px solid rgba(255, 255, 255, 0.15);
+                border-radius: 16px;
+                overflow: hidden;
+                box-shadow: 
+                    0 25px 50px rgba(0, 0, 0, 0.4),
+                    0 10px 20px rgba(0, 0, 0, 0.2),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+                backdrop-filter: blur(10px);
+                -webkit-backdrop-filter: blur(10px);
+                animation: floatInSpaceHero 6s ease-in-out infinite;
+            }
+
+            @keyframes floatInSpaceHero {
+                0%, 100% { transform: translateY(0px) rotate(0deg); }
+                25% { transform: translateY(-8px) rotate(0.5deg); }
+                50% { transform: translateY(-4px) rotate(0deg); }
+                75% { transform: translateY(-10px) rotate(-0.5deg); }
+            }
+
+            .hero-screenshot-card:nth-child(1) { top: 0; left: 0; z-index: 2; animation-delay: 0s; }
+            .hero-screenshot-card:nth-child(2) { top: 80px; left: 160px; z-index: 1; animation-delay: 0.4s; }
+
+            .hero-screenshot-card img {
+                width: 100%;
+                height: auto;
+                display: block;
+                border-radius: 16px;
+            }
+
+            @media (max-width: 1024px) {
+                .hero-screenshots-showcase {
+                    width: 450px;
+                    height: 350px;
+                }
+                .hero-screenshot-card {
+                    max-width: 380px;
+                }
+                .hero-screenshot-card:nth-child(2) { top: 50px; left: 100px; }
+            }
+
+            @media (max-width: 768px) {
+                .hero-screenshots-showcase {
+                    display: none;
+                }
+                .hero {
+                    flex-direction: column;
+                    text-align: center;
+                }
+                .hero-content {
+                    max-width: 100%;
+                }
+            }
+
             .decoration-dots {
                 position: absolute;
                 width: 100%;
@@ -508,9 +596,10 @@
 
             /* Feature Ordnung Section */
             .feature-ordnung {
-                background: #1a2332;
+                background: transparent;
                 padding: 80px 80px;
                 position: relative;
+                z-index: 1;
             }
 
             .feature-container {
@@ -578,15 +667,14 @@
 
             @media (max-width: 768px) {
                 .hero {
-                    flex-direction: column;
-                    text-align: center;
                     padding: 40px 24px;
-                }
-                .hero-content {
-                    max-width: 100%;
+                    min-height: auto;
                 }
                 .hero-headline {
-                    font-size: 42px;
+                    font-size: clamp(32px, 8vw, 48px);
+                }
+                .hero-description {
+                    font-size: 16px;
                 }
                 .hero-decoration {
                     margin-top: 40px;
@@ -594,14 +682,19 @@
                 .feature-ordnung {
                     padding: 40px 24px;
                 }
+                .feature-content-inner {
+                    text-align: left;
+                }
                 .feature-headline {
                     font-size: 28px;
+                    justify-content: flex-start;
                 }
                 .feature-icon {
                     font-size: 1.8em;
                 }
                 .feature-description {
                     font-size: 16px;
+                    text-align: left;
                 }
                 .hero-diagonal {
                     display: none;
@@ -612,10 +705,10 @@
         <section class="hero-wrapper">
             <div class="hero-diagonal" aria-hidden="true"></div>
             <div class="hero">
-                <div class="hero-content">
+                <div class="hero-content fade-in-section">
                     <h1 class="hero-headline">
-                        Daten 99% schneller.<br>
-                        <span class="hero-accent">Intelligenz</span> im System.
+                        <span style="white-space: nowrap;">Daten 90% schneller.</span><br>
+                        <span style="white-space: nowrap;"><span class="hero-accent">Intelligenz</span> im System.</span>
                     </h1>
                     <p class="hero-description">
                         RowBooster nutzt KI, um Daten automatisch zu sammeln, zu standardisieren und für Ihre Systeme bereitzustellen - zuverlässig, schnell und skalierbar.
@@ -626,6 +719,15 @@
                     </a>
                 </div>
 
+                <!-- Screenshots Showcase -->
+                <div class="hero-screenshots-showcase" aria-hidden="true">
+                    <div class="hero-screenshot-card">
+                        <img src="Screenshots/Datenboost.png" alt="RowBooster Datenboost Interface">
+                    </div>
+                    <div class="hero-screenshot-card">
+                        <img src="Screenshots/Hersteller.png" alt="RowBooster Hersteller Interface">
+                    </div>
+                </div>
             </div>
 
             <section class="feature-ordnung">
@@ -636,9 +738,7 @@
                             RowBooster sorgt für Ordnung
                         </h2>
                         <p class="feature-description">
-                            Automatisierte Datenerfassung, intelligente Strukturierung<br>
-                            und Exportbereitstellung - <strong>saubere, konsistente Daten</strong> sind<br>
-                            zentral für Sichtbarkeit, Conversion und operative Effizienz.
+                            Automatisierte Datenerfassung, intelligente Strukturierung und Exportbereitstellung - <strong>saubere, konsistente Daten</strong> sind zentral für Sichtbarkeit, Conversion und operative Effizienz.
                         </p>
                     </div>
                 </div>
@@ -680,11 +780,6 @@
                 z-index: 1;
             }
 
-            .datenchaos-content {
-                opacity: 0;
-                transform: translateY(50px);
-                animation: dcRevealUp 1s var(--ease-out-expo) 0.2s forwards;
-            }
 
             @keyframes dcRevealUp {
                 to {
@@ -1333,12 +1428,12 @@
             .effektiv-container {
                 position: relative;
                 z-index: 10;
-                max-width: 1440px;
+                max-width: 1600px;
                 margin: 0 auto;
-                padding: 0 80px;
+                padding: 0 60px;
                 display: grid;
-                grid-template-columns: 1fr 1.2fr;
-                gap: 80px;
+                grid-template-columns: 0.8fr 1.4fr;
+                gap: 60px;
                 align-items: center;
             }
 
@@ -1430,63 +1525,15 @@
                 color: var(--color-primary);
             }
 
-            .screenshots-showcase {
+            .effektiv-animation-container {
                 position: relative;
-                height: 500px;
-            }
-
-            .screenshot-card-eff {
-                position: absolute;
-                width: 100%;
-                max-width: 480px;
-                background: linear-gradient(145deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%);
-                border: 1px solid rgba(255, 255, 255, 0.1);
-                border-radius: 20px;
-                overflow: hidden;
-                box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
-            }
-
-            .screenshot-card-eff:nth-child(1) { top: 0; left: 0; z-index: 3; }
-            .screenshot-card-eff:nth-child(2) { top: 60px; left: 40px; z-index: 2; }
-            .screenshot-card-eff:nth-child(3) { top: 120px; left: 80px; z-index: 1; }
-
-            .screenshot-header-eff {
+                z-index: 10;
                 display: flex;
                 align-items: center;
-                gap: 8px;
-                padding: 14px 18px;
-                background: rgba(0, 0, 0, 0.3);
-            }
-
-            .screenshot-dots-eff {
-                display: flex;
-                gap: 6px;
-            }
-
-            .screenshot-dots-eff span:nth-child(1) { width: 10px; height: 10px; border-radius: 50%; background: #ff5f57; }
-            .screenshot-dots-eff span:nth-child(2) { width: 10px; height: 10px; border-radius: 50%; background: #ffbd2e; }
-            .screenshot-dots-eff span:nth-child(3) { width: 10px; height: 10px; border-radius: 50%; background: #28ca42; }
-
-            .screenshot-content-eff {
-                aspect-ratio: 16/10;
-                background: rgba(12, 36, 67, 0.9);
-                padding: 20px;
-            }
-
-            .ui-placeholder {
-                background: rgba(255, 255, 255, 0.02);
-                border-radius: 8px;
-                height: 100%;
-                display: flex;
-                flex-direction: column;
-                gap: 8px;
-                padding: 12px;
-            }
-
-            .ui-placeholder-row {
-                height: 24px;
-                background: rgba(255, 255, 255, 0.05);
-                border-radius: 4px;
+                justify-content: center;
+                width: 100%;
+                min-height: 500px;
+                margin-left: 160px;
             }
 
             @media (max-width: 1024px) {
@@ -1506,10 +1553,10 @@
                 .eff-feature-tags {
                     justify-content: center;
                 }
-                .screenshots-showcase {
-                    height: 400px;
+                .effektiv-animation-container {
+                    min-height: 350px;
                     max-width: 500px;
-                    margin: 0 auto;
+                    margin: 40px auto 0;
                 }
             }
 
@@ -1524,16 +1571,9 @@
                     width: 100%;
                     justify-content: center;
                 }
-                .screenshots-showcase {
-                    height: 320px;
-                }
-                .screenshot-card-eff:nth-child(2),
-                .screenshot-card-eff:nth-child(3) {
-                    display: none;
-                }
-                .screenshot-card-eff:nth-child(1) {
-                    position: relative;
-                    max-width: 100%;
+                .effektiv-animation-container {
+                    min-height: 300px;
+                    margin-top: 30px;
                 }
             }
         </style>
@@ -1555,43 +1595,10 @@
                         <span class="eff-feature-tag">✓ Qualitätsprüfung</span>
                         <span class="eff-feature-tag">✓ Export-Ready</span>
                     </div>
-                    <a href="#demo" class="eff-cta-button">Jetzt Demo anfragen ›</a>
+                    <a href="#demo" class="eff-cta-button">Jetzt Demo testen ›</a>
                 </div>
-                <div class="screenshots-showcase" aria-hidden="true">
-                    <div class="screenshot-card-eff">
-                        <div class="screenshot-header-eff">
-                            <div class="screenshot-dots-eff"><span></span><span></span><span></span></div>
-                        </div>
-                        <div class="screenshot-content-eff">
-                            <div class="ui-placeholder">
-                                <div class="ui-placeholder-row"></div>
-                                <div class="ui-placeholder-row"></div>
-                                <div class="ui-placeholder-row"></div>
-                                <div class="ui-placeholder-row"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="screenshot-card-eff">
-                        <div class="screenshot-header-eff">
-                            <div class="screenshot-dots-eff"><span></span><span></span><span></span></div>
-                        </div>
-                        <div class="screenshot-content-eff">
-                            <div class="ui-placeholder">
-                                <div class="ui-placeholder-row"></div>
-                                <div class="ui-placeholder-row"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="screenshot-card-eff">
-                        <div class="screenshot-header-eff">
-                            <div class="screenshot-dots-eff"><span></span><span></span><span></span></div>
-                        </div>
-                        <div class="screenshot-content-eff">
-                            <div class="ui-placeholder">
-                                <div class="ui-placeholder-row"></div>
-                            </div>
-                        </div>
-                    </div>
+                <div id="effektiv-animation-placeholder" class="effektiv-animation-container" aria-hidden="true">
+                    <!-- HeroAnimation wird hier per React injiziert -->
                 </div>
             </div>
         </section>
@@ -1793,7 +1800,7 @@
             }
         </style>
 
-        <section class="features-ki-section">
+        <section class="features-ki-section" id="features">
             <div class="features-ki-container">
                 <header class="features-ki-header">
                     <div class="features-ki-eyebrow">— Intelligente Features —</div>
@@ -1881,206 +1888,671 @@
         </section>
 
         <!-- ========================================
-             UNTERNEHMEN LIEBEN SECTION
+             UNTERNEHMEN LIEBEN SECTION - Award-Winning Design
         ======================================== -->
         <style>
             .unternehmen-section {
-                background: var(--color-secondary);
-                padding: 100px 80px 120px;
+                background: linear-gradient(180deg, var(--color-secondary) 0%, #0d1520 100%);
+                padding: clamp(80px, 12vw, 140px) clamp(20px, 5vw, 80px);
                 position: relative;
+                overflow: hidden;
+            }
+
+            /* Animated Background Elements */
+            .unternehmen-section::before {
+                content: '';
+                position: absolute;
+                top: -50%;
+                left: -20%;
+                width: 80%;
+                height: 150%;
+                background: radial-gradient(ellipse at center, rgba(200, 250, 100, 0.03) 0%, transparent 60%);
+                animation: unt-glow-pulse 8s ease-in-out infinite;
+                pointer-events: none;
+            }
+
+            .unternehmen-section::after {
+                content: '';
+                position: absolute;
+                bottom: -30%;
+                right: -10%;
+                width: 60%;
+                height: 100%;
+                background: radial-gradient(ellipse at center, rgba(23, 195, 206, 0.04) 0%, transparent 50%);
+                animation: unt-glow-pulse 10s ease-in-out infinite reverse;
+                pointer-events: none;
+            }
+
+            @keyframes unt-glow-pulse {
+                0%, 100% { opacity: 0.5; transform: scale(1); }
+                50% { opacity: 1; transform: scale(1.1); }
+            }
+
+            /* Floating Particles */
+            .unt-particles {
+                position: absolute;
+                inset: 0;
+                overflow: hidden;
+                pointer-events: none;
+            }
+
+            .unt-particle {
+                position: absolute;
+                width: 4px;
+                height: 4px;
+                background: var(--color-lime);
+                border-radius: 50%;
+                opacity: 0;
+                animation: unt-float-particle 12s infinite;
+            }
+
+            .unt-particle:nth-child(1) { left: 10%; animation-delay: 0s; }
+            .unt-particle:nth-child(2) { left: 25%; animation-delay: 2s; }
+            .unt-particle:nth-child(3) { left: 40%; animation-delay: 4s; }
+            .unt-particle:nth-child(4) { left: 60%; animation-delay: 1s; }
+            .unt-particle:nth-child(5) { left: 75%; animation-delay: 3s; }
+            .unt-particle:nth-child(6) { left: 90%; animation-delay: 5s; }
+
+            @keyframes unt-float-particle {
+                0% { bottom: -10%; opacity: 0; transform: translateX(0) scale(0.5); }
+                10% { opacity: 0.6; }
+                90% { opacity: 0.6; }
+                100% { bottom: 110%; opacity: 0; transform: translateX(30px) scale(1); }
             }
 
             .unternehmen-container {
-                max-width: 1200px;
+                max-width: 1400px;
                 margin: 0 auto;
-                padding: 0 40px;
-            }
-
-            .section-top-headline {
-                text-align: right;
-                margin-bottom: 80px;
-            }
-
-            .section-top-headline h2 {
-                font-size: clamp(20px, 2.5vw, 28px);
-                font-weight: 400;
-                color: var(--color-white);
-                display: flex;
-                align-items: center;
-                justify-content: flex-end;
-                gap: 12px;
-            }
-
-            .section-icon {
-                font-size: 1.8em;
-                color: var(--color-white);
                 position: relative;
-                top: -0.05em;
+                z-index: 1;
             }
 
-            .section-top-headline strong {
-                font-weight: 700;
+            /* Section Header with Badge */
+            .unt-header {
+                text-align: center;
+                margin-bottom: clamp(48px, 8vw, 80px);
             }
 
-            .brand-accent-unt {
-                color: var(--color-lime);
+            .unt-badge {
+                display: inline-flex;
+                align-items: center;
+                gap: 10px;
+                padding: 10px 24px;
+                background: rgba(200, 250, 100, 0.08);
+                border: 1px solid rgba(200, 250, 100, 0.2);
+                border-radius: 100px;
+                margin-bottom: 32px;
+                backdrop-filter: blur(10px);
+                -webkit-backdrop-filter: blur(10px);
+                animation: unt-badge-glow 3s ease-in-out infinite;
             }
 
-            .benefits-column {
-                max-width: 600px;
+            @keyframes unt-badge-glow {
+                0%, 100% { box-shadow: 0 0 20px rgba(200, 250, 100, 0.1); }
+                50% { box-shadow: 0 0 40px rgba(200, 250, 100, 0.2); }
             }
 
-            .benefits-headline {
-                font-family: var(--font-heading);
-                font-size: clamp(24px, 2.8vw, 36px);
+            .unt-badge-icon {
+                font-size: 20px;
+                animation: unt-icon-bounce 2s ease-in-out infinite;
+            }
+
+            @keyframes unt-icon-bounce {
+                0%, 100% { transform: translateY(0); }
+                50% { transform: translateY(-3px); }
+            }
+
+            .unt-badge-text {
+                font-size: 15px;
                 font-weight: 600;
                 color: var(--color-white);
-                margin-bottom: 48px;
             }
 
-            .benefits-headline .unt-accent {
+            .unt-badge-text strong {
                 color: var(--color-lime);
             }
 
-            .benefits-list {
-                list-style: none;
-                display: flex;
-                flex-direction: column;
-                gap: 24px;
+            .unt-main-headline {
+                font-family: var(--font-heading);
+                font-size: clamp(28px, 4.5vw, 52px);
+                font-weight: 600;
+                color: var(--color-white);
+                line-height: 1.2;
+                max-width: 800px;
+                margin: 0 auto;
             }
 
-            .benefit-item {
+            .unt-main-headline .unt-gradient-text {
+                background: linear-gradient(135deg, var(--color-lime) 0%, var(--color-cyan) 100%);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+            }
+
+            /* Benefits Grid - Glassmorphism Cards */
+            .unt-benefits-grid {
+                display: grid;
+                grid-template-columns: repeat(4, 1fr);
+                gap: 24px;
+                margin-bottom: clamp(60px, 10vw, 100px);
+            }
+
+            .unt-benefit-card {
+                position: relative;
+                background: rgba(255, 255, 255, 0.03);
+                border: 1px solid rgba(255, 255, 255, 0.08);
+                border-radius: 24px;
+                padding: 32px 24px;
+                text-align: center;
+                backdrop-filter: blur(20px);
+                -webkit-backdrop-filter: blur(20px);
+                transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+                overflow: hidden;
+                cursor: default;
+            }
+
+            .unt-benefit-card::before {
+                content: '';
+                position: absolute;
+                inset: 0;
+                background: linear-gradient(135deg, rgba(200, 250, 100, 0.1) 0%, transparent 50%);
+                opacity: 0;
+                transition: opacity 0.5s ease;
+                border-radius: 24px;
+            }
+
+            .unt-benefit-card::after {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+                transition: left 0.7s ease;
+            }
+
+            .unt-benefit-card:hover {
+                transform: translateY(-8px) scale(1.02);
+                border-color: rgba(200, 250, 100, 0.3);
+                box-shadow: 
+                    0 20px 60px rgba(0, 0, 0, 0.3),
+                    0 0 40px rgba(200, 250, 100, 0.1),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            }
+
+            .unt-benefit-card:hover::before {
+                opacity: 1;
+            }
+
+            .unt-benefit-card:hover::after {
+                left: 100%;
+            }
+
+            .unt-benefit-icon-wrapper {
+                width: 72px;
+                height: 72px;
+                margin: 0 auto 20px;
+                background: linear-gradient(135deg, rgba(200, 250, 100, 0.15) 0%, rgba(200, 250, 100, 0.05) 100%);
+                border-radius: 20px;
                 display: flex;
-                align-items: flex-start;
+                align-items: center;
+                justify-content: center;
+                position: relative;
+                transition: all 0.4s ease;
+            }
+
+            .unt-benefit-card:hover .unt-benefit-icon-wrapper {
+                transform: scale(1.1) rotate(5deg);
+                background: linear-gradient(135deg, rgba(200, 250, 100, 0.25) 0%, rgba(200, 250, 100, 0.1) 100%);
+            }
+
+            .unt-benefit-icon-wrapper svg {
+                width: 32px;
+                height: 32px;
+                stroke: var(--color-lime);
+                stroke-width: 2;
+                fill: none;
+                transition: all 0.4s ease;
+            }
+
+            .unt-benefit-card:hover .unt-benefit-icon-wrapper svg {
+                transform: scale(1.1);
+            }
+
+            .unt-benefit-stat {
+                font-family: var(--font-heading);
+                font-size: clamp(36px, 4vw, 48px);
+                font-weight: 700;
+                color: var(--color-lime);
+                line-height: 1;
+                margin-bottom: 8px;
+                position: relative;
+                z-index: 1;
+            }
+
+            .unt-benefit-title {
+                font-size: 16px;
+                font-weight: 700;
+                color: var(--color-white);
+                margin-bottom: 12px;
+                position: relative;
+                z-index: 1;
+            }
+
+            .unt-benefit-desc {
+                font-size: 14px;
+                color: var(--color-text-muted);
+                line-height: 1.6;
+                position: relative;
+                z-index: 1;
+            }
+
+            /* Counter Section - Hero Style */
+            .unt-counter-section {
+                position: relative;
+                padding: clamp(48px, 8vw, 80px) 0;
+            }
+
+            .unt-counter-divider {
+                position: absolute;
+                top: 0;
+                left: 50%;
+                transform: translateX(-50%);
+                width: min(400px, 80%);
+                height: 2px;
+                background: linear-gradient(90deg, transparent, var(--color-lime), transparent);
+            }
+
+            .unt-counter-content {
+                text-align: center;
+            }
+
+            .unt-counter-wrapper {
+                display: inline-flex;
+                flex-direction: column;
+                align-items: center;
                 gap: 16px;
             }
 
-            .benefit-icon {
+            .unt-counter-number {
+                font-family: var(--font-heading);
+                font-size: clamp(56px, 12vw, 120px);
+                font-weight: 700;
+                line-height: 1;
+                background: linear-gradient(135deg, var(--color-lime) 0%, #9be22d 50%, var(--color-cyan) 100%);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+                background-size: 200% 200%;
+                animation: unt-gradient-shift 4s ease-in-out infinite;
+                text-shadow: 0 0 80px rgba(200, 250, 100, 0.3);
+            }
+
+            @keyframes unt-gradient-shift {
+                0%, 100% { background-position: 0% 50%; }
+                50% { background-position: 100% 50%; }
+            }
+
+            .unt-counter-label {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                font-size: clamp(18px, 2.5vw, 24px);
+                font-weight: 600;
+                color: var(--color-lime);
+            }
+
+            .unt-counter-label svg {
+                width: 24px;
+                height: 24px;
+                stroke: var(--color-lime);
+                stroke-width: 2;
+                fill: none;
+                animation: unt-pulse-icon 2s ease-in-out infinite;
+            }
+
+            @keyframes unt-pulse-icon {
+                0%, 100% { transform: scale(1); opacity: 1; }
+                50% { transform: scale(1.2); opacity: 0.8; }
+            }
+
+            .unt-counter-subtext {
+                font-size: 15px;
+                color: var(--color-text-muted);
+                margin-top: 8px;
+            }
+
+            /* Live Indicator */
+            .unt-live-indicator {
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                padding: 8px 16px;
+                background: rgba(200, 250, 100, 0.1);
+                border-radius: 100px;
+                margin-top: 24px;
+            }
+
+            .unt-live-dot {
                 width: 8px;
                 height: 8px;
                 background: var(--color-lime);
-                border-radius: 2px;
-                margin-top: 8px;
-                transform: rotate(45deg);
-                flex-shrink: 0;
+                border-radius: 50%;
+                animation: unt-live-pulse 1.5s ease-in-out infinite;
             }
 
-            .benefit-title {
-                font-size: 15px;
-                font-weight: 700;
-                color: var(--color-lime);
+            @keyframes unt-live-pulse {
+                0%, 100% { opacity: 1; transform: scale(1); }
+                50% { opacity: 0.5; transform: scale(1.3); }
             }
 
-            .benefit-description {
-                font-size: 15px;
-                color: var(--color-text-muted);
-            }
-
-            .counter-column {
-                margin-top: 80px;
-            }
-
-            .counter-wrapper {
-                padding-top: 40px;
-                border-top: 2px solid var(--color-lime);
-                max-width: 200px;
-            }
-
-            .counter-number {
-                font-family: var(--font-heading);
-                font-size: clamp(48px, 8vw, 100px);
+            .unt-live-text {
+                font-size: 13px;
                 font-weight: 600;
                 color: var(--color-lime);
-                line-height: 1;
-                margin-bottom: 16px;
+                text-transform: uppercase;
+                letter-spacing: 1px;
             }
 
-            .counter-label {
-                font-size: clamp(16px, 1.5vw, 20px);
-                font-weight: 700;
-                color: var(--color-lime);
+            /* Responsive Design */
+            @media (max-width: 1200px) {
+                .unt-benefits-grid {
+                    grid-template-columns: repeat(2, 1fr);
+                    gap: 20px;
+                }
             }
 
             @media (max-width: 768px) {
-                .unternehmen-section {
-                    padding: 60px 24px 80px;
+                .unt-benefits-grid {
+                    grid-template-columns: 1fr;
+                    gap: 16px;
                 }
-                .section-top-headline {
-                    text-align: center;
+
+                .unt-benefit-card {
+                    display: grid;
+                    grid-template-columns: auto 1fr;
+                    grid-template-rows: auto auto;
+                    gap: 8px 20px;
+                    text-align: left;
+                    padding: 24px;
                 }
-                .benefits-column {
-                    max-width: 100%;
+
+                .unt-benefit-icon-wrapper {
+                    width: 56px;
+                    height: 56px;
+                    margin: 0;
+                    grid-row: span 2;
+                    align-self: center;
                 }
-                .benefits-headline {
-                    text-align: center;
+
+                .unt-benefit-icon-wrapper svg {
+                    width: 24px;
+                    height: 24px;
                 }
-                .benefit-item {
-                    flex-direction: column;
+
+                .unt-benefit-stat {
+                    font-size: 28px;
+                    margin-bottom: 0;
+                }
+
+                .unt-benefit-title {
+                    margin-bottom: 0;
+                    display: flex;
                     align-items: center;
-                    text-align: center;
+                    gap: 8px;
                 }
-                .benefit-icon {
-                    margin-top: 0;
+
+                .unt-benefit-desc {
+                    grid-column: 2;
                 }
-                .counter-wrapper {
-                    text-align: center;
-                    margin: 0 auto;
+
+                .unt-header {
+                    text-align: left;
+                }
+
+                .unt-badge {
+                    margin-bottom: 24px;
+                }
+
+                .unt-main-headline {
+                    text-align: left;
+                }
+
+                .unt-counter-content {
+                    text-align: left;
+                }
+
+                .unt-counter-wrapper {
+                    align-items: flex-start;
+                }
+
+                .unt-counter-divider {
+                    left: 0;
+                    transform: none;
+                    width: 120px;
+                    background: linear-gradient(90deg, var(--color-lime), transparent);
+                }
+            }
+
+            /* Scroll Animation Classes */
+            .unt-animate-in {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+
+            .unt-animate-in.unt-visible {
+                animation: unt-reveal 0.8s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+            }
+
+            .unt-benefit-card.unt-animate-in.unt-visible {
+                animation: unt-card-reveal 0.8s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+            }
+
+            .unt-benefit-card:nth-child(1).unt-visible { animation-delay: 0.1s; }
+            .unt-benefit-card:nth-child(2).unt-visible { animation-delay: 0.2s; }
+            .unt-benefit-card:nth-child(3).unt-visible { animation-delay: 0.3s; }
+            .unt-benefit-card:nth-child(4).unt-visible { animation-delay: 0.4s; }
+
+            @keyframes unt-reveal {
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            @keyframes unt-card-reveal {
+                to {
+                    opacity: 1;
+                    transform: translateY(0) scale(1);
                 }
             }
         </style>
 
-        <section class="unternehmen-section">
+        <section class="unternehmen-section" id="unternehmen-lieben">
+            <!-- Floating Particles -->
+            <div class="unt-particles" aria-hidden="true">
+                <div class="unt-particle"></div>
+                <div class="unt-particle"></div>
+                <div class="unt-particle"></div>
+                <div class="unt-particle"></div>
+                <div class="unt-particle"></div>
+                <div class="unt-particle"></div>
+            </div>
+
             <div class="unternehmen-container">
-                <div class="section-top-headline">
-                    <h2><span class="section-icon">›</span> Unternehmen <strong>lieben</strong> <span class="brand-accent-unt">RowBooster</span></h2>
+                <!-- Header -->
+                <header class="unt-header unt-animate-in">
+                    <div class="unt-badge">
+                        <span class="unt-badge-icon">›</span>
+                        <span class="unt-badge-text">Unternehmen <strong>lieben</strong> RowBooster</span>
+                    </div>
+                    <h2 class="unt-main-headline">
+                        Effizienz, Qualität und Wachstum –<br>
+                        alles mit <span class="unt-gradient-text">einem Tool.</span>
+                    </h2>
+                </header>
+
+                <!-- Benefits Grid -->
+                <div class="unt-benefits-grid">
+                    <!-- Card 1: Weniger Aufwand -->
+                    <article class="unt-benefit-card unt-animate-in">
+                        <div class="unt-benefit-icon-wrapper">
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M12 2v4m0 12v4M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83M2 12h4m12 0h4M4.93 19.07l2.83-2.83m8.48-8.48l2.83-2.83"/>
+                                <circle cx="12" cy="12" r="3"/>
+                            </svg>
+                        </div>
+                        <div class="unt-benefit-stat">80%</div>
+                        <h3 class="unt-benefit-title">Weniger Aufwand</h3>
+                        <p class="unt-benefit-desc">Ihre Teams fokussieren sich auf wertschöpfende Aufgaben statt manuelle Datenpflege.</p>
+                    </article>
+
+                    <!-- Card 2: Datenkonsistenz -->
+                    <article class="unt-benefit-card unt-animate-in">
+                        <div class="unt-benefit-icon-wrapper">
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M9 12l2 2 4-4"/>
+                                <circle cx="12" cy="12" r="10"/>
+                            </svg>
+                        </div>
+                        <div class="unt-benefit-stat">100%</div>
+                        <h3 class="unt-benefit-title">Datenkonsistenz</h3>
+                        <p class="unt-benefit-desc">Keine doppelte Arbeit, keine fehlerhaften Datensätze mehr.</p>
+                    </article>
+
+                    <!-- Card 3: Time-to-Market -->
+                    <article class="unt-benefit-card unt-animate-in">
+                        <div class="unt-benefit-icon-wrapper">
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+                            </svg>
+                        </div>
+                        <div class="unt-benefit-stat">10×</div>
+                        <h3 class="unt-benefit-title">Schnellere Time-to-Market</h3>
+                        <p class="unt-benefit-desc">Produkte und Informationen schneller bereitstellen.</p>
+                    </article>
+
+                    <!-- Card 4: Automatisierung -->
+                    <article class="unt-benefit-card unt-animate-in">
+                        <div class="unt-benefit-icon-wrapper">
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M12 2v2m0 16v2M4 12H2m4.314-5.686L4.9 4.9m12.786 1.414L19.1 4.9M6.314 17.686L4.9 19.1m12.786-1.414L19.1 19.1M22 12h-2"/>
+                                <circle cx="12" cy="12" r="4"/>
+                                <path d="M12 8v4l2 2"/>
+                            </svg>
+                        </div>
+                        <div class="unt-benefit-stat">∞</div>
+                        <h3 class="unt-benefit-title">Zukunftssichere Automatisierung</h3>
+                        <p class="unt-benefit-desc">Skalierbar für wachsende Datenmengen ohne Mehraufwand.</p>
+                    </article>
                 </div>
-                <div class="benefits-column">
-                    <h3 class="benefits-headline">Effizienz, Qualität und Wachstum – alles mit <span class="unt-accent">einem Tool.</span></h3>
-                    <ul class="benefits-list">
-                        <li class="benefit-item">
-                            <span class="benefit-icon"></span>
-                            <div><span class="benefit-title">80 % weniger manueller Aufwand</span> <span class="benefit-description">– Ihre Teams fokussieren sich auf wertschöpfende Aufgaben.</span></div>
-                        </li>
-                        <li class="benefit-item">
-                            <span class="benefit-icon"></span>
-                            <div><span class="benefit-title">100 % Datenkonsistenz</span> <span class="benefit-description">– Keine doppelte Arbeit, keine fehlerhaften Datensätze mehr.</span></div>
-                        </li>
-                        <li class="benefit-item">
-                            <span class="benefit-icon"></span>
-                            <div><span class="benefit-title">Schnellere Time-to-Market</span> <span class="benefit-description">– Produkte und Informationen schneller bereitstellen.</span></div>
-                        </li>
-                        <li class="benefit-item">
-                            <span class="benefit-icon"></span>
-                            <div><span class="benefit-title">Zukunftssichere Automatisierung</span> <span class="benefit-description">– Skalierbar für wachsende Datenmengen.</span></div>
-                        </li>
-                    </ul>
-                </div>
-                <div class="counter-column">
-                    <div class="counter-wrapper">
-                        <div class="counter-number">142.000.000+</div>
-                        <p class="counter-label">Daten strukturiert</p>
+
+                <!-- Counter Section -->
+                <div class="unt-counter-section unt-animate-in">
+                    <div class="unt-counter-divider" aria-hidden="true"></div>
+                    <div class="unt-counter-content">
+                        <div class="unt-counter-wrapper">
+                            <div class="unt-counter-number" data-target="142855309" id="unt-main-counter">0</div>
+                            <div class="unt-counter-label">
+                                <svg viewBox="0 0 24 24" aria-hidden="true">
+                                    <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+                                    <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
+                                    <line x1="12" y1="22.08" x2="12" y2="12"/>
+                                </svg>
+                                <span>Daten strukturiert</span>
+                            </div>
+                            <p class="unt-counter-subtext">und es werden täglich mehr</p>
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
 
+        <script>
+        (function() {
+            // Intersection Observer for scroll animations
+            const untObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('unt-visible');
+                        
+                        // Start counter animation when visible
+                        if (entry.target.classList.contains('unt-counter-section')) {
+                            startCounterAnimation();
+                        }
+                    }
+                });
+            }, { threshold: 0.2, rootMargin: '0px 0px -50px 0px' });
+
+            document.querySelectorAll('.unt-animate-in').forEach(el => {
+                untObserver.observe(el);
+            });
+
+            // Counter Animation with easing
+            let counterAnimated = false;
+            function startCounterAnimation() {
+                if (counterAnimated) return;
+                counterAnimated = true;
+
+                const counter = document.getElementById('unt-main-counter');
+                if (!counter) return;
+
+                const target = parseInt(counter.dataset.target);
+                const duration = 3000;
+                const startTime = performance.now();
+
+                function easeOutExpo(t) {
+                    return t === 1 ? 1 : 1 - Math.pow(2, -10 * t);
+                }
+
+                function formatNumber(num) {
+                    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+                }
+
+                function updateCounter(currentTime) {
+                    const elapsed = currentTime - startTime;
+                    const progress = Math.min(elapsed / duration, 1);
+                    const easedProgress = easeOutExpo(progress);
+                    const currentValue = Math.floor(easedProgress * target);
+                    
+                    counter.textContent = formatNumber(currentValue);
+
+                    if (progress < 1) {
+                        requestAnimationFrame(updateCounter);
+                    } else {
+                        // Add subtle increment after animation completes
+                        setInterval(() => {
+                            const current = parseInt(counter.textContent.replace(/\./g, ''));
+                            counter.textContent = formatNumber(current + Math.floor(Math.random() * 50) + 10);
+                        }, 3000);
+                    }
+                }
+
+                requestAnimationFrame(updateCounter);
+            }
+        })();
+        </script>
+
         <!-- ========================================
-             TESTIMONIALS SECTION
+             TESTIMONIALS SECTION - Swipeable Slider
         ======================================== -->
         <style>
             .testimonials-section {
-                padding: 80px 48px;
+                padding: 80px 0;
                 background: var(--color-secondary);
+                overflow: hidden;
             }
 
             .testimonials-container {
                 max-width: 1200px;
                 margin: 0 auto;
+                padding: 0 48px;
             }
 
             .testimonials-header {
                 text-align: center;
-                margin-bottom: 64px;
+                margin-bottom: 48px;
             }
 
             .testimonials-headline {
@@ -2100,51 +2572,79 @@
                 top: -0.05em;
             }
 
-            .testimonials-grid {
+            /* Slider Container */
+            .testimonials-slider-wrapper {
+                position: relative;
+                max-width: 900px;
+                margin: 0 auto 40px;
+            }
+
+            .testimonials-slider {
                 display: flex;
-                flex-direction: column;
-                gap: 32px;
-                max-width: 800px;
-                margin: 0 auto 64px;
+                gap: 24px;
+                overflow-x: auto;
+                scroll-snap-type: x mandatory;
+                scroll-behavior: smooth;
+                -webkit-overflow-scrolling: touch;
+                scrollbar-width: none;
+                -ms-overflow-style: none;
+                padding: 20px 0;
+                cursor: grab;
+            }
+
+            .testimonials-slider::-webkit-scrollbar {
+                display: none;
+            }
+
+            .testimonials-slider.is-dragging {
+                cursor: grabbing;
+                scroll-behavior: auto;
             }
 
             .testimonial-card {
+                flex: 0 0 100%;
+                max-width: 100%;
+                scroll-snap-align: center;
                 position: relative;
                 background: rgba(22, 33, 48, 0.8);
                 border: 1px solid rgba(168, 221, 91, 0.15);
-                border-radius: 20px;
-                padding: 48px 48px 32px;
+                border-radius: 24px;
+                padding: 48px 48px 40px;
                 text-align: center;
+                transition: border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+                user-select: none;
             }
 
             .testimonial-card:hover {
                 border-color: rgba(168, 221, 91, 0.3);
+                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
             }
 
             .quote-icon {
                 position: absolute;
                 font-size: 72px;
                 color: var(--color-lime);
-                opacity: 0.6;
+                opacity: 0.5;
                 font-family: Georgia, serif;
+                line-height: 1;
             }
 
             .quote-open {
-                top: 20px;
-                left: 28px;
+                top: 16px;
+                left: 24px;
             }
 
             .quote-close {
-                bottom: 20px;
-                right: 28px;
+                bottom: 16px;
+                right: 24px;
             }
 
             .testimonial-text {
-                font-size: 17px;
+                font-size: 18px;
                 color: var(--color-text-muted);
-                line-height: 1.7;
-                margin-bottom: 24px;
-                padding: 0 32px;
+                line-height: 1.8;
+                margin-bottom: 28px;
+                padding: 0 40px;
             }
 
             .testimonial-text strong {
@@ -2158,8 +2658,70 @@
             }
 
             .testimonial-author {
-                font-size: 14px;
+                font-size: 15px;
+                font-weight: 600;
                 color: var(--color-lime);
+            }
+
+            /* Pagination Dots */
+            .testimonials-pagination {
+                display: flex;
+                justify-content: center;
+                gap: 12px;
+                margin-bottom: 48px;
+            }
+
+            .testimonials-dot {
+                width: 12px;
+                height: 12px;
+                border-radius: 50%;
+                background: rgba(255, 255, 255, 0.2);
+                border: none;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                padding: 0;
+            }
+
+            .testimonials-dot:hover {
+                background: rgba(200, 250, 100, 0.4);
+            }
+
+            .testimonials-dot.active {
+                background: var(--color-lime);
+                transform: scale(1.2);
+            }
+
+            /* Navigation Arrows */
+            .testimonials-nav {
+                position: absolute;
+                top: 50%;
+                transform: translateY(-50%);
+                width: 48px;
+                height: 48px;
+                border-radius: 50%;
+                background: rgba(200, 250, 100, 0.1);
+                border: 1px solid rgba(200, 250, 100, 0.3);
+                color: var(--color-lime);
+                font-size: 24px;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 10;
+            }
+
+            .testimonials-nav:hover {
+                background: var(--color-lime);
+                color: var(--color-primary-dark);
+            }
+
+            .testimonials-nav-prev {
+                left: -24px;
+            }
+
+            .testimonials-nav-next {
+                right: -24px;
             }
 
             .testimonials-cta {
@@ -2186,56 +2748,108 @@
                 box-shadow: 0 8px 30px rgba(168, 221, 91, 0.3);
             }
 
+            @media (max-width: 1024px) {
+                .testimonials-nav {
+                    display: none;
+                }
+                .testimonials-slider-wrapper {
+                    margin-left: -24px;
+                    margin-right: -24px;
+                    padding: 0 24px;
+                }
+            }
+
             @media (max-width: 768px) {
                 .testimonials-section {
-                    padding: 60px 24px;
+                    padding: 60px 0;
+                }
+                .testimonials-container {
+                    padding: 0 24px;
+                }
+                .testimonials-header {
+                    text-align: left;
+                    margin-bottom: 32px;
+                }
+                .testimonials-headline {
+                    justify-content: flex-start;
+                }
+                .testimonials-slider-wrapper {
+                    margin-left: -24px;
+                    margin-right: -24px;
+                    padding: 0 24px;
                 }
                 .testimonial-card {
-                    padding: 32px 24px 24px;
+                    padding: 40px 24px 32px;
+                    flex: 0 0 calc(100% - 16px);
                 }
                 .testimonial-text {
-                    padding: 0 16px;
+                    padding: 0 20px;
                     font-size: 16px;
+                    line-height: 1.7;
                 }
                 .quote-icon {
                     font-size: 48px;
+                }
+                .quote-open {
+                    top: 12px;
+                    left: 16px;
+                }
+                .quote-close {
+                    bottom: 12px;
+                    right: 16px;
+                }
+                .testimonials-pagination {
+                    margin-bottom: 32px;
                 }
             }
         </style>
 
         <section class="testimonials-section">
             <div class="testimonials-container">
-            <header class="testimonials-header">
-                <h2 class="testimonials-headline">
-                    <span class="testimonials-icon">›</span>
-                    Wie wir RowBooster selbst nutzen und lieben lernten
-                </h2>
-            </header>
-            <div class="testimonials-grid">
-                <article class="testimonial-card">
-                    <span class="quote-icon quote-open">"</span>
-                    <p class="testimonial-text">
-                        Noch vor einem Jahr haben wir <strong>pro Woche 30-40</strong> neue komplexe Artikel in 
-                        den Webshop bringen können. Jetzt sind es <strong>400 Artikel pro Woche</strong> inkl. aller 
-                        technischer Daten, PDFs, Bilddaten und suchmaschinenoptimierten Produktbeschreibungen.
-                    </p>
-                    <footer class="testimonial-author">Vivien Singh, Artikelanlage Webkatalog bei handl24</footer>
-                    <span class="quote-icon quote-close">"</span>
-                </article>
-                <article class="testimonial-card">
-                    <span class="quote-icon quote-open">"</span>
-                    <p class="testimonial-text">
-                        Mit RowBooster konnten wir endlich unsere Produktdaten automatisiert 
-                        harmonisieren und haben <strong>70 % Zeit</strong> bei der Datenpflege eingespart. Die KI 
-                        lernt mit jeder Nutzung dazu – ein <span class="tm-highlight">echter Gamechanger</span>.
-                    </p>
-                    <footer class="testimonial-author">Juliane Lieberickel, Artikelanlage Webkatalog bei handl24</footer>
-                    <span class="quote-icon quote-close">"</span>
-                </article>
-            </div>
-            <div class="testimonials-cta">
-                <a href="#demo" class="testimonials-cta-button">Kostenlos testen ›</a>
-            </div>
+                <header class="testimonials-header">
+                    <h2 class="testimonials-headline">
+                        <span class="testimonials-icon">›</span>
+                        Wie wir RowBooster selbst nutzen und lieben lernten
+                    </h2>
+                </header>
+
+                <div class="testimonials-slider-wrapper">
+                    <button class="testimonials-nav testimonials-nav-prev" aria-label="Vorheriges Testimonial">‹</button>
+                    
+                    <div class="testimonials-slider" id="testimonials-slider">
+                        <article class="testimonial-card">
+                            <span class="quote-icon quote-open">"</span>
+                            <p class="testimonial-text">
+                                Noch vor einem Jahr haben wir <strong>pro Woche 30-40</strong> neue komplexe Artikel in 
+                                den Webshop bringen können. Jetzt sind es <strong>400 Artikel pro Woche</strong> inkl. aller 
+                                technischer Daten, PDFs, Bilddaten und suchmaschinenoptimierten Produktbeschreibungen.
+                            </p>
+                            <footer class="testimonial-author">Vivien Zheng, Webkatalog bei kamdi24</footer>
+                            <span class="quote-icon quote-close">"</span>
+                        </article>
+                        <article class="testimonial-card">
+                            <span class="quote-icon quote-open">"</span>
+                            <p class="testimonial-text">
+                                Mit RowBooster konnten wir endlich unsere Produktdaten automatisiert 
+                                harmonisieren und haben <strong>90 % Zeit</strong> bei der Datenpflege eingespart. Die KI 
+                                lernt mit jeder Nutzung dazu – ein <span class="tm-highlight">echter Gamechanger</span>.
+                            </p>
+                            <footer class="testimonial-author">Juliane Liebernickel, Webkatalog bei kamdi24</footer>
+                            <span class="quote-icon quote-close">"</span>
+                        </article>
+                    </div>
+
+                    <button class="testimonials-nav testimonials-nav-next" aria-label="Nächstes Testimonial">›</button>
+                </div>
+
+                <div class="testimonials-pagination" id="testimonials-pagination">
+                    <button class="testimonials-dot active" data-index="0" aria-label="Testimonial 1"></button>
+                    <button class="testimonials-dot" data-index="1" aria-label="Testimonial 2"></button>
+                </div>
+
+                <div class="testimonials-cta">
+                    <a href="#demo" class="testimonials-cta-button">Kostenlos testen ›</a>
+                </div>
             </div>
         </section>
 
@@ -2564,7 +3178,6 @@
         <section class="pricing-section" id="preise">
             <div class="pricing-container">
             <header class="pricing-header">
-                <div class="pricing-badge">› Preise</div>
                 <h2 class="pricing-title"><span class="pr-accent">Flexible Lösungen</span> für jedes Unternehmen.</h2>
                 <p class="pricing-subtitle">Lassen Sie die KI Ihre Daten verstehen. Wählen Sie den Plan, der zu Ihnen passt.</p>
                 <div class="pricing-toggle">
@@ -2635,15 +3248,6 @@
                 </div>
             </div>
 
-            <footer class="pricing-footer">
-                <div class="guarantee-badge">
-                    <span class="guarantee-icon">🛡️</span>
-                    <div class="guarantee-text">
-                        <div class="guarantee-title">30 Tage Geld-zurück-Garantie</div>
-                        <div class="guarantee-desc">Kein Risiko. Jederzeit kündbar.</div>
-                    </div>
-                </div>
-            </footer>
             </div>
         </section>
 
@@ -3009,14 +3613,14 @@
                         </div>
                         <div class="footer-column">
                             <h4 class="footer-column-title">Unternehmen</h4>
-                            <a href="#">Über uns</a>
+                            <a href="/ueber-uns">Über uns</a>
                             <a href="#kontakt">Kontakt</a>
                         </div>
                         <div class="footer-column">
                             <h4 class="footer-column-title">Rechtliches</h4>
-                            <a href="#">Impressum</a>
-                            <a href="#">Datenschutz</a>
-                            <a href="#">AGB</a>
+                            <a href="/impressum">Impressum</a>
+                            <a href="/datenschutz">Datenschutz</a>
+                            <a href="/agb">AGB</a>
                         </div>
                     </div>
                     <div class="footer-logo">
@@ -3081,6 +3685,44 @@
                 }
             });
         });
+
+        // ========================================
+        // SCROLL ANIMATION - Datenchaos Section
+        // ========================================
+        (function() {
+            var el = document.querySelector('.datenchaos-content');
+            if (!el) {
+                console.log('Element nicht gefunden!');
+                return;
+            }
+            console.log('Element gefunden:', el);
+
+            var done = false;
+
+            // Verstecke Element initial
+            el.style.cssText = 'opacity: 0; filter: blur(10px); transform: translateY(30px); transition: all 0.9s ease-out;';
+
+            function onScroll() {
+                if (done) return;
+                
+                var rect = el.getBoundingClientRect();
+                var trigger = window.innerHeight * 0.85;
+                
+                console.log('Scroll check - rect.top:', rect.top, 'trigger:', trigger);
+                
+                if (rect.top < trigger) {
+                    console.log('ANIMATING!');
+                    el.style.opacity = '1';
+                    el.style.filter = 'blur(0px)';
+                    el.style.transform = 'translateY(0)';
+                    done = true;
+                }
+            }
+
+            window.addEventListener('scroll', onScroll);
+            console.log('Scroll listener added');
+        })();
+
     </script>
 </body>
 </html>

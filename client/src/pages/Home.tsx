@@ -17,10 +17,12 @@ import { apiRequest } from "@/lib/queryClient";
 import { toast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { useSearchTabsStore } from "@/stores/searchTabsStore";
+import { useTheme } from "@/contexts/ThemeContext";
 
 export default function Home() {
   const [isExportModalOpen, setIsExportModalOpen] = useState(false);
   const [selectedProductForExport, setSelectedProductForExport] = useState<ProductResult | null>(null);
+  const { theme } = useTheme();
   
   // Use Zustand store for state persistence across page navigation
   const {
@@ -343,46 +345,73 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[var(--rb-light)] text-[var(--rb-text-dark)]">
-      <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10 flex-1">
+    <div className={`min-h-screen flex flex-col relative transition-colors duration-300 ${
+      theme === 'dark' ? 'text-white' : 'text-[#0c2443]'
+    }`}>
+      <main className="relative z-10 container mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-10 flex-1 max-w-5xl w-full overflow-x-hidden">
         <div
-          className="relative overflow-hidden rounded-2xl border border-black/5 bg-white/70 backdrop-blur supports-[backdrop-filter]:bg-white/60"
+          className={`relative overflow-hidden rounded-2xl backdrop-blur-xl transition-colors duration-300 ${
+            theme === 'dark'
+              ? 'bg-white/[0.02]'
+              : 'bg-white/60 border border-[#17c3ce]/20'
+          }`}
         >
-          <div className="pointer-events-none absolute inset-0 opacity-70 [mask-image:radial-gradient(circle_at_30%_20%,black,transparent_60%)]">
-            <div className="absolute -left-24 -top-24 h-72 w-72 rounded-full bg-[color:rgba(23,195,206,0.08)] blur-2xl" />
-            <div className="absolute -right-24 -bottom-24 h-72 w-72 rounded-full bg-[color:rgba(12,36,67,0.06)] blur-2xl" />
+          {/* Ambient glows inside card */}
+          <div className="pointer-events-none absolute inset-0 opacity-70">
+            <div className={`absolute -left-24 -top-24 h-72 w-72 rounded-full blur-3xl ${
+              theme === 'dark'
+                ? 'bg-[color:rgba(23,195,206,0.12)]'
+                : 'bg-[color:rgba(23,195,206,0.15)]'
+            }`} />
+            <div className={`absolute -right-24 -bottom-24 h-72 w-72 rounded-full blur-3xl ${
+              theme === 'dark'
+                ? 'bg-[color:rgba(200,250,100,0.08)]'
+                : 'bg-[color:rgba(23,195,206,0.10)]'
+            }`} />
           </div>
 
-          <div className="relative px-4 sm:px-6 lg:px-8 py-5 sm:py-7 border-b border-black/5">
-            <div className="flex flex-col gap-1">
-              <div className="text-xs font-semibold tracking-[0.18em] uppercase text-[var(--rb-text-muted-dark)]">
-                RowBooster
+          <div className={`relative px-4 sm:px-6 py-4 sm:py-5 border-b transition-colors duration-300 ${
+            theme === 'dark' ? 'border-white/[0.06]' : 'border-[#17c3ce]/10'
+          }`}>
+            <div className="flex flex-col gap-0.5">
+              <div className={`text-lg sm:text-xl font-semibold ${
+                theme === 'dark' ? 'text-white' : 'text-[#0c2443]'
+              }`}>
+                Datenboost
               </div>
-              <div className="text-xl sm:text-2xl font-semibold">
-                Suche & Extraktion
-              </div>
-              <div className="text-sm text-[var(--rb-text-muted-dark)]">
+              <div className={`text-xs sm:text-sm ${
+                theme === 'dark' ? 'text-white/50' : 'text-[#0c2443]/50'
+              }`}>
                 Produktdaten finden, analysieren und exportieren.
               </div>
             </div>
           </div>
 
           <Tabs value={activeTab} onValueChange={setActiveTab} className="relative">
-            <div className="px-4 sm:px-6 lg:px-8 pt-4">
-              <TabsList className="grid w-full grid-cols-2 rounded-xl bg-[color:rgba(12,36,67,0.06)] p-1">
+            <div className="px-4 sm:px-6 pt-3">
+              <TabsList className="grid w-full grid-cols-2 rounded-lg bg-transparent p-0 gap-3">
                 <TabsTrigger
                   value="search"
-                  className="gap-2 rounded-lg data-[state=active]:bg-white data-[state=active]:text-[var(--rb-primary)] data-[state=active]:shadow-sm"
+                  className={`gap-2 rounded-lg border-2 border-transparent bg-transparent py-2.5 transition-all duration-200 ${
+                    theme === 'dark'
+                      ? 'text-white/60 data-[state=active]:border-[#c8fa64] data-[state=active]:text-white hover:text-white/80'
+                      : 'text-[#0c2443]/60 data-[state=active]:border-[#17c3ce] data-[state=active]:text-[#0c2443] hover:text-[#0c2443]/80'
+                  } data-[state=active]:bg-transparent`}
                 >
                   <Search className="h-4 w-4" />
                   Suche
                 </TabsTrigger>
                 <TabsTrigger
                   value="settings"
-                  className="gap-2 rounded-lg data-[state=active]:bg-white data-[state=active]:text-[var(--rb-primary)] data-[state=active]:shadow-sm"
+                  className={`gap-1.5 sm:gap-2 rounded-lg border-2 border-transparent bg-transparent py-2.5 px-2 sm:px-4 transition-all duration-200 text-xs sm:text-sm ${
+                    theme === 'dark'
+                      ? 'text-white/60 data-[state=active]:border-[#c8fa64] data-[state=active]:text-white hover:text-white/80'
+                      : 'text-[#0c2443]/60 data-[state=active]:border-[#17c3ce] data-[state=active]:text-[#0c2443] hover:text-[#0c2443]/80'
+                  } data-[state=active]:bg-transparent`}
                 >
-                  <Settings className="h-4 w-4" />
-                  Einstellungen
+                  <Settings className="h-4 w-4 flex-shrink-0" />
+                  <span className="hidden sm:inline">Einstellungen für Unternehmen</span>
+                  <span className="sm:hidden">Unternehmen</span>
                 </TabsTrigger>
               </TabsList>
             </div>
@@ -448,38 +477,38 @@ export default function Home() {
 
             {/* Property Definition Section */}
             {propertiesLoading ? (
-              <div className="bg-white rounded-lg shadow-md mb-4 sm:mb-6 p-4">
-                <Skeleton className="h-8 w-1/3 mb-4" />
-                <Skeleton className="h-12 w-full mb-2" />
-                <Skeleton className="h-12 w-full mb-2" />
-                <Skeleton className="h-12 w-full" />
+              <div className="bg-black/20 backdrop-blur-sm border border-white/10 rounded-xl mb-4 sm:mb-6 p-4">
+                <Skeleton className="h-8 w-1/3 mb-4 bg-white/10" />
+                <Skeleton className="h-12 w-full mb-2 bg-white/10" />
+                <Skeleton className="h-12 w-full mb-2 bg-white/10" />
+                <Skeleton className="h-12 w-full bg-white/10" />
               </div>
             ) : (
               <PropertyDefinitions properties={properties || []} />
             )}
             
             {/* File Import Section */}
-            <Card>
-              <CardHeader className="p-4 border-b border-black/5">
-                <CardTitle className="text-base sm:text-lg font-semibold">
+            <Card className="bg-black/20 backdrop-blur-sm border-white/10">
+              <CardHeader className="p-4 border-b border-white/10">
+                <CardTitle className="text-base sm:text-lg font-semibold text-white">
                   Eigenschaften importieren (Excel/CSV)
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-4 sm:p-6">
                 <div className="space-y-4">
-                  <p className="text-xs sm:text-sm text-[var(--rb-text-muted-dark)]">
+                  <p className="text-xs sm:text-sm text-white/60">
                     Laden Sie eine Excel- oder CSV-Datei hoch, um Produkteigenschaften zu importieren. 
                     Die Datei sollte mindestens die Spalten "Artikelnummer/ArticleNumber" und 
                     "Produktname/ProductName" enthalten.
                   </p>
                   
                   <div
-                    className="flex flex-col items-center justify-center border-2 border-dashed border-black/15 rounded-xl p-4 sm:p-6 bg-[color:rgba(12,36,67,0.03)] transition-colors hover:border-[color:rgba(23,195,206,0.35)] cursor-pointer"
+                    className="flex flex-col items-center justify-center border-2 border-dashed border-white/20 rounded-xl p-4 sm:p-6 bg-black/20 transition-all duration-300 hover:border-[color:rgba(200,250,100,0.4)] hover:bg-[color:rgba(200,250,100,0.05)] cursor-pointer"
                     onClick={handleFileUploadClick}
                   >
-                    <FileUp className="h-8 w-8 sm:h-10 sm:w-10 text-[var(--rb-text-muted-dark)] mb-2" />
-                    <p className="text-sm text-[var(--rb-text-dark)] mb-1 text-center">Klicken Sie hier, um eine Datei auszuwählen</p>
-                    <p className="text-xs text-[var(--rb-text-muted-dark)] text-center">Unterstützte Formate: .xlsx, .xls, .csv</p>
+                    <FileUp className="h-8 w-8 sm:h-10 sm:w-10 text-white/50 mb-2" />
+                    <p className="text-sm text-white/80 mb-1 text-center">Klicken Sie hier, um eine Datei auszuwählen</p>
+                    <p className="text-xs text-white/50 text-center">Unterstützte Formate: .xlsx, .xls, .csv</p>
                     
                     <input
                       ref={fileInputRef}
@@ -491,9 +520,9 @@ export default function Home() {
                   </div>
                   
                   {selectedFileName && (
-                    <div className="p-3 bg-white border border-black/10 rounded-xl flex justify-between items-center">
-                      <span className="text-sm text-[var(--rb-text-dark)]">{selectedFileName}</span>
-                      <span className="text-xs text-[color:var(--rb-cyan)]">{processedData.length} Einträge gefunden</span>
+                    <div className="p-3 bg-black/30 border border-white/15 rounded-xl flex justify-between items-center">
+                      <span className="text-sm text-white/90">{selectedFileName}</span>
+                      <span className="text-xs text-[color:var(--rb-lime)]">{processedData.length} Einträge gefunden</span>
                     </div>
                   )}
                   
@@ -501,7 +530,7 @@ export default function Home() {
                     <Button 
                       onClick={handleImportProperties}
                       disabled={processedData.length === 0}
-                      className="flex items-center gap-2 bg-[color:var(--rb-primary)] text-white hover:bg-[color:rgba(12,36,67,0.92)]"
+                      className="flex items-center gap-2 bg-[color:var(--rb-lime)] text-[color:var(--rb-primary-dark)] hover:bg-[color:rgba(200,250,100,0.9)] shadow-[0_4px_16px_rgba(200,250,100,0.3)]"
                     >
                       <Database className="h-4 w-4" />
                       Eigenschaften importieren

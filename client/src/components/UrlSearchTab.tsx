@@ -919,96 +919,96 @@ export default function UrlSearchTab({
 
       {inputMode === 'file' ? (
         <div className="space-y-3">
-          {/* File Format Instructions Card for URL Tab */}
-          <div className="bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-200 rounded-lg p-4">
+          {/* File Format Instructions Card for URL Tab - Dark Theme */}
+          <div className="bg-white/[0.02] border border-white/[0.06] rounded-xl p-4">
             <div className="flex items-start gap-3">
-              <div className="flex-shrink-0 w-8 h-8 bg-emerald-500 rounded-lg flex items-center justify-center">
-                <Globe className="h-4 w-4 text-white" />
+              <div className="flex-shrink-0 w-8 h-8 bg-[color:var(--rb-cyan)] rounded-lg flex items-center justify-center">
+                <Globe className="h-4 w-4 text-[#0c2443]" />
               </div>
               <div className="flex-1 min-w-0">
-                <h4 className="text-sm font-semibold text-emerald-900 mb-2">Excel-Datei Format für URL-Modus</h4>
+                <h4 className="text-sm font-semibold text-[color:var(--rb-cyan)] mb-2">Excel-Datei Format für URL-Modus</h4>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
                   {/* Required: Product Name */}
-                  <div className="bg-white/60 rounded-md p-2.5 border border-red-200">
+                  <div className="bg-white/[0.03] rounded-md p-2.5 border border-red-500/30">
                     <div className="flex items-center gap-1.5 mb-1.5">
                       <div className="w-2 h-2 bg-red-500 rounded-full"></div>
-                      <span className="text-xs font-medium text-gray-700">Erforderlich</span>
+                      <span className="text-xs font-medium text-white/70">Erforderlich</span>
                     </div>
-                    <div className="bg-red-50 rounded px-2 py-1 font-mono text-xs text-red-800">
+                    <div className="bg-red-500/10 rounded px-2 py-1 font-mono text-xs text-red-400">
                       Produktname
                     </div>
                   </div>
                   {/* Required: URL */}
-                  <div className="bg-white/60 rounded-md p-2.5 border border-red-200">
+                  <div className="bg-white/[0.03] rounded-md p-2.5 border border-red-500/30">
                     <div className="flex items-center gap-1.5 mb-1.5">
                       <div className="w-2 h-2 bg-red-500 rounded-full"></div>
-                      <span className="text-xs font-medium text-gray-700">Erforderlich</span>
+                      <span className="text-xs font-medium text-white/70">Erforderlich</span>
                     </div>
-                    <div className="bg-red-50 rounded px-2 py-1 font-mono text-xs text-red-800">
+                    <div className="bg-red-500/10 rounded px-2 py-1 font-mono text-xs text-red-400">
                       URL
                     </div>
                   </div>
                   {/* Optional: Article Number */}
-                  <div className="bg-white/60 rounded-md p-2.5 border border-gray-200">
+                  <div className="bg-white/[0.03] rounded-md p-2.5 border border-white/[0.08]">
                     <div className="flex items-center gap-1.5 mb-1.5">
-                      <div className="w-2 h-2 bg-gray-400 rounded-full"></div>
-                      <span className="text-xs font-medium text-gray-700">Optional</span>
+                      <div className="w-2 h-2 bg-white/40 rounded-full"></div>
+                      <span className="text-xs font-medium text-white/70">Optional</span>
                     </div>
-                    <div className="bg-gray-100/50 rounded px-2 py-1 font-mono text-xs text-gray-700">
+                    <div className="bg-white/[0.04] rounded px-2 py-1 font-mono text-xs text-white/60">
                       Artikelnummer
                     </div>
                   </div>
                 </div>
                 {/* Example Preview */}
-                <div className="mt-3 bg-white rounded-md border border-gray-200 overflow-hidden">
-                  <div className="bg-gray-100 px-2 py-1 border-b border-gray-200">
-                    <span className="text-xs font-medium text-gray-600">📋 Beispiel Excel-Struktur:</span>
+                <div className="mt-3 bg-white/[0.02] rounded-md border border-white/[0.08] overflow-hidden">
+                  <div className="bg-white/[0.03] px-2 py-1 border-b border-white/[0.08]">
+                    <span className="text-xs font-medium text-white/60">📋 Beispiel Excel-Struktur:</span>
                   </div>
                   <div className="overflow-x-auto">
                     <table className="w-full text-xs">
-                      <thead className="bg-gray-50">
+                      <thead className="bg-white/[0.02]">
                         <tr>
-                          <th className="px-2 py-1 text-left font-medium text-gray-600 border-r border-gray-200">Artikelnummer</th>
-                          <th className="px-2 py-1 text-left font-medium text-red-600 border-r border-gray-200">Produktname *</th>
-                          <th className="px-2 py-1 text-left font-medium text-red-600">URL *</th>
+                          <th className="px-2 py-1 text-left font-medium text-white/50 border-r border-white/[0.06]">Artikelnummer</th>
+                          <th className="px-2 py-1 text-left font-medium text-red-400 border-r border-white/[0.06]">Produktname *</th>
+                          <th className="px-2 py-1 text-left font-medium text-red-400">URL *</th>
                         </tr>
                       </thead>
                       <tbody>
-                        <tr className="border-t border-gray-100">
-                          <td className="px-2 py-1 text-gray-600 border-r border-gray-200">AB-001</td>
-                          <td className="px-2 py-1 text-gray-800 border-r border-gray-200">iPhone 15 Pro</td>
-                          <td className="px-2 py-1 text-blue-600 truncate max-w-[200px]">https://apple.com/iphone-15-pro</td>
+                        <tr className="border-t border-white/[0.04]">
+                          <td className="px-2 py-1 text-white/50 border-r border-white/[0.06]">AB-001</td>
+                          <td className="px-2 py-1 text-white/80 border-r border-white/[0.06]">iPhone 15 Pro</td>
+                          <td className="px-2 py-1 text-[color:var(--rb-cyan)] truncate max-w-[200px]">https://apple.com/iphone-15-pro</td>
                         </tr>
-                        <tr className="border-t border-gray-100 bg-gray-50/50">
-                          <td className="px-2 py-1 text-gray-600 border-r border-gray-200">CD-002</td>
-                          <td className="px-2 py-1 text-gray-800 border-r border-gray-200">Sony WH-1000XM5</td>
-                          <td className="px-2 py-1 text-blue-600 truncate max-w-[200px]">https://sony.com/wh-1000xm5</td>
+                        <tr className="border-t border-white/[0.04] bg-white/[0.01]">
+                          <td className="px-2 py-1 text-white/50 border-r border-white/[0.06]">CD-002</td>
+                          <td className="px-2 py-1 text-white/80 border-r border-white/[0.06]">Sony WH-1000XM5</td>
+                          <td className="px-2 py-1 text-[color:var(--rb-cyan)] truncate max-w-[200px]">https://sony.com/wh-1000xm5</td>
                         </tr>
                       </tbody>
                     </table>
                   </div>
                 </div>
-                <p className="text-xs text-emerald-700 mt-2">
+                <p className="text-xs text-[color:var(--rb-cyan)] mt-2">
                   <span className="font-medium">Tipp:</span> Die URL-Spalte enthält direkte Links zu den Produktseiten für automatische Datenextraktion.
                 </p>
               </div>
             </div>
           </div>
           
-          <div className="bg-white rounded-lg shadow-sm">
+          <div className="bg-white/[0.02] rounded-xl border border-white/[0.06]">
             <div
-              className="flex flex-col items-center justify-center border border-dashed border-gray-200 rounded-lg p-6 bg-gray-50 transition-all duration-150 hover:bg-blue-50 hover:border-blue-300 cursor-pointer"
+              className="flex flex-col items-center justify-center border border-dashed border-white/[0.1] rounded-lg p-6 bg-white/[0.02] transition-all duration-150 hover:bg-[color:var(--rb-cyan)]/5 hover:border-[color:var(--rb-cyan)]/30 cursor-pointer"
               onClick={() => fileInputRef.current?.click()}
             >
             <div className="relative">
-              <div className="bg-blue-500 rounded-full p-3">
-                <FileUp className="h-6 w-6 text-white" />
+              <div className="bg-[color:var(--rb-cyan)] rounded-full p-3">
+                <FileUp className="h-6 w-6 text-[#0c2443]" />
               </div>
             </div>
             
             <div className="mt-4 text-center">
-              <p className="text-sm font-medium text-gray-700">Produktdatei hochladen</p>
-              <p className="text-xs text-gray-500 mt-1">
+              <p className="text-sm font-medium text-white">Produktdatei hochladen</p>
+              <p className="text-xs text-white/50 mt-1">
                 {selectedFileName || "Excel oder CSV (.xlsx, .xls, .csv)"}
               </p>
             </div>
@@ -1036,11 +1036,11 @@ export default function UrlSearchTab({
                         />
                       </div>
                       
-                      {/* Property Table Selector */}
-                      <div className="flex items-center gap-2 pl-3 ml-2 border-l border-gray-300">
+                      {/* Property Table Selector - Dark Theme */}
+                      <div className="flex items-center gap-2 pl-3 ml-2 border-l border-white/20">
                         <div className="flex items-center gap-1">
-                          <Table2 className="h-3 w-3 text-blue-600" />
-                          <span className="text-xs font-medium text-blue-700">Tabelle:</span>
+                          <Table2 className="h-3 w-3 text-[color:var(--rb-cyan)]" />
+                          <span className="text-xs font-medium text-white/60">Tabelle:</span>
                         </div>
                         <Select
                           value={currentDefaultTable?.id?.toString() || ''}
@@ -1051,12 +1051,12 @@ export default function UrlSearchTab({
                             }
                           }}
                         >
-                          <SelectTrigger className="h-6 w-[120px] text-xs bg-white border-gray-300">
+                          <SelectTrigger className="h-6 w-[120px] text-xs bg-white/[0.04] border-white/[0.12] text-white/80">
                             <SelectValue placeholder="Tabelle wählen" />
                           </SelectTrigger>
-                          <SelectContent>
+                          <SelectContent className="bg-[#0c2443] border-white/10">
                             {propertyTables.map((table) => (
-                              <SelectItem key={table.id} value={table.id.toString()}>
+                              <SelectItem key={table.id} value={table.id.toString()} className="text-white/80 focus:bg-white/10">
                                 {table.name}
                               </SelectItem>
                             ))}
@@ -1066,12 +1066,12 @@ export default function UrlSearchTab({
                     </div>
                   </div>
 
-                  {/* PDF Extraction Toggle for File Mode */}
-                  <div className="flex items-center justify-between p-3 bg-purple-50 border border-purple-200 rounded-lg">
+                  {/* PDF Extraction Toggle for File Mode - Dark Theme */}
+                  <div className="flex items-center justify-between p-3 bg-purple-500/10 border border-purple-500/20 rounded-xl">
                     <div className="flex items-center space-x-2">
-                      <FileText className="h-4 w-4 text-purple-600" />
+                      <FileText className="h-4 w-4 text-purple-400" />
                       <div>
-                        <Label htmlFor="pdf-extraction-toggle-file" className="text-xs font-medium cursor-pointer">
+                        <Label htmlFor="pdf-extraction-toggle-file" className="text-xs font-medium text-white/90 cursor-pointer">
                           PDF-Datenextraktion
                         </Label>
                         <p className="text-xs text-gray-500">PDF-Inhalte zusätzlich zu URL-Daten extrahieren</p>
@@ -1165,15 +1165,15 @@ export default function UrlSearchTab({
             />
           </div>
 
-          {/* PDF Extraction Toggle */}
-          <div className="flex items-center justify-between p-4 bg-purple-50 border border-purple-200 rounded-lg">
+          {/* PDF Extraction Toggle - Dark Theme */}
+          <div className="flex items-center justify-between p-4 bg-purple-500/10 border border-purple-500/20 rounded-xl">
             <div className="flex items-center space-x-3">
-              <FileText className="h-5 w-5 text-purple-600" />
+              <FileText className="h-5 w-5 text-purple-400" />
               <div>
-                <Label htmlFor="pdf-extraction-toggle" className="text-sm font-medium cursor-pointer">
+                <Label htmlFor="pdf-extraction-toggle" className="text-sm font-medium text-white/90 cursor-pointer">
                   PDF-Datenextraktion
                 </Label>
-                <p className="text-xs text-gray-500">PDF-Inhalte zusätzlich zu URL-Daten extrahieren</p>
+                <p className="text-xs text-white/50">PDF-Inhalte zusätzlich zu URL-Daten extrahieren</p>
               </div>
             </div>
             <Switch
@@ -1183,23 +1183,23 @@ export default function UrlSearchTab({
             />
           </div>
 
-          {/* PDF Upload Section - Manual Mode */}
+          {/* PDF Upload Section - Manual Mode - Dark Theme */}
           {isPdfExtractionEnabled && (
-            <Card className="border-purple-200">
+            <Card className="border-purple-500/20">
               <CardContent className="p-4">
                 <div className="space-y-3">
                   <div className="flex items-center gap-2">
-                    <FileText className="h-4 w-4 text-purple-600" />
-                    <Label className="text-sm font-medium">PDF-Dateien hochladen ({pdfs.length}/{maxFiles})</Label>
+                    <FileText className="h-4 w-4 text-purple-400" />
+                    <Label className="text-sm font-medium text-white/80">PDF-Dateien hochladen ({pdfs.length}/{maxFiles})</Label>
                   </div>
                   
                   {canAddMore && (
                     <div
-                      className="flex flex-col items-center justify-center border-2 border-dashed border-purple-300 rounded-lg p-4 bg-purple-50 transition-colors hover:border-purple-400 cursor-pointer"
+                      className="flex flex-col items-center justify-center border-2 border-dashed border-white/20 rounded-xl p-4 bg-white/[0.02] transition-all hover:border-purple-400/50 hover:bg-white/[0.04] cursor-pointer"
                       onClick={() => pdfFileInputRef.current?.click()}
                     >
-                      <Plus className="h-8 w-8 text-purple-400 mb-1" />
-                      <p className="text-xs text-purple-600">
+                      <Plus className="h-8 w-8 text-white/30 mb-1" />
+                      <p className="text-xs text-white/60">
                         {pdfs.length === 0 ? 'PDF-Dateien auswählen' : 'Weitere PDF hinzufügen'}
                       </p>
                     </div>
@@ -1208,34 +1208,34 @@ export default function UrlSearchTab({
                   {pdfs.length > 0 && (
                     <div className="space-y-2">
                       {pdfs.map((pdf) => (
-                        <div key={pdf.id} className="p-2 bg-blue-50 border border-blue-200 rounded">
+                        <div key={pdf.id} className="p-2 bg-white/[0.04] border border-white/[0.08] rounded-lg">
                           <div className="flex items-center justify-between">
                             <div className="flex items-center gap-2">
-                              <FileText className={`h-4 w-4 ${pdf.error ? 'text-red-600' : 'text-blue-600'}`} />
+                              <FileText className={`h-4 w-4 ${pdf.error ? 'text-red-400' : 'text-purple-400'}`} />
                               <div>
-                                <p className="text-xs font-medium">{pdf.file.name}</p>
-                                <p className="text-xs text-gray-500">
+                                <p className="text-xs font-medium text-white/90">{pdf.file.name}</p>
+                                <p className="text-xs text-white/50">
                                   {(pdf.file.size / 1024 / 1024).toFixed(2)} MB
                                   {pdf.pages > 0 && ` • ${pdf.pages} Seiten`}
                                 </p>
                               </div>
                             </div>
                             <div className="flex items-center gap-1">
-                              {pdf.isProcessing && <Loader2 className="h-3 w-3 animate-spin text-blue-600" />}
+                              {pdf.isProcessing && <Loader2 className="h-3 w-3 animate-spin text-[color:var(--rb-cyan)]" />}
                               {pdf.error && (
-                                <Button variant="outline" size="sm" onClick={() => retryPDF(pdf.id)} className="h-6 px-2">
+                                <button onClick={() => retryPDF(pdf.id)} className="h-6 px-2 text-xs text-[color:var(--rb-cyan)] bg-[color:var(--rb-cyan)]/10 hover:bg-[color:var(--rb-cyan)]/20 rounded transition-colors">
                                   <RefreshCw className="h-3 w-3" />
-                                </Button>
+                                </button>
                               )}
-                              <Button variant="outline" size="sm" onClick={() => removePDF(pdf.id)} className="h-6 px-2 text-red-600">
+                              <button onClick={() => removePDF(pdf.id)} className="h-6 px-2 text-red-400 bg-red-500/10 hover:bg-red-500/20 rounded transition-colors">
                                 <X className="h-3 w-3" />
-                              </Button>
+                              </button>
                             </div>
                           </div>
                           {pdf.error && (
                             <div className="mt-1 flex items-center gap-1">
-                              <AlertCircle className="h-3 w-3 text-red-600" />
-                              <p className="text-xs text-red-600">{pdf.error}</p>
+                              <AlertCircle className="h-3 w-3 text-red-400" />
+                              <p className="text-xs text-red-400">{pdf.error}</p>
                             </div>
                           )}
                         </div>
@@ -1291,12 +1291,12 @@ export default function UrlSearchTab({
             </Card>
           )}
 
-          {/* Property Table Selector for Manual Mode */}
-          <div className="flex items-center space-x-3 px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg">
+          {/* Property Table Selector for Manual Mode - Dark Theme */}
+          <div className="flex items-center space-x-3 px-3 py-2 bg-white/[0.02] border border-white/[0.08] rounded-xl">
             <div className="flex items-center gap-2">
               <div className="flex items-center gap-1">
-                <Table2 className="h-3 w-3 text-blue-600" />
-                <span className="text-xs font-medium text-blue-700">Tabelle:</span>
+                <Table2 className="h-3 w-3 text-[color:var(--rb-cyan)]" />
+                <span className="text-xs font-medium text-white/60">Tabelle:</span>
               </div>
               <Select
                 value={currentDefaultTable?.id?.toString() || ''}
@@ -1307,12 +1307,12 @@ export default function UrlSearchTab({
                   }
                 }}
               >
-                <SelectTrigger className="h-6 w-[120px] text-xs bg-white border-gray-300">
+                <SelectTrigger className="h-6 w-[120px] text-xs bg-white/[0.04] border-white/[0.12] text-white/80">
                   <SelectValue placeholder="Tabelle wählen" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="bg-[#0c2443] border-white/10">
                   {propertyTables.map((table) => (
-                    <SelectItem key={table.id} value={table.id.toString()}>
+                    <SelectItem key={table.id} value={table.id.toString()} className="text-white/80 focus:bg-white/10">
                       {table.name}
                     </SelectItem>
                   ))}
@@ -1322,18 +1322,18 @@ export default function UrlSearchTab({
           </div>
 
           <div className="flex gap-2 flex-wrap">
-            <Button
+            <button
               onClick={handleExtractData}
               disabled={extractDataMutation.isPending || !singleProduct.productUrl || !singleProduct.productName || (isPdfExtractionEnabled && !hasValidPDFs)}
-              className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-[color:var(--rb-cyan)] hover:bg-[color:var(--rb-cyan)]/90 text-white font-medium text-sm rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {extractDataMutation.isPending ? (
-                <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                <Loader2 className="h-4 w-4 animate-spin" />
               ) : (
-                <Globe className="h-4 w-4 mr-2" />
+                <Globe className="h-4 w-4" />
               )}
               Daten extrahieren
-            </Button>
+            </button>
           </div>
 
           {/* Hidden file input */}

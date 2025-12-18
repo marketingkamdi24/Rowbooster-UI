@@ -4,8 +4,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { CheckCircle2, XCircle, Loader2, Mail, RefreshCw, Send } from "lucide-react";
-import rowboosterIcon from "@assets/rb-2_1753205370923.png";
+import { CheckCircle2, XCircle, Loader2, Mail, RefreshCw, Send, Sun, Moon } from "lucide-react";
+import rowboosterIcon from "@konzept/Logo/RowBooster_Bildmarke.png";
+import { useTheme } from "@/contexts/ThemeContext";
 
 export default function VerifyEmailPage() {
   const [, setLocation] = useLocation();
@@ -16,6 +17,7 @@ export default function VerifyEmailPage() {
   const [resendEmail, setResendEmail] = useState('');
   const [resendStatus, setResendStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
   const [resendMessage, setResendMessage] = useState('');
+  const { theme, toggleTheme } = useTheme();
   
   useEffect(() => {
     const verifyEmail = async () => {
@@ -128,24 +130,44 @@ export default function VerifyEmailPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-blue-50 p-4">
-      <Card className="w-full max-w-md shadow-xl">
+    <div className={`min-h-screen flex items-center justify-center p-4 transition-colors duration-300 ${
+      theme === 'dark'
+        ? 'bg-[linear-gradient(135deg,#0E1621_0%,#1a2332_100%)]'
+        : 'bg-[linear-gradient(135deg,#ecf5fa_0%,#e0f0f5_100%)]'
+    }`}>
+      {/* Theme Toggle Button */}
+      <button
+        onClick={toggleTheme}
+        className={`fixed top-4 right-4 z-50 p-3 rounded-xl transition-all duration-300 ${
+          theme === 'dark'
+            ? 'bg-white/10 hover:bg-white/20 text-white'
+            : 'bg-[#17c3ce]/10 hover:bg-[#17c3ce]/20 text-[#0c2443]'
+        }`}
+        title={theme === 'dark' ? 'Zum Light Mode wechseln' : 'Zum Dark Mode wechseln'}
+      >
+        {theme === 'dark' ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+      </button>
+
+      <Card className={`w-full max-w-md shadow-xl border backdrop-blur-xl ${
+        theme === 'dark'
+          ? 'border-white/[0.08] bg-white/[0.05]'
+          : 'border-[#17c3ce]/20 bg-white/80'
+      }`}>
         <CardHeader className="text-center">
-          <div className="mx-auto w-16 h-16 bg-white rounded-2xl flex items-center justify-center mb-4 shadow-lg border border-gray-200">
-            <img
-              src={rowboosterIcon}
-              alt="Rowbooster"
-              className="w-12 h-12 object-contain"
-            />
+          <div className="mx-auto mb-4 flex items-center justify-center">
+            <div className="relative">
+              <div className="pointer-events-none absolute -inset-6 rounded-full bg-[radial-gradient(circle_at_center,rgba(23,195,206,0.22),transparent_60%)] blur-xl" />
+              <img src={rowboosterIcon} alt="rowbooster" className="relative h-16 w-16 object-contain" />
+            </div>
           </div>
-          <CardTitle className="text-2xl">
+          <CardTitle className={`text-2xl ${theme === 'dark' ? 'text-white' : 'text-[#0c2443]'}`}>
             {status === 'verifying' && 'E-Mail wird verifiziert'}
             {status === 'success' && 'E-Mail verifiziert!'}
             {status === 'error' && 'Verifizierung fehlgeschlagen'}
             {status === 'input' && 'Verifizierungscode eingeben'}
             {status === 'resend' && 'Verifizierungs-E-Mail erneut senden'}
           </CardTitle>
-          <CardDescription>
+          <CardDescription className={theme === 'dark' ? 'text-white/60' : 'text-[#0c2443]/60'}>
             {status === 'verifying' && 'Bitte warten Sie, während wir Ihre E-Mail-Adresse verifizieren...'}
             {status === 'success' && 'Ihr Konto wurde aktiviert'}
             {status === 'error' && 'Bei der Verifizierung Ihrer E-Mail ist ein Problem aufgetreten'}
@@ -156,30 +178,36 @@ export default function VerifyEmailPage() {
         <CardContent className="space-y-4">
           {status === 'verifying' && (
             <div className="flex flex-col items-center justify-center py-8">
-              <Loader2 className="h-12 w-12 text-blue-600 animate-spin mb-4" />
-              <p className="text-sm text-gray-600">Ihre E-Mail-Adresse wird verifiziert...</p>
+              <Loader2 className="h-12 w-12 text-[#17c3ce] animate-spin mb-4" />
+              <p className={`text-sm ${theme === 'dark' ? 'text-white/60' : 'text-[#0c2443]/60'}`}>Ihre E-Mail-Adresse wird verifiziert...</p>
             </div>
           )}
 
           {status === 'success' && (
             <>
               <div className="flex flex-col items-center justify-center py-4">
-                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4">
-                  <CheckCircle2 className="w-10 h-10 text-green-600" />
+                <div className={`w-16 h-16 rounded-full flex items-center justify-center mb-4 ${
+                  theme === 'dark' ? 'bg-[#17c3ce]/20' : 'bg-[#17c3ce]/20'
+                }`}>
+                  <CheckCircle2 className="w-10 h-10 text-[#17c3ce]" />
                 </div>
-                <Alert className="border-green-200 bg-green-50">
-                  <CheckCircle2 className="h-4 w-4 text-green-600" />
-                  <AlertDescription className="text-green-900 ml-2">
+                <Alert className="border-[#17c3ce]/30 bg-[#17c3ce]/10">
+                  <CheckCircle2 className="h-4 w-4 text-[#17c3ce]" />
+                  <AlertDescription className={`ml-2 ${theme === 'dark' ? 'text-white/90' : 'text-[#0c2443]/90'}`}>
                     {message}
                   </AlertDescription>
                 </Alert>
               </div>
-              <div className="text-center text-sm text-gray-600">
+              <div className={`text-center text-sm ${theme === 'dark' ? 'text-white/60' : 'text-[#0c2443]/60'}`}>
                 <p className="mb-2">Sie können sich jetzt in Ihr Konto einloggen.</p>
-                <p className="text-xs text-gray-500">Weiterleitung zur Anmeldung in 3 Sekunden...</p>
+                <p className={`text-xs ${theme === 'dark' ? 'text-white/50' : 'text-[#0c2443]/50'}`}>Weiterleitung zur Anmeldung in 3 Sekunden...</p>
               </div>
               <Link href="/login">
-                <Button className="w-full">
+                <Button className={`w-full rounded-xl transition-all duration-300 ${
+                  theme === 'dark'
+                    ? '!bg-[#c8fa64] text-[#0c2443] hover:brightness-105'
+                    : '!bg-[#17c3ce] text-white hover:brightness-105'
+                }`}>
                   Jetzt zur Anmeldung
                 </Button>
               </Link>
@@ -189,17 +217,17 @@ export default function VerifyEmailPage() {
           {status === 'error' && (
             <>
               <div className="flex flex-col items-center justify-center py-4">
-                <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mb-4">
-                  <XCircle className="w-10 h-10 text-red-600" />
+                <div className="w-16 h-16 bg-red-500/20 rounded-full flex items-center justify-center mb-4">
+                  <XCircle className="w-10 h-10 text-red-500" />
                 </div>
-                <Alert variant="destructive">
-                  <XCircle className="h-4 w-4" />
-                  <AlertDescription className="ml-2">
+                <Alert variant="destructive" className="border-red-500/30 bg-red-500/10">
+                  <XCircle className="h-4 w-4 text-red-500" />
+                  <AlertDescription className="ml-2 text-red-600">
                     {message}
                   </AlertDescription>
                 </Alert>
               </div>
-              <div className="text-sm text-gray-600 space-y-2">
+              <div className={`text-sm space-y-2 ${theme === 'dark' ? 'text-white/60' : 'text-[#0c2443]/60'}`}>
                 <p className="font-semibold">Was Sie als nächstes tun können:</p>
                 <ul className="list-disc list-inside space-y-1 ml-2">
                   <li>Prüfen Sie, ob der Link abgelaufen ist (1-Stunden-Limit)</li>
@@ -210,24 +238,36 @@ export default function VerifyEmailPage() {
               </div>
               <div className="space-y-2">
                 <Link href="/login">
-                  <Button className="w-full" variant="outline">
+                  <Button className={`w-full rounded-xl ${
+                    theme === 'dark'
+                      ? 'border-white/20 bg-white/5 text-white hover:bg-white/10'
+                      : 'border-[#17c3ce]/30 bg-white text-[#0c2443] hover:bg-[#17c3ce]/5'
+                  }`} variant="outline">
                     Zurück zur Anmeldung
                   </Button>
                 </Link>
                 <Link href="/register">
-                  <Button className="w-full" variant="outline">
+                  <Button className={`w-full rounded-xl ${
+                    theme === 'dark'
+                      ? 'border-white/20 bg-white/5 text-white hover:bg-white/10'
+                      : 'border-[#17c3ce]/30 bg-white text-[#0c2443] hover:bg-[#17c3ce]/5'
+                  }`} variant="outline">
                     Erneut registrieren
                   </Button>
                 </Link>
                 <Button
-                  className="w-full"
+                  className={`w-full rounded-xl ${
+                    theme === 'dark'
+                      ? 'border-white/20 bg-white/5 text-white hover:bg-white/10'
+                      : 'border-[#17c3ce]/30 bg-white text-[#0c2443] hover:bg-[#17c3ce]/5'
+                  }`}
                   variant="outline"
                   onClick={() => setStatus('input')}
                 >
                   Verifizierungscode eingeben
                 </Button>
                 <Button
-                  className="w-full"
+                  className={`w-full rounded-xl ${theme === 'dark' ? 'text-white/70 hover:text-white' : 'text-[#0c2443]/70 hover:text-[#0c2443]'}`}
                   variant="ghost"
                   onClick={() => {
                     setStatus('resend');
@@ -245,19 +285,19 @@ export default function VerifyEmailPage() {
           {status === 'input' && (
             <>
               <div className="flex flex-col items-center justify-center py-4">
-                <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-4">
-                  <Mail className="w-10 h-10 text-blue-600" />
+                <div className="w-16 h-16 bg-[#17c3ce]/20 rounded-full flex items-center justify-center mb-4">
+                  <Mail className="w-10 h-10 text-[#17c3ce]" />
                 </div>
-                <Alert className="border-blue-200 bg-blue-50">
-                  <Mail className="h-4 w-4 text-blue-600" />
-                  <AlertDescription className="text-blue-900 ml-2">
+                <Alert className="border-[#17c3ce]/30 bg-[#17c3ce]/10">
+                  <Mail className="h-4 w-4 text-[#17c3ce]" />
+                  <AlertDescription className={`ml-2 ${theme === 'dark' ? 'text-white/90' : 'text-[#0c2443]/90'}`}>
                     {message}
                   </AlertDescription>
                 </Alert>
               </div>
               <form onSubmit={handleCodeSubmit} className="space-y-4">
                 <div className="space-y-2">
-                  <label htmlFor="code" className="text-sm font-medium">
+                  <label htmlFor="code" className={`text-sm font-medium ${theme === 'dark' ? 'text-white/90' : 'text-[#0c2443]/90'}`}>
                     Verifizierungscode
                   </label>
                   <Input
@@ -267,27 +307,35 @@ export default function VerifyEmailPage() {
                     maxLength={6}
                     value={verificationCode}
                     onChange={(e) => setVerificationCode(e.target.value.replace(/\D/g, ''))}
-                    className="text-center text-2xl tracking-widest font-mono"
+                    className={`text-center text-2xl tracking-widest font-mono focus-visible:ring-2 focus-visible:ring-[#17c3ce]/45 focus-visible:ring-offset-0 ${
+                      theme === 'dark'
+                        ? 'bg-white/[0.04] text-white placeholder:text-white/40 border-white/[0.10]'
+                        : 'bg-[#ecf5fa] text-[#0c2443] placeholder:text-[#0c2443]/40 border-[#17c3ce]/20'
+                    }`}
                     autoComplete="off"
                   />
-                  <p className="text-xs text-gray-500">
+                  <p className={`text-xs ${theme === 'dark' ? 'text-white/50' : 'text-[#0c2443]/50'}`}>
                     Geben Sie den 6-stelligen Code aus Ihrer E-Mail ein
                   </p>
                 </div>
                 <Button
                   type="submit"
-                  className="w-full"
+                  className={`w-full rounded-xl transition-all duration-300 ${
+                    theme === 'dark'
+                      ? '!bg-[#c8fa64] text-[#0c2443] hover:brightness-105'
+                      : '!bg-[#17c3ce] text-white hover:brightness-105'
+                  }`}
                   disabled={isSubmitting || verificationCode.length !== 6}
                 >
                   {isSubmitting ? 'Wird verifiziert...' : 'E-Mail verifizieren'}
                 </Button>
               </form>
-              <div className="mt-4 text-center text-xs text-gray-500">
+              <div className={`mt-4 text-center text-xs ${theme === 'dark' ? 'text-white/50' : 'text-[#0c2443]/50'}`}>
                 <p>⚠️ Der Code läuft nach 1 Stunde ab</p>
               </div>
               <div className="mt-4 space-y-2">
                 <Button
-                  className="w-full"
+                  className={`w-full rounded-xl ${theme === 'dark' ? 'text-white/70 hover:text-white' : 'text-[#0c2443]/70 hover:text-[#0c2443]'}`}
                   variant="ghost"
                   onClick={() => {
                     setStatus('resend');
@@ -299,7 +347,11 @@ export default function VerifyEmailPage() {
                   E-Mail nicht erhalten? Erneut senden
                 </Button>
                 <Link href="/login">
-                  <Button className="w-full" variant="outline">
+                  <Button className={`w-full rounded-xl ${
+                    theme === 'dark'
+                      ? 'border-white/20 bg-white/5 text-white hover:bg-white/10'
+                      : 'border-[#17c3ce]/30 bg-white text-[#0c2443] hover:bg-[#17c3ce]/5'
+                  }`} variant="outline">
                     Zurück zur Anmeldung
                   </Button>
                 </Link>
@@ -310,21 +362,21 @@ export default function VerifyEmailPage() {
           {status === 'resend' && (
             <>
               <div className="flex flex-col items-center justify-center py-4">
-                <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mb-4">
-                  <Send className="w-10 h-10 text-purple-600" />
+                <div className="w-16 h-16 bg-[#17c3ce]/20 rounded-full flex items-center justify-center mb-4">
+                  <Send className="w-10 h-10 text-[#17c3ce]" />
                 </div>
                 {resendStatus === 'sent' && (
-                  <Alert className="border-green-200 bg-green-50">
-                    <CheckCircle2 className="h-4 w-4 text-green-600" />
-                    <AlertDescription className="text-green-900 ml-2">
+                  <Alert className="border-[#17c3ce]/30 bg-[#17c3ce]/10">
+                    <CheckCircle2 className="h-4 w-4 text-[#17c3ce]" />
+                    <AlertDescription className={`ml-2 ${theme === 'dark' ? 'text-white/90' : 'text-[#0c2443]/90'}`}>
                       {resendMessage}
                     </AlertDescription>
                   </Alert>
                 )}
                 {resendStatus === 'error' && (
-                  <Alert variant="destructive">
-                    <XCircle className="h-4 w-4" />
-                    <AlertDescription className="ml-2">
+                  <Alert variant="destructive" className="border-red-500/30 bg-red-500/10">
+                    <XCircle className="h-4 w-4 text-red-500" />
+                    <AlertDescription className="ml-2 text-red-600">
                       {resendMessage}
                     </AlertDescription>
                   </Alert>
@@ -334,7 +386,7 @@ export default function VerifyEmailPage() {
               {resendStatus !== 'sent' && (
                 <form onSubmit={handleResendVerification} className="space-y-4">
                   <div className="space-y-2">
-                    <label htmlFor="resend-email" className="text-sm font-medium">
+                    <label htmlFor="resend-email" className={`text-sm font-medium ${theme === 'dark' ? 'text-white/90' : 'text-[#0c2443]/90'}`}>
                       Ihre E-Mail-Adresse
                     </label>
                     <Input
@@ -343,16 +395,24 @@ export default function VerifyEmailPage() {
                       placeholder="ihre@email.de"
                       value={resendEmail}
                       onChange={(e) => setResendEmail(e.target.value)}
-                      className="text-center"
+                      className={`text-center focus-visible:ring-2 focus-visible:ring-[#17c3ce]/45 focus-visible:ring-offset-0 ${
+                        theme === 'dark'
+                          ? 'bg-white/[0.04] text-white placeholder:text-white/40 border-white/[0.10]'
+                          : 'bg-[#ecf5fa] text-[#0c2443] placeholder:text-[#0c2443]/40 border-[#17c3ce]/20'
+                      }`}
                       autoComplete="email"
                     />
-                    <p className="text-xs text-gray-500">
+                    <p className={`text-xs ${theme === 'dark' ? 'text-white/50' : 'text-[#0c2443]/50'}`}>
                       Geben Sie die E-Mail-Adresse ein, mit der Sie sich registriert haben
                     </p>
                   </div>
                   <Button
                     type="submit"
-                    className="w-full"
+                    className={`w-full rounded-xl transition-all duration-300 ${
+                      theme === 'dark'
+                        ? '!bg-[#c8fa64] text-[#0c2443] hover:brightness-105'
+                        : '!bg-[#17c3ce] text-white hover:brightness-105'
+                    }`}
                     disabled={resendStatus === 'sending' || !resendEmail}
                   >
                     {resendStatus === 'sending' ? (
@@ -372,11 +432,15 @@ export default function VerifyEmailPage() {
 
               {resendStatus === 'sent' && (
                 <div className="space-y-2">
-                  <p className="text-sm text-center text-gray-600">
+                  <p className={`text-sm text-center ${theme === 'dark' ? 'text-white/60' : 'text-[#0c2443]/60'}`}>
                     Überprüfen Sie Ihren Posteingang und Spam-Ordner auf die Verifizierungs-E-Mail.
                   </p>
                   <Button
-                    className="w-full"
+                    className={`w-full rounded-xl transition-all duration-300 ${
+                      theme === 'dark'
+                        ? '!bg-[#c8fa64] text-[#0c2443] hover:brightness-105'
+                        : '!bg-[#17c3ce] text-white hover:brightness-105'
+                    }`}
                     onClick={() => {
                       setStatus('input');
                       setResendStatus('idle');
@@ -389,14 +453,18 @@ export default function VerifyEmailPage() {
 
               <div className="mt-4 space-y-2">
                 <Button
-                  className="w-full"
+                  className={`w-full rounded-xl ${
+                    theme === 'dark'
+                      ? 'border-white/20 bg-white/5 text-white hover:bg-white/10'
+                      : 'border-[#17c3ce]/30 bg-white text-[#0c2443] hover:bg-[#17c3ce]/5'
+                  }`}
                   variant="outline"
                   onClick={() => setStatus('input')}
                 >
                   Ich habe einen Code
                 </Button>
                 <Link href="/login">
-                  <Button className="w-full" variant="ghost">
+                  <Button className={`w-full rounded-xl ${theme === 'dark' ? 'text-white/70 hover:text-white' : 'text-[#0c2443]/70 hover:text-[#0c2443]'}`} variant="ghost">
                     Zurück zur Anmeldung
                   </Button>
                 </Link>

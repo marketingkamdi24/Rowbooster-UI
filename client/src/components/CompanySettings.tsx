@@ -105,30 +105,31 @@ export default function CompanySettings({
   };
 
   return (
-    <Card>
-      <CardHeader className="p-4 border-b border-gray-200">
-        <CardTitle className="text-lg font-semibold text-gray-800 flex items-center gap-2">
-          <Building2 className="h-5 w-5 text-blue-600" />
+    <Card className="bg-black/20 backdrop-blur-sm border-white/10">
+      <CardHeader className="p-3 sm:p-4 border-b border-white/10">
+        <CardTitle className="text-base sm:text-lg font-semibold text-white flex items-center gap-2">
+          <Building2 className="h-5 w-5 text-[var(--rb-cyan)] flex-shrink-0" />
           Unternehmenseinstellungen
         </CardTitle>
       </CardHeader>
-      <CardContent className="p-6">
+      <CardContent className="p-4 sm:p-6">
         <div className="space-y-6">
           <div className="space-y-2">
-            <Label htmlFor="company-name" className="text-sm font-medium">Unternehmensname</Label>
+            <Label htmlFor="company-name" className="text-sm font-medium text-white/90">Unternehmensname</Label>
             <Input 
               id="company-name" 
               placeholder="Ihr Unternehmen GmbH" 
               value={companyName}
               onChange={handleCompanyNameChange}
+              className="bg-black/30 border-white/15 text-white placeholder:text-white/40 focus:border-[var(--rb-cyan)]"
             />
-            <p className="text-xs text-gray-500">Der Name wird in der Kopfzeile angezeigt</p>
+            <p className="text-xs text-white/50">Der Name wird in der Kopfzeile angezeigt</p>
           </div>
 
           <div className="space-y-2">
-            <Label className="text-sm font-medium">Unternehmenslogo</Label>
-            <div className="flex items-start space-x-4">
-              <div className="min-w-24 min-h-24 w-24 h-24 bg-gray-100 border rounded-md flex items-center justify-center relative">
+            <Label className="text-sm font-medium text-white/90">Unternehmenslogo</Label>
+            <div className="flex flex-col sm:flex-row items-start gap-4">
+              <div className="min-w-20 min-h-20 w-20 h-20 sm:min-w-24 sm:min-h-24 sm:w-24 sm:h-24 bg-black/30 border border-white/15 rounded-xl flex items-center justify-center relative flex-shrink-0">
                 {companyLogo ? (
                   <>
                     <img 
@@ -145,17 +146,17 @@ export default function CompanySettings({
                     </button>
                   </>
                 ) : (
-                  <Building2 className="h-10 w-10 text-gray-300" />
+                  <Building2 className="h-10 w-10 text-white/30" />
                 )}
               </div>
-              <div className="flex flex-col">
+              <div className="flex flex-col min-w-0">
                 <Button 
                   variant="outline" 
                   size="sm" 
-                  className="mb-2"
+                  className="mb-2 border-white/20 text-white/80 hover:bg-white/10 hover:text-white whitespace-nowrap"
                   onClick={() => fileInputRef.current?.click()}
                 >
-                  <Upload className="h-4 w-4 mr-2" />
+                  <Upload className="h-4 w-4 mr-2 flex-shrink-0" />
                   Logo hochladen
                 </Button>
                 <input
@@ -165,7 +166,7 @@ export default function CompanySettings({
                   className="hidden"
                   onChange={handleLogoSelection}
                 />
-                <p className="text-xs text-gray-500">
+                <p className="text-xs text-white/50 break-words">
                   Empfohlene Größe: 200x200 Pixel, max. 2MB
                 </p>
               </div>

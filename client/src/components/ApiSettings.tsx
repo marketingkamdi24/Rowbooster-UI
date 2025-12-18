@@ -280,29 +280,29 @@ export default function ApiSettings({
   return (
     <div className="space-y-6">
       {/* Security Notice */}
-      <div className="bg-green-50 border border-green-200 rounded-lg p-4 flex items-start gap-3">
-        <Shield className="h-5 w-5 text-green-600 flex-shrink-0 mt-0.5" />
-        <div>
-          <h4 className="text-sm font-medium text-green-800">Sichere API-Schlüssel-Speicherung</h4>
-          <p className="text-sm text-green-700 mt-1">
-            Ihre API-Schlüssel werden mit AES-256-GCM verschlüsselt und sicher auf dem Server gespeichert.
-            Schlüssel werden nach der ersten Eingabe nie mehr im Browser angezeigt.
+      <div className="bg-[rgba(200,250,100,0.1)] border border-[rgba(200,250,100,0.2)] rounded-xl p-3 sm:p-4 flex items-start gap-2 sm:gap-3">
+        <Shield className="h-5 w-5 text-[var(--rb-lime)] flex-shrink-0 mt-0.5" />
+        <div className="min-w-0">
+          <h4 className="text-xs sm:text-sm font-medium text-[var(--rb-lime)]">Sichere API-Schlüssel-Speicherung</h4>
+          <p className="text-xs sm:text-sm text-white/70 mt-1 break-words">
+            Ihre API-Schlüssel werden mit AES-256-GCM verschlüsselt und sicher auf dem Server gespeichert. Schlüssel werden nach der ersten Eingabe nie mehr im Browser angezeigt.
           </p>
         </div>
       </div>
 
       {/* AI Configuration Section */}
-      <Card>
-        <CardHeader className="p-4 border-b border-gray-200">
-          <CardTitle className="text-lg font-semibold text-gray-800 flex items-center gap-2">
-            <Sparkles className="h-5 w-5 text-purple-600" />
-            KI-gestützte Extraktions-Einstellungen
+      <Card className="bg-black/20 backdrop-blur-sm border-white/10">
+        <CardHeader className="p-3 sm:p-4 border-b border-white/10">
+          <CardTitle className="text-base sm:text-lg font-semibold text-white flex items-center gap-2">
+            <Sparkles className="h-5 w-5 text-[var(--rb-lime)] flex-shrink-0" />
+            <span className="hidden sm:inline">KI-gestützte Extraktions-Einstellungen</span>
+            <span className="sm:hidden">KI-Einstellungen</span>
           </CardTitle>
         </CardHeader>
-        <CardContent className="p-6 space-y-6">
+        <CardContent className="p-4 sm:p-6 space-y-4 sm:space-y-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Label htmlFor="ai-toggle" className="cursor-pointer text-gray-800">KI-gestützte Extraktion aktivieren</Label>
+              <Label htmlFor="ai-toggle" className="cursor-pointer text-white/90">KI-gestützte Extraktion aktivieren</Label>
             </div>
             <Switch 
               id="ai-toggle" 
@@ -313,33 +313,33 @@ export default function ApiSettings({
           
           {useAI && (
             <div className="space-y-6">
-              <div className="bg-white bg-opacity-70 p-3 rounded border border-purple-100 text-sm flex gap-2">
-                <Info className="h-5 w-5 text-purple-600 flex-shrink-0" />
-                <p className="text-gray-700">
+              <div className="bg-black/30 p-3 rounded-xl border border-white/10 text-sm flex gap-2">
+                <Info className="h-5 w-5 text-[var(--rb-cyan)] flex-shrink-0" />
+                <p className="text-white/70">
                   Die KI-Verbesserung analysiert Produktinformationen mit OpenAI GPT-4.1, um die Extraktionsgenauigkeit zu verbessern.
                 </p>
               </div>
               
               {/* OpenAI Key Input */}
-              <div className="p-4 rounded border border-gray-200">
-                <Label className="text-sm text-gray-800 font-medium mb-2 block flex items-center gap-2">
-                  <BrainCircuit className="h-4 w-4 text-green-600" />
+              <div className="p-4 rounded-xl border border-white/10 bg-black/20">
+                <Label className="text-sm text-white/90 font-medium mb-2 block flex items-center gap-2">
+                  <BrainCircuit className="h-4 w-4 text-[var(--rb-lime)]" />
                   OpenAI API Key (GPT-4.1)
                 </Label>
                 
                 {openaiStatus?.source === 'environment' ? (
-                  <div className="flex items-center gap-2 p-3 bg-green-50 rounded border border-green-200">
-                    <CheckCircle2 className="h-5 w-5 text-green-600" />
-                    <p className="text-sm text-green-800">
+                  <div className="flex items-center gap-2 p-3 bg-[rgba(200,250,100,0.1)] rounded-xl border border-[rgba(200,250,100,0.2)]">
+                    <CheckCircle2 className="h-5 w-5 text-[var(--rb-lime)]" />
+                    <p className="text-sm text-white/80">
                       OpenAI API-Schlüssel aus Umgebungsvariablen wird verwendet.
                     </p>
                   </div>
                 ) : openaiStatus?.configured ? (
                   <div className="space-y-4">
-                    <div className="flex items-center gap-2 p-3 bg-green-50 rounded border border-green-200">
-                      <CheckCircle2 className="h-5 w-5 text-green-600" />
+                    <div className="flex items-center gap-2 p-3 bg-[rgba(200,250,100,0.1)] rounded-xl border border-[rgba(200,250,100,0.2)]">
+                      <CheckCircle2 className="h-5 w-5 text-[var(--rb-lime)]" />
                       <div className="flex-1">
-                        <p className="text-sm text-green-800">
+                        <p className="text-sm text-white/80">
                           OpenAI API-Schlüssel ist sicher gespeichert und verschlüsselt.
                         </p>
                       </div>
@@ -359,8 +359,8 @@ export default function ApiSettings({
                     </div>
                     
                     {/* Option to update key */}
-                    <div className="border-t pt-4">
-                      <p className="text-sm text-gray-600 mb-2 flex items-center gap-1">
+                    <div className="border-t border-white/10 pt-4">
+                      <p className="text-sm text-white/60 mb-2 flex items-center gap-1">
                         <RefreshCw className="h-4 w-4" />
                         API-Schlüssel aktualisieren (neuen Schlüssel eingeben)
                       </p>
@@ -371,9 +371,9 @@ export default function ApiSettings({
                           value={openaiApiKey}
                           onChange={(e) => setOpenaiApiKey(e.target.value)}
                           placeholder="Neuen OpenAI API-Schlüssel eingeben"
-                          className="w-full h-10 px-3 py-2 bg-white border border-gray-300 rounded-md pr-9"
+                          className="w-full h-10 px-3 py-2 bg-black/30 border border-white/15 rounded-xl pr-9 text-white placeholder:text-white/40 focus:border-[var(--rb-cyan)] focus:outline-none"
                         />
-                        <Key className="h-4 w-4 absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                        <Key className="h-4 w-4 absolute right-3 top-1/2 transform -translate-y-1/2 text-white/40" />
                       </div>
                       <div className="flex gap-2 mt-2">
                         <Button 
@@ -403,9 +403,9 @@ export default function ApiSettings({
                   </div>
                 ) : (
                   <div className="space-y-4">
-                    <div className="flex items-center gap-2 p-3 bg-yellow-50 rounded border border-yellow-200">
-                      <AlertCircle className="h-5 w-5 text-yellow-600" />
-                      <p className="text-sm text-yellow-800">
+                    <div className="flex items-center gap-2 p-3 bg-[rgba(251,191,36,0.1)] rounded-xl border border-[rgba(251,191,36,0.2)]">
+                      <AlertCircle className="h-5 w-5 text-amber-400" />
+                      <p className="text-sm text-white/80">
                         Kein OpenAI API-Schlüssel konfiguriert. Geben Sie unten Ihren Schlüssel ein, um KI-Funktionen zu aktivieren.
                       </p>
                     </div>
@@ -417,11 +417,11 @@ export default function ApiSettings({
                           value={openaiApiKey}
                           onChange={(e) => setOpenaiApiKey(e.target.value)}
                           placeholder="sk-proj-..."
-                          className="w-full h-10 px-3 py-2 bg-white border border-gray-300 rounded-md pr-9"
+                          className="w-full h-10 px-3 py-2 bg-black/30 border border-white/15 rounded-xl pr-9 text-white placeholder:text-white/40 focus:border-[var(--rb-cyan)] focus:outline-none"
                         />
-                        <Key className="h-4 w-4 absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                        <Key className="h-4 w-4 absolute right-3 top-1/2 transform -translate-y-1/2 text-white/40" />
                       </div>
-                      <p className="text-xs text-gray-500 mt-1">Ihr Schlüssel wird verschlüsselt und sicher gespeichert</p>
+                      <p className="text-xs text-white/50 mt-1">Ihr Schlüssel wird verschlüsselt und sicher gespeichert</p>
                     </div>
                     <div className="flex gap-2 justify-end">
                       <Button
@@ -455,10 +455,10 @@ export default function ApiSettings({
       </Card>
 
       {/* Search Engine API Section */}
-      <Card>
-        <CardHeader className="p-4 border-b border-gray-200">
-          <CardTitle className="text-lg font-semibold text-gray-800 flex items-center gap-2">
-            <Search className="h-5 w-5 text-blue-600" />
+      <Card className="bg-black/20 backdrop-blur-sm border-white/10">
+        <CardHeader className="p-4 border-b border-white/10">
+          <CardTitle className="text-lg font-semibold text-white flex items-center gap-2">
+            <Search className="h-5 w-5 text-[var(--rb-cyan)]" />
             Such-API-Einstellungen
           </CardTitle>
         </CardHeader>
@@ -466,8 +466,8 @@ export default function ApiSettings({
           <div>
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
-                <Globe className="h-4 w-4 text-purple-600" />
-                <Label htmlFor="valueserp-toggle" className="cursor-pointer text-gray-800 font-medium">
+                <Globe className="h-4 w-4 text-[var(--rb-cyan)]" />
+                <Label htmlFor="valueserp-toggle" className="cursor-pointer text-white/90 font-medium">
                   ValueSERP als Suchanbieter verwenden
                 </Label>
               </div>
@@ -481,18 +481,18 @@ export default function ApiSettings({
             {useValueSerp && (
               <div className="space-y-4 mt-4">
                 {valueSerpStatus?.source === 'environment' ? (
-                  <div className="flex items-center gap-2 p-3 bg-green-50 rounded border border-green-200">
-                    <CheckCircle2 className="h-5 w-5 text-green-600" />
-                    <p className="text-sm text-green-800">
+                  <div className="flex items-center gap-2 p-3 bg-[rgba(200,250,100,0.1)] rounded-xl border border-[rgba(200,250,100,0.2)]">
+                    <CheckCircle2 className="h-5 w-5 text-[var(--rb-lime)]" />
+                    <p className="text-sm text-white/80">
                       ValueSERP API-Schlüssel aus Umgebungsvariablen wird verwendet.
                     </p>
                   </div>
                 ) : valueSerpStatus?.configured ? (
                   <div className="space-y-4">
-                    <div className="flex items-center gap-2 p-3 bg-green-50 rounded border border-green-200">
-                      <CheckCircle2 className="h-5 w-5 text-green-600" />
+                    <div className="flex items-center gap-2 p-3 bg-[rgba(200,250,100,0.1)] rounded-xl border border-[rgba(200,250,100,0.2)]">
+                      <CheckCircle2 className="h-5 w-5 text-[var(--rb-lime)]" />
                       <div className="flex-1">
-                        <p className="text-sm text-green-800">
+                        <p className="text-sm text-white/80">
                           ValueSERP API-Schlüssel ist sicher gespeichert und verschlüsselt.
                         </p>
                       </div>
@@ -512,8 +512,8 @@ export default function ApiSettings({
                     </div>
                     
                     {/* Option to update key */}
-                    <div className="border-t pt-4">
-                      <p className="text-sm text-gray-600 mb-2 flex items-center gap-1">
+                    <div className="border-t border-white/10 pt-4">
+                      <p className="text-sm text-white/60 mb-2 flex items-center gap-1">
                         <RefreshCw className="h-4 w-4" />
                         API-Schlüssel aktualisieren
                       </p>
@@ -524,9 +524,9 @@ export default function ApiSettings({
                           value={valueSerpApiKey}
                           onChange={(e) => setValueSerpApiKey(e.target.value)}
                           placeholder="Neuen ValueSERP API-Schlüssel eingeben"
-                          className="w-full h-10 px-3 py-2 bg-white border border-gray-300 rounded-md pr-9"
+                          className="w-full h-10 px-3 py-2 bg-black/30 border border-white/15 rounded-xl pr-9 text-white placeholder:text-white/40 focus:border-[var(--rb-cyan)] focus:outline-none"
                         />
-                        <Key className="h-4 w-4 absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                        <Key className="h-4 w-4 absolute right-3 top-1/2 transform -translate-y-1/2 text-white/40" />
                       </div>
                       <div className="flex gap-2 mt-2">
                         <Button 
@@ -556,14 +556,14 @@ export default function ApiSettings({
                   </div>
                 ) : (
                   <div className="space-y-4">
-                    <div className="flex items-center gap-2 p-3 bg-yellow-50 rounded border border-yellow-200">
-                      <AlertCircle className="h-5 w-5 text-yellow-600" />
-                      <p className="text-sm text-yellow-800">
+                    <div className="flex items-center gap-2 p-3 bg-[rgba(251,191,36,0.1)] rounded-xl border border-[rgba(251,191,36,0.2)]">
+                      <AlertCircle className="h-5 w-5 text-amber-400" />
+                      <p className="text-sm text-white/80">
                         Kein ValueSERP API-Schlüssel konfiguriert. Geben Sie unten Ihren Schlüssel ein.
                       </p>
                     </div>
                     <div>
-                      <Label htmlFor="valueserp-api-key" className="text-sm text-gray-800 font-medium">ValueSERP API-Schlüssel</Label>
+                      <Label htmlFor="valueserp-api-key" className="text-sm text-white/90 font-medium">ValueSERP API-Schlüssel</Label>
                       <div className="relative mt-1">
                         <input
                           id="valueserp-api-key"
@@ -572,11 +572,11 @@ export default function ApiSettings({
                           value={valueSerpApiKey}
                           onChange={(e) => setValueSerpApiKey(e.target.value)}
                           placeholder="Geben Sie Ihren ValueSERP API-Schlüssel ein"
-                          className="w-full h-10 px-3 py-2 bg-white border border-gray-300 rounded-md pr-9"
+                          className="w-full h-10 px-3 py-2 bg-black/30 border border-white/15 rounded-xl pr-9 text-white placeholder:text-white/40 focus:border-[var(--rb-cyan)] focus:outline-none"
                         />
-                        <Key className="h-4 w-4 absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                        <Key className="h-4 w-4 absolute right-3 top-1/2 transform -translate-y-1/2 text-white/40" />
                       </div>
-                      <p className="text-xs text-gray-500 mt-1">Ihr Schlüssel wird verschlüsselt und sicher gespeichert</p>
+                      <p className="text-xs text-white/50 mt-1">Ihr Schlüssel wird verschlüsselt und sicher gespeichert</p>
                     </div>
                     <div className="flex gap-2 justify-end">
                       <Button

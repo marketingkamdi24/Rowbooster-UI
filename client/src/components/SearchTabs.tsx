@@ -35,6 +35,7 @@ import { Switch } from "@/components/ui/switch";
 import * as XLSX from "xlsx-js-style";
 import ResultsSection from "./ResultsSection";
 import ExcelValidationErrorDialog from "./ExcelValidationErrorDialog";
+import { ProductDataTable } from "./ProductDataTable";
 
 interface SearchTabsProps {
   onSearchResult: (result: SearchResponse, sourceTab?: string) => void;
@@ -529,6 +530,35 @@ export default function SearchTabs({
   
   // Abort controller ref for stopping batch processing
   const batchAbortControllerRef = useRef<AbortController | null>(null);
+  
+  // State for tab navigation hover effect with delay
+  const [isTabsExpanded, setIsTabsExpanded] = useState(false);
+  const tabsHoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const tabsExpandTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  
+  const handleTabsMouseEnter = () => {
+    // Clear any pending collapse timeout
+    if (tabsHoverTimeoutRef.current) {
+      clearTimeout(tabsHoverTimeoutRef.current);
+      tabsHoverTimeoutRef.current = null;
+    }
+    // Start 2-second delay before expanding
+    tabsExpandTimeoutRef.current = setTimeout(() => {
+      setIsTabsExpanded(true);
+    }, 2000); // 2 seconds delay before expanding
+  };
+  
+  const handleTabsMouseLeave = () => {
+    // Clear any pending expand timeout
+    if (tabsExpandTimeoutRef.current) {
+      clearTimeout(tabsExpandTimeoutRef.current);
+      tabsExpandTimeoutRef.current = null;
+    }
+    // Collapse after 3 seconds
+    tabsHoverTimeoutRef.current = setTimeout(() => {
+      setIsTabsExpanded(false);
+    }, 3000); // 3 seconds delay before collapsing
+  };
   
   // Abort controller ref for stopping manual (single product) searches
   const manualSearchAbortControllerRef = useRef<AbortController | null>(null);
@@ -1695,85 +1725,75 @@ export default function SearchTabs({
 
   return (
     <div className="space-y-4">
-      {/* Main Card with dark blue gradient background and modern effects */}
-      <Card className="relative overflow-hidden border border-[color:rgba(23,195,206,0.15)] shadow-[0_8px_40px_rgba(12,36,67,0.4)] rounded-3xl">
-        {/* Dark gradient background overlay */}
-        <div className="absolute inset-0 bg-gradient-to-br from-[color:var(--rb-primary-dark)] via-[color:rgba(12,36,67,0.97)] to-[color:rgba(12,36,67,0.92)] transition-all duration-700" />
-        <div className="absolute top-0 right-0 w-96 h-96 bg-[color:rgba(23,195,206,0.12)] rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none" />
-        <div className="absolute bottom-0 left-0 w-72 h-72 bg-[color:rgba(23,195,206,0.08)] rounded-full blur-3xl translate-y-1/2 -translate-x-1/2 pointer-events-none" />
-        
+      {/* Main Card - Clean transparent design */}
+      <Card className="relative overflow-hidden border-0 bg-transparent shadow-none rounded-none w-full max-w-full">
         <CardContent className="relative p-0">
-          {/* Sticky Command Bar - Dark Glassmorphism + Glow */}
-          <div className="sticky top-0 z-20 border-b border-[color:rgba(23,195,206,0.15)] bg-[color:rgba(12,36,67,0.85)] backdrop-blur-xl shadow-[0_4px_20px_rgba(0,0,0,0.3)]">
-            <div className="p-4 sm:p-5">
+          {/* Clean Command Bar */}
+          <div className="sticky top-0 z-20">
+            <div className="py-3">
               <div className="flex flex-col gap-4">
                 {/* Main Tab Navigation - 3D Pill Style with Glow */}
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                  {/* Tab Buttons - Dark Theme with Lime/Cyan Glow on active */}
-                  <div className="flex items-center gap-1.5 p-1.5 rounded-2xl bg-[color:rgba(0,0,0,0.25)] shadow-[inset_0_2px_4px_rgba(0,0,0,0.3)] ring-1 ring-white/5">
+                  {/* Tab Buttons - Icon-only with hover expand, centered on mobile */}
+                  <div 
+                    className="flex items-center justify-center sm:justify-start gap-1 p-1.5 sm:p-1 rounded-xl bg-black/20 mx-auto sm:mx-0"
+                    onMouseEnter={handleTabsMouseEnter}
+                    onMouseLeave={handleTabsMouseLeave}
+                  >
                     <button
                       onClick={() => handleTabChange("auto")}
-                      className={`group relative px-3 sm:px-4 py-2.5 text-xs sm:text-sm font-semibold transition-all duration-300 flex items-center gap-2.5 whitespace-nowrap rounded-xl ${
+                      className={`group relative p-2.5 text-xs font-medium transition-all duration-300 flex items-center gap-0 whitespace-nowrap rounded-lg ${
                         activeTab === "auto"
-                          ? "bg-gradient-to-r from-[color:var(--rb-lime)] to-[color:rgba(200,250,100,0.9)] text-[color:var(--rb-primary-dark)] shadow-[0_4px_20px_rgba(200,250,100,0.4),0_2px_8px_rgba(0,0,0,0.2)] scale-[1.02]"
-                          : "text-white/70 hover:text-white hover:bg-white/10"
+                          ? "bg-[color:var(--rb-lime)]/20 text-[color:var(--rb-lime)] border border-[color:var(--rb-lime)]/40"
+                          : "text-white/60 hover:text-white hover:bg-white/10 border border-transparent"
                       }`}
                     >
-                      <div className={`p-1.5 rounded-xl transition-all duration-300 ${activeTab === "auto" ? "bg-[color:rgba(12,36,67,0.3)]" : "bg-white/10 group-hover:bg-white/15"}`}>
-                        <Sparkles className={`h-4 w-4 transition-all duration-300 ${activeTab === "auto" ? "text-[color:var(--rb-primary-dark)]" : "text-white/70"}`} />
+                      <Sparkles className="h-4 w-4 flex-shrink-0" />
+                      <div className={`overflow-hidden transition-all duration-300 ease-out ${isTabsExpanded ? 'w-[75px] ml-2 opacity-100' : 'w-0 ml-0 opacity-0'}`}>
+                        <span className="block">Automatisch</span>
                       </div>
-                      <span className="hidden sm:inline">Automatisch</span>
-                      <span className="sm:hidden">Auto</span>
-                      {activeTab === "auto" && (
-                        <span className="hidden sm:inline-flex items-center px-2 py-0.5 text-[10px] font-bold bg-[color:rgba(12,36,67,0.25)] text-[color:var(--rb-primary-dark)] rounded-full">
-                          KI
-                        </span>
-                      )}
                     </button>
 
                     <button
                       onClick={() => handleTabChange("url")}
-                      className={`group relative px-3 sm:px-4 py-2.5 text-xs sm:text-sm font-semibold transition-all duration-300 flex items-center gap-2.5 whitespace-nowrap rounded-xl ${
+                      className={`group relative p-2.5 text-xs font-medium transition-all duration-300 flex items-center gap-0 whitespace-nowrap rounded-lg ${
                         activeTab === "url"
-                          ? "bg-gradient-to-r from-[color:var(--rb-lime)] to-[color:rgba(200,250,100,0.9)] text-[color:var(--rb-primary-dark)] shadow-[0_4px_20px_rgba(200,250,100,0.4),0_2px_8px_rgba(0,0,0,0.2)] scale-[1.02]"
-                          : "text-white/70 hover:text-white hover:bg-white/10"
+                          ? "bg-[color:var(--rb-lime)]/20 text-[color:var(--rb-lime)] border border-[color:var(--rb-lime)]/40"
+                          : "text-white/60 hover:text-white hover:bg-white/10 border border-transparent"
                       }`}
                     >
-                      <div className={`p-1.5 rounded-xl transition-all duration-300 ${activeTab === "url" ? "bg-[color:rgba(12,36,67,0.3)]" : "bg-white/10 group-hover:bg-white/15"}`}>
-                        <LinkIcon className={`h-4 w-4 transition-all duration-300 ${activeTab === "url" ? "text-[color:var(--rb-primary-dark)]" : "text-white/70"}`} />
+                      <LinkIcon className="h-4 w-4 flex-shrink-0" />
+                      <div className={`overflow-hidden transition-all duration-300 ease-out ${isTabsExpanded ? 'w-[28px] ml-2 opacity-100' : 'w-0 ml-0 opacity-0'}`}>
+                        <span className="block">URL</span>
                       </div>
-                      <span className="hidden sm:inline">URL</span>
-                      <span className="sm:hidden">URL</span>
                     </button>
 
                     <button
                       onClick={() => handleTabChange("pdf")}
-                      className={`group relative px-3 sm:px-4 py-2.5 text-xs sm:text-sm font-semibold transition-all duration-300 flex items-center gap-2.5 whitespace-nowrap rounded-xl ${
+                      className={`group relative p-2.5 text-xs font-medium transition-all duration-300 flex items-center gap-0 whitespace-nowrap rounded-lg ${
                         activeTab === "pdf"
-                          ? "bg-gradient-to-r from-[color:var(--rb-lime)] to-[color:rgba(200,250,100,0.9)] text-[color:var(--rb-primary-dark)] shadow-[0_4px_20px_rgba(200,250,100,0.4),0_2px_8px_rgba(0,0,0,0.2)] scale-[1.02]"
-                          : "text-white/70 hover:text-white hover:bg-white/10"
+                          ? "bg-[color:var(--rb-lime)]/20 text-[color:var(--rb-lime)] border border-[color:var(--rb-lime)]/40"
+                          : "text-white/60 hover:text-white hover:bg-white/10 border border-transparent"
                       }`}
                     >
-                      <div className={`p-1.5 rounded-xl transition-all duration-300 ${activeTab === "pdf" ? "bg-[color:rgba(12,36,67,0.3)]" : "bg-white/10 group-hover:bg-white/15"}`}>
-                        <FileText className={`h-4 w-4 transition-all duration-300 ${activeTab === "pdf" ? "text-[color:var(--rb-primary-dark)]" : "text-white/70"}`} />
+                      <FileText className="h-4 w-4 flex-shrink-0" />
+                      <div className={`overflow-hidden transition-all duration-300 ease-out ${isTabsExpanded ? 'w-[28px] ml-2 opacity-100' : 'w-0 ml-0 opacity-0'}`}>
+                        <span className="block">PDF</span>
                       </div>
-                      <span className="hidden sm:inline">PDF</span>
-                      <span className="sm:hidden">PDF</span>
                     </button>
 
                     <button
                       onClick={() => handleTabChange("custom")}
-                      className={`group relative px-3 sm:px-4 py-2.5 text-xs sm:text-sm font-semibold transition-all duration-300 flex items-center gap-2.5 whitespace-nowrap rounded-xl ${
+                      className={`group relative p-2.5 text-xs font-medium transition-all duration-300 flex items-center gap-0 whitespace-nowrap rounded-lg ${
                         activeTab === "custom"
-                          ? "bg-gradient-to-r from-[color:var(--rb-lime)] to-[color:rgba(200,250,100,0.9)] text-[color:var(--rb-primary-dark)] shadow-[0_4px_20px_rgba(200,250,100,0.4),0_2px_8px_rgba(0,0,0,0.2)] scale-[1.02]"
-                          : "text-white/70 hover:text-white hover:bg-white/10"
+                          ? "bg-[color:var(--rb-lime)]/20 text-[color:var(--rb-lime)] border border-[color:var(--rb-lime)]/40"
+                          : "text-white/60 hover:text-white hover:bg-white/10 border border-transparent"
                       }`}
                     >
-                      <div className={`p-1.5 rounded-xl transition-all duration-300 ${activeTab === "custom" ? "bg-[color:rgba(12,36,67,0.3)]" : "bg-white/10 group-hover:bg-white/15"}`}>
-                        <Settings2 className={`h-4 w-4 transition-all duration-300 ${activeTab === "custom" ? "text-[color:var(--rb-primary-dark)]" : "text-white/70"}`} />
+                      <Settings2 className="h-4 w-4 flex-shrink-0" />
+                      <div className={`overflow-hidden transition-all duration-300 ease-out ${isTabsExpanded ? 'w-[48px] ml-2 opacity-100' : 'w-0 ml-0 opacity-0'}`}>
+                        <span className="block">Quellen</span>
                       </div>
-                      <span className="hidden sm:inline">Quellen</span>
-                      <span className="sm:hidden">Quellen</span>
                     </button>
                   </div>
 
@@ -1878,8 +1898,8 @@ export default function SearchTabs({
                 </div>
 
                 {/* Mode Description Card - Dark with Lime accent */}
-                <div className="flex items-center gap-4 px-5 py-3.5 rounded-2xl transition-all duration-500 bg-[color:rgba(0,0,0,0.2)] ring-1 ring-white/10">
-                  <div className="flex-shrink-0 p-2.5 rounded-xl bg-gradient-to-br from-[color:rgba(200,250,100,0.2)] to-[color:rgba(200,250,100,0.1)] shadow-[0_0_20px_rgba(200,250,100,0.2)]">
+                <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4 px-4 sm:px-5 py-3 sm:py-3.5 rounded-2xl transition-all duration-500 bg-[color:rgba(0,0,0,0.2)] ring-1 ring-white/10 text-center sm:text-left">
+                  <div className="flex-shrink-0 p-2.5 rounded-xl bg-gradient-to-br from-[color:rgba(200,250,100,0.2)] to-[color:rgba(200,250,100,0.1)] shadow-[0_0_20px_rgba(200,250,100,0.2)] hidden sm:flex">
                     {activeTab === "auto" && <Sparkles className="h-5 w-5 text-[color:var(--rb-lime)]" />}
                     {activeTab === "custom" && <Settings2 className="h-5 w-5 text-[color:var(--rb-lime)]" />}
                     {activeTab === "url" && <LinkIcon className="h-5 w-5 text-[color:var(--rb-lime)]" />}
@@ -2048,15 +2068,15 @@ export default function SearchTabs({
                             {processedData.length > 0 && (
                               <div className="w-full">
                                 
-                                <div className="w-full flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-4">
-                                  {/* Left side: All controls - Dark Theme */}
+                                <div className="w-full flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3 sm:gap-4 mb-4">
+                                  {/* Left side: All controls - Dark Theme - Mobile Optimized */}
                                   <div className="w-full lg:w-auto overflow-x-auto">
-                                    <div className="flex flex-wrap items-center gap-3 sm:gap-4 px-4 py-3 bg-[color:rgba(0,0,0,0.25)] border border-white/10 rounded-2xl min-w-fit">
-                                      {/* Property Table Selector */}
-                                      <div className="flex items-center gap-2">
-                                        <div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-[color:rgba(200,250,100,0.15)] rounded-lg">
-                                          <Table2 className="h-3.5 w-3.5 text-[color:var(--rb-lime)]" />
-                                          <span className="hidden sm:inline text-xs font-semibold text-[color:var(--rb-lime)]">Produkt:</span>
+                                    <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 sm:gap-4 px-3 sm:px-4 py-2.5 sm:py-3 bg-[color:rgba(0,0,0,0.25)] border border-white/10 rounded-2xl min-w-fit">
+                                      {/* Property Table Selector - Mobile Optimized */}
+                                      <div className="flex items-center gap-1.5 sm:gap-2">
+                                        <div className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-1 sm:py-1.5 bg-[color:rgba(200,250,100,0.15)] rounded-lg">
+                                          <Table2 className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-[color:var(--rb-lime)]" />
+                                          <span className="hidden xs:inline text-[10px] sm:text-xs font-semibold text-[color:var(--rb-lime)]">Produkt:</span>
                                         </div>
                                         <Select
                                           value={currentDefaultTable?.id?.toString() || ''}
@@ -2067,7 +2087,7 @@ export default function SearchTabs({
                                             }
                                           }}
                                         >
-                                          <SelectTrigger className="h-8 w-[90px] sm:w-[130px] text-xs font-medium bg-[color:rgba(0,0,0,0.3)] text-white/90 border-white/20 rounded-lg hover:border-[color:rgba(200,250,100,0.4)] transition-colors">
+                                          <SelectTrigger className="h-7 sm:h-8 w-[80px] xs:w-[100px] sm:w-[130px] text-[10px] sm:text-xs font-medium bg-[color:rgba(0,0,0,0.3)] text-white/90 border-white/20 rounded-lg hover:border-[color:rgba(200,250,100,0.4)] transition-colors">
                                             <SelectValue placeholder="Tabelle" />
                                           </SelectTrigger>
                                           <SelectContent>
@@ -2080,39 +2100,39 @@ export default function SearchTabs({
                                         </Select>
                                       </div>
                                       
-                                      {/* PDF Extractor Toggle - Dark Theme */}
-                                      <div className="flex items-center gap-2 pl-3 border-l border-white/15">
-                                        <div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-[color:rgba(249,115,22,0.15)] rounded-lg">
-                                          <FileText className="h-3.5 w-3.5 text-orange-400" />
-                                          <span className="hidden sm:inline text-xs font-semibold text-orange-400">PDF Extractor</span>
+                                      {/* PDF Extractor Toggle - Dark Theme - Mobile Optimized */}
+                                      <div className="flex items-center gap-1.5 sm:gap-2 pl-2 sm:pl-3 border-l border-white/15">
+                                        <div className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-1 sm:py-1.5 bg-[color:rgba(249,115,22,0.15)] rounded-lg">
+                                          <FileText className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-orange-400" />
+                                          <span className="hidden xs:inline text-[10px] sm:text-xs font-semibold text-orange-400">PDF</span>
                                         </div>
                                         <Switch
                                           checked={pdfScraperEnabled}
                                           onCheckedChange={setPdfScraperEnabled}
-                                          className="data-[state=checked]:bg-gradient-to-r data-[state=checked]:from-orange-500 data-[state=checked]:to-amber-500 data-[state=checked]:shadow-[0_0_12px_rgba(249,115,22,0.4)] scale-90"
+                                          className="data-[state=checked]:bg-gradient-to-r data-[state=checked]:from-orange-500 data-[state=checked]:to-amber-500 data-[state=checked]:shadow-[0_0_12px_rgba(249,115,22,0.4)] scale-[0.8] sm:scale-90"
                                         />
                                       </div>
                                     </div>
                                   </div>
                                   
-                                  {/* Right side: Action button - Lime Glow */}
+                                  {/* Right side: Action button - Lime Glow - Mobile Optimized */}
                                   {(isProcessing || isBatchProcessingFromStatus) ? (
                                     <button
                                       onClick={handleStopBatchSearch}
-                                      className="group w-full lg:w-auto justify-center text-sm font-bold h-12 bg-gradient-to-r from-red-500 to-rose-600 text-white hover:from-red-600 hover:to-rose-700 py-3 px-6 rounded-xl flex items-center gap-2.5 transition-all duration-300 shadow-[0_4px_16px_rgba(239,68,68,0.35)] hover:shadow-[0_8px_24px_rgba(239,68,68,0.45)] hover:scale-[1.02] active:scale-[0.98] whitespace-nowrap"
+                                      className="group w-full lg:w-auto justify-center text-xs sm:text-sm font-bold h-10 sm:h-12 bg-gradient-to-r from-red-500 to-rose-600 text-white hover:from-red-600 hover:to-rose-700 py-2.5 sm:py-3 px-4 sm:px-6 rounded-xl flex items-center gap-2 sm:gap-2.5 transition-all duration-300 shadow-[0_4px_16px_rgba(239,68,68,0.35)] hover:shadow-[0_8px_24px_rgba(239,68,68,0.45)] hover:scale-[1.02] active:scale-[0.98] whitespace-nowrap"
                                     >
-                                      <Square className="h-5 w-5 fill-current drop-shadow-sm" />
-                                      <span className="hidden sm:inline">Abbrechen</span>
-                                      <span className="sm:hidden">Stop</span>
+                                      <Square className="h-4 w-4 sm:h-5 sm:w-5 fill-current drop-shadow-sm" />
+                                      <span className="hidden xs:inline">Abbrechen</span>
+                                      <span className="xs:hidden">Stop</span>
                                     </button>
                                   ) : (
                                     <button
                                       onClick={handleBatchSearch}
-                                      className="group w-full lg:w-auto justify-center text-sm font-bold h-12 bg-gradient-to-r from-[color:var(--rb-lime)] to-[color:rgba(200,250,100,0.85)] text-[color:var(--rb-primary-dark)] hover:from-[color:rgba(200,250,100,0.9)] hover:to-[color:var(--rb-lime)] py-3 px-6 rounded-xl flex items-center gap-2.5 transition-all duration-300 shadow-[0_4px_20px_rgba(200,250,100,0.4)] hover:shadow-[0_8px_30px_rgba(200,250,100,0.5)] hover:scale-[1.02] active:scale-[0.98] whitespace-nowrap"
+                                      className="group w-full lg:w-auto justify-center text-xs sm:text-sm font-bold h-10 sm:h-12 bg-gradient-to-r from-[color:var(--rb-lime)] to-[color:rgba(200,250,100,0.85)] text-[color:var(--rb-primary-dark)] hover:from-[color:rgba(200,250,100,0.9)] hover:to-[color:var(--rb-lime)] py-2.5 sm:py-3 px-4 sm:px-6 rounded-xl flex items-center gap-2 sm:gap-2.5 transition-all duration-300 shadow-[0_4px_20px_rgba(200,250,100,0.4)] hover:shadow-[0_8px_30px_rgba(200,250,100,0.5)] hover:scale-[1.02] active:scale-[0.98] whitespace-nowrap"
                                     >
-                                      <Sparkles className="h-5 w-5 drop-shadow-sm group-hover:animate-pulse" />
-                                      <span className="hidden sm:inline">Suchen & Extrahieren</span>
-                                      <span className="sm:hidden">Extrahieren</span>
+                                      <Sparkles className="h-4 w-4 sm:h-5 sm:w-5 drop-shadow-sm group-hover:animate-pulse" />
+                                      <span className="hidden xs:inline">Suchen & Extrahieren</span>
+                                      <span className="xs:hidden">Start</span>
                                     </button>
                                   )}
                                 </div>
@@ -2122,29 +2142,39 @@ export default function SearchTabs({
                         )}
                       </>
                     ) : (
-                      /* Manual Input Mode - Dark Theme Card */
-                      <div className="bg-[color:rgba(0,0,0,0.25)] backdrop-blur-sm rounded-2xl border border-white/10 p-6">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-5">
+                      /* Manual Input Mode - Clean Simple Design - Mobile Optimized */
+                      <div className="space-y-4 sm:space-y-5">
+                        {/* Input Fields */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
+                          {/* Produktname Field - Pflicht, daher zuerst */}
                           <div className="space-y-2">
-                            <Label htmlFor="auto-artikelnummer" className="text-sm font-semibold text-white/80 block">Artikelnummer</Label>
-                            <Input 
-                              id="auto-artikelnummer" 
-                              placeholder="z.B. AB12345 (optional)"
-                              value={articleNumber}
-                              onChange={(e) => setArticleNumber(e.target.value)}
-                              className="h-11 border-white/15 bg-[color:rgba(0,0,0,0.3)] text-white placeholder:text-white/40 rounded-xl focus:border-[color:var(--rb-lime)] focus:ring-2 focus:ring-[color:rgba(200,250,100,0.2)] transition-all duration-200 hover:border-white/25"
-                            />
-                          </div>
-                          <div className="space-y-2">
-                            <Label htmlFor="auto-produktname" className="text-sm font-semibold text-white/80 block">
-                              Produktname <span className="text-[color:var(--rb-lime)] font-bold">*</span>
+                            <Label htmlFor="auto-produktname" className="flex items-center gap-2 text-sm font-medium text-white/80">
+                              <Search className="h-3.5 w-3.5 text-white/50" />
+                              Produktname
+                              <span className="ml-auto text-[10px] px-2 py-0.5 rounded bg-[color:rgba(200,250,100,0.15)] text-[color:var(--rb-lime)]">Pflicht</span>
                             </Label>
                             <Input 
                               id="auto-produktname" 
                               placeholder="z.B. Samsung Galaxy S21"
                               value={productName}
                               onChange={(e) => setProductName(e.target.value)}
-                              className="h-11 border-[color:rgba(200,250,100,0.25)] bg-[color:rgba(0,0,0,0.3)] text-white placeholder:text-white/40 rounded-xl focus:border-[color:var(--rb-lime)] focus:ring-2 focus:ring-[color:rgba(200,250,100,0.25)] transition-all duration-200 hover:border-[color:rgba(200,250,100,0.4)]"
+                              className="h-11 border-white/10 bg-black/30 text-white placeholder:text-white/30 rounded-lg focus:border-[color:var(--rb-lime)]/50 focus:ring-0 transition-colors"
+                            />
+                          </div>
+                          
+                          {/* Artikelnummer Field - Optional, daher zweites */}
+                          <div className="space-y-2">
+                            <Label htmlFor="auto-artikelnummer" className="flex items-center gap-2 text-sm font-medium text-white/80">
+                              <span className="text-white/50">#</span>
+                              Artikelnummer
+                              <span className="ml-auto text-[10px] px-2 py-0.5 rounded bg-white/10 text-white/50">Optional</span>
+                            </Label>
+                            <Input 
+                              id="auto-artikelnummer" 
+                              placeholder="z.B. AB12345"
+                              value={articleNumber}
+                              onChange={(e) => setArticleNumber(e.target.value)}
+                              className="h-11 border-white/10 bg-black/30 text-white placeholder:text-white/30 rounded-lg focus:border-white/30 focus:ring-0 transition-colors"
                             />
                           </div>
                         </div>
@@ -2235,20 +2265,17 @@ export default function SearchTabs({
                 
 
 
-                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 border-t border-gray-100 pt-4 mt-4">
+                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 pt-4 mt-4">
                   {/* Left side with search controls */}
                   <div className="w-full sm:w-auto overflow-x-auto">
-                    {/* Search Controls for Manual Input Mode - Only show when in Auto tab and Manual mode */}
+                    {/* Search Controls for Manual Input Mode - Clean Style */}
                     {!fileUploadMode && activeTab === "auto" && (
                       <div className="w-full sm:w-auto">
-                        {/* Compact Search Options - Responsive */}
-                        <div className="flex flex-wrap items-center gap-2 sm:gap-3 px-2 sm:px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg min-w-fit">
+                        {/* Clean Control Bar */}
+                        <div className="flex flex-wrap items-center gap-3">
                           {/* Property Table Selector */}
-                          <div className="flex items-center gap-1 sm:gap-2">
-                            <div className="flex items-center gap-1">
-                              <Table2 className="h-3 w-3 text-blue-600" />
-                              <span className="hidden sm:inline text-xs font-medium text-blue-700">Produkt:</span>
-                            </div>
+                          <div className="flex items-center gap-2">
+                            <span className="text-xs text-white/50">Tabelle:</span>
                             <Select
                               value={currentDefaultTable?.id?.toString() || ''}
                               onValueChange={(value) => {
@@ -2258,12 +2285,12 @@ export default function SearchTabs({
                                 }
                               }}
                             >
-                              <SelectTrigger className="h-6 w-[80px] sm:w-[120px] text-xs bg-white border-gray-300">
-                                <SelectValue placeholder="Tabelle" />
+                              <SelectTrigger className="h-8 w-[100px] sm:w-[120px] text-xs bg-black/30 text-white/80 border-white/10 rounded-lg">
+                                <SelectValue placeholder="Wählen..." />
                               </SelectTrigger>
-                              <SelectContent>
+                              <SelectContent className="bg-[color:var(--rb-primary-dark)] border-white/20">
                                 {propertyTables.map((table) => (
-                                  <SelectItem key={table.id} value={table.id.toString()}>
+                                  <SelectItem key={table.id} value={table.id.toString()} className="text-white/90 focus:bg-white/10">
                                     {table.name}
                                   </SelectItem>
                                 ))}
@@ -2272,15 +2299,12 @@ export default function SearchTabs({
                           </div>
                           
                           {/* PDF Extractor Toggle */}
-                          <div className="flex items-center gap-1 sm:gap-2 pl-2 sm:pl-3 border-l border-gray-300">
-                            <div className="flex items-center gap-1">
-                              <FileText className="h-3 w-3 text-orange-600" />
-                              <span className="hidden sm:inline text-xs font-medium text-orange-700">PDF Extractor</span>
-                            </div>
+                          <div className="flex items-center gap-2">
+                            <span className="text-xs text-white/50">PDF:</span>
                             <Switch
                               checked={pdfScraperEnabled}
                               onCheckedChange={setPdfScraperEnabled}
-                              className="data-[state=checked]:bg-orange-600 scale-75"
+                              className="data-[state=checked]:bg-[color:var(--rb-lime)] scale-90"
                             />
                           </div>
                         </div>
@@ -2299,31 +2323,55 @@ export default function SearchTabs({
                   
                   {/* Right side with search button */}
                   <div className="w-full sm:w-auto flex justify-end">
-                    {/* Standalone Search Button - Only show for Automated tab */}
+                    {/* Clean Search Button - Border Style like Screenshot */}
                     {!fileUploadMode && activeTab === "auto" && (
                       (quickSearchMutation.isPending || analyzeContentMutation.isPending) ? (
-                        <Button
+                        <button
                           onClick={handleStopManualSearch}
-                          className="w-full sm:w-auto flex items-center justify-center gap-2 px-3 sm:px-4 py-2 bg-[color:var(--rb-error)] hover:bg-[color:rgba(229,57,53,0.92)] text-white font-medium rounded-lg shadow-md transition-all duration-200 hover:shadow-lg border-0"
-                          size="sm"
+                          className="w-full sm:w-auto h-10 px-5 flex items-center justify-center gap-2 bg-transparent border-2 border-red-500/60 text-red-400 font-medium rounded-lg transition-all duration-200 hover:border-red-500 hover:text-red-300"
                         >
                           <Square className="h-4 w-4 fill-current" />
-                          <span className="text-xs sm:text-sm font-medium">Abbrechen</span>
-                        </Button>
+                          <span className="text-sm">Abbrechen</span>
+                        </button>
                       ) : (
-                        <Button
+                        <button
                           onClick={handleSearch}
-                          className="w-full sm:w-auto flex items-center justify-center gap-2 px-3 sm:px-4 py-2 bg-[color:var(--rb-primary)] hover:bg-[color:rgba(12,36,67,0.92)] text-white font-medium rounded-lg shadow-md transition-all duration-200 hover:shadow-lg sm:hover:scale-105 active:scale-95 border-0"
-                          size="sm"
+                          disabled={!productName.trim()}
+                          className={`w-full sm:w-auto h-10 px-5 flex items-center justify-center gap-2 bg-transparent border-2 font-medium rounded-lg transition-all duration-200 ${
+                            productName.trim()
+                              ? 'border-[color:var(--rb-lime)]/60 text-[color:var(--rb-lime)] hover:border-[color:var(--rb-lime)] hover:bg-[color:rgba(200,250,100,0.05)]'
+                              : 'border-white/20 text-white/30 cursor-not-allowed'
+                          }`}
                         >
-                          <Globe className="h-4 w-4" />
-                          <span className="hidden sm:inline text-sm font-medium">Suchen & Extrahieren</span>
-                          <span className="sm:hidden text-xs font-medium">Extrahieren</span>
-                        </Button>
+                          <Sparkles className="h-4 w-4" />
+                          <span className="text-sm">Suchen & Extrahieren</span>
+                          <span className="ml-1">→</span>
+                        </button>
                       )
                     )}
                   </div>
                 </div>
+                
+                {/* Simple Lime Loading Bar for Single Product Search */}
+                {!fileUploadMode && activeTab === "auto" && (quickSearchMutation.isPending || analyzeContentMutation.isPending) && (
+                  <div className="mt-4 px-1">
+                    <div className="h-1 w-full bg-white/10 rounded-full overflow-hidden">
+                      <div 
+                        className="h-full bg-[#c8fa64] rounded-full animate-loading-bar"
+                        style={{
+                          animation: 'loading-bar 2s ease-in-out infinite',
+                        }}
+                      />
+                    </div>
+                    <style>{`
+                      @keyframes loading-bar {
+                        0% { width: 0%; margin-left: 0%; }
+                        50% { width: 70%; margin-left: 15%; }
+                        100% { width: 0%; margin-left: 100%; }
+                      }
+                    `}</style>
+                  </div>
+                )}
           </Tabs>
           </div>
         </CardContent>
@@ -2395,35 +2443,33 @@ export default function SearchTabs({
           // Remove the check - always show results section
           
           return (
-            <div className="border-t border-gray-200 bg-gradient-to-br from-blue-50/50 to-purple-50/20">
-              <div className="px-4 py-3 border-b border-gray-200 bg-white/80 backdrop-blur-sm">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <div className="h-4 w-1 bg-gradient-to-b from-green-500 to-blue-600 rounded-full"></div>
-                    <div>
-                      <h3 className="text-base font-bold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent">
-                        Suchergebnisse
-                      </h3>
-                    </div>
+            <div className="mt-6">
+              {/* Modern Glass Header */}
+              <div className="relative overflow-hidden rounded-t-2xl bg-gradient-to-r from-white/[0.03] to-white/[0.06] backdrop-blur-xl border border-white/[0.08] border-b-0">
+                <div className="absolute inset-0 bg-gradient-to-r from-[color:var(--rb-cyan)]/5 to-transparent pointer-events-none" />
+                <div className="relative px-5 py-4 flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-1 h-6 bg-gradient-to-b from-[color:var(--rb-lime)] to-[color:var(--rb-cyan)] rounded-full" />
+                    <h3 className="text-base font-semibold text-white tracking-wide">
+                      Suchergebnisse
+                    </h3>
                   </div>
-                  <Button
-                    variant="outline"
-                    size="sm"
+                  <button
                     onClick={() => setResultsExpanded(!resultsExpanded)}
-                    className="flex items-center gap-2 bg-white/70 hover:bg-white border-gray-300 hover:border-gray-400 text-gray-700 hover:text-gray-900 transition-all duration-200"
+                    className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium text-white/70 hover:text-white hover:bg-white/[0.08] transition-all duration-200"
                   >
                     {resultsExpanded ? (
                       <>
                         <ChevronUp className="h-4 w-4" />
-                        Minimieren
+                        <span>Minimieren</span>
                       </>
                     ) : (
                       <>
                         <ChevronDown className="h-4 w-4" />
-                        Erweitern
+                        <span>Erweitern</span>
                       </>
                     )}
-                  </Button>
+                  </button>
                 </div>
               </div>
               
@@ -2472,19 +2518,19 @@ export default function SearchTabs({
               )}
             
             {resultsExpanded && (
-              <div className="p-4">
+              <div className="p-2 sm:p-4">
                 {(activeTab === 'auto' && fileUploadMode && processingStatus.length > 0) ||
                  (activeTab === 'url' && ((urlInputMode === 'file' && urlFileModeProcessingStatus.length > 0) || (urlInputMode === 'manual' && urlManualModeProcessingStatus.length > 0))) ||
                  (activeTab === 'custom' && customProcessingStatus.length > 0) ? (
-                  <div className="bg-white rounded-xl shadow-sm border border-gray-100">
-                    {/* Modern Header */}
-                    <div className="px-5 py-4 border-b border-gray-100 bg-gradient-to-r from-slate-50 to-gray-50">
-                      <div className="flex justify-between items-center">
+                  <div className="rounded-2xl sm:rounded-xl bg-white/[0.02] backdrop-blur-sm border border-white/[0.06] overflow-hidden shadow-lg">
+                    {/* Modern Header - Dark Theme - Mobile Optimized */}
+                    <div className="px-3 sm:px-5 py-3 sm:py-4 border-b border-white/[0.06]">
+                      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 sm:gap-0">
                         <div className="flex items-center gap-3">
-                          <div className="w-2 h-8 bg-gradient-to-b from-blue-500 to-indigo-600 rounded-full"></div>
+                          <div className="w-1.5 h-7 bg-gradient-to-b from-[color:var(--rb-lime)] to-[color:var(--rb-cyan)] rounded-full"></div>
                           <div>
-                            <h3 className="text-lg font-semibold text-gray-800">Verarbeitungsergebnisse</h3>
-                            <p className="text-xs text-gray-500 mt-0.5">
+                            <h3 className="text-sm sm:text-base font-semibold text-white">Verarbeitungsergebnisse</h3>
+                            <p className="text-[10px] sm:text-xs text-white/50 mt-0.5">
                               {(() => {
                                 const currentProcessingStatus = activeTab === 'custom'
                                   ? customProcessingStatus
@@ -2498,37 +2544,37 @@ export default function SearchTabs({
                             </p>
                           </div>
                         </div>
-                        <div className="flex items-center gap-3">
-                          {/* Modern View Toggle */}
-                          <div className="flex items-center bg-gray-100 rounded-lg p-1 shadow-inner">
+                        <div className="flex items-center justify-between sm:justify-end gap-2 sm:gap-3">
+                          {/* Modern View Toggle - Dark Theme - Mobile Optimized */}
+                          <div className="flex items-center bg-white/[0.06] rounded-lg p-0.5 sm:p-1">
                             <button
-                              className={`px-4 py-1.5 text-xs font-medium rounded-md transition-all duration-200 flex items-center gap-1.5 ${
+                              className={`px-2.5 sm:px-4 py-1.5 text-[10px] sm:text-xs font-medium rounded-md transition-all duration-200 flex items-center gap-1 sm:gap-1.5 ${
                                 tableViewMode === 'list'
-                                  ? 'bg-white shadow-sm text-gray-800'
-                                  : 'text-gray-500 hover:text-gray-700'
+                                  ? 'bg-[color:var(--rb-lime)] text-[#0c2443]'
+                                  : 'text-white/60 hover:text-white'
                               }`}
                               onClick={() => setTableViewMode('list')}
                             >
-                              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <svg className="w-3 h-3 sm:w-3.5 sm:h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" />
                               </svg>
-                              Liste
+                              <span className="hidden xs:inline">Liste</span>
                             </button>
                             <button
-                              className={`px-4 py-1.5 text-xs font-medium rounded-md transition-all duration-200 flex items-center gap-1.5 ${
+                              className={`px-2.5 sm:px-4 py-1.5 text-[10px] sm:text-xs font-medium rounded-md transition-all duration-200 flex items-center gap-1 sm:gap-1.5 ${
                                 tableViewMode === 'data'
-                                  ? 'bg-white shadow-sm text-gray-800'
-                                  : 'text-gray-500 hover:text-gray-700'
+                                  ? 'bg-[color:var(--rb-lime)] text-[#0c2443]'
+                                  : 'text-white/60 hover:text-white'
                               }`}
                               onClick={() => setTableViewMode('data' as any)}
                             >
-                              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <svg className="w-3 h-3 sm:w-3.5 sm:h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M3 14h18m-9-4v8m-7 0h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
                               </svg>
-                              Daten
+                              <span className="hidden xs:inline">Daten</span>
                             </button>
                           </div>
-                          {/* Export Button */}
+                          {/* Export Button - Dark Theme - Mobile Optimized */}
                           {(() => {
                             const currentProcessingStatus = activeTab === 'custom'
                               ? customProcessingStatus
@@ -2537,55 +2583,55 @@ export default function SearchTabs({
                                 : processingStatus;
                             return currentProcessingStatus.some(item => item.status === 'completed');
                           })() && (
-                            <Button
-                              size="sm"
-                              className="h-8 px-4 text-xs font-medium bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white border-0 shadow-sm"
+                            <button
+                              className="h-7 sm:h-8 px-2.5 sm:px-4 text-[10px] sm:text-xs font-medium bg-[color:var(--rb-lime)] hover:bg-[color:var(--rb-lime)]/90 text-[#0c2443] rounded-lg transition-colors flex items-center gap-1 sm:gap-1.5"
                               onClick={() => exportTableData()}
                             >
-                              <Download className="h-3.5 w-3.5 mr-1.5" />
-                              Exportieren
-                            </Button>
+                              <Download className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+                              <span className="hidden xs:inline">Export</span>
+                            </button>
                           )}
                         </div>
                       </div>
                     </div>
                     
-                    {/* Compact Color Legend */}
-                    <div className="px-5 py-2 bg-gray-50/50 border-b border-gray-100">
-                      <div className="flex items-center gap-5 text-[11px] text-gray-500">
-                        <span className="font-medium text-gray-600">Datenqualität:</span>
-                        <div className="flex items-center gap-1.5">
-                          <div className="w-2.5 h-2.5 bg-gradient-to-br from-yellow-400 to-amber-500 rounded-full shadow-sm"></div>
-                          <span>1 Quelle</span>
+                    {/* Compact Color Legend - Dark Theme - Mobile Optimized with horizontal scroll */}
+                    <div className="px-3 sm:px-5 py-2 bg-white/[0.02] border-b border-white/[0.06] overflow-x-auto">
+                      <div className="flex items-center gap-3 sm:gap-5 text-[10px] sm:text-[11px] text-white/50 min-w-max">
+                        <span className="font-medium text-white/70">Qualität:</span>
+                        <div className="flex items-center gap-1">
+                          <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
+                          <span>1</span>
                         </div>
-                        <div className="flex items-center gap-1.5">
-                          <div className="w-2.5 h-2.5 bg-gradient-to-br from-lime-400 to-green-500 rounded-full shadow-sm"></div>
-                          <span>2 Quellen</span>
+                        <div className="flex items-center gap-1">
+                          <div className="w-2 h-2 bg-lime-500 rounded-full"></div>
+                          <span>2</span>
                         </div>
-                        <div className="flex items-center gap-1.5">
-                          <div className="w-2.5 h-2.5 bg-gradient-to-br from-green-400 to-emerald-600 rounded-full shadow-sm"></div>
-                          <span>3+ Quellen</span>
+                        <div className="flex items-center gap-1">
+                          <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                          <span>3+</span>
                         </div>
-                        <div className="flex items-center gap-1.5">
-                          <div className="w-2.5 h-2.5 bg-gradient-to-br from-blue-400 to-indigo-500 rounded-full shadow-sm"></div>
-                          <span>KI-Analysiert</span>
+                        <div className="flex items-center gap-1">
+                          <div className="w-2 h-2 bg-[color:var(--rb-cyan)] rounded-full"></div>
+                          <span>KI</span>
                         </div>
                       </div>
                     </div>
 
-                    <div className="relative overflow-x-auto">
-                      <div className="overflow-y-auto" style={{ maxHeight: '22rem' }}>
+                    {/* Swipeable table container for mobile */}
+                    <div className="relative overflow-x-auto scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent touch-pan-x">
+                      <div className="overflow-y-auto" style={{ maxHeight: '26rem' }}>
                       {tableViewMode === 'list' ? (
-                        <table className="w-full text-sm min-w-max">
-                          <thead className="bg-gradient-to-r from-slate-100 to-gray-100 sticky top-0 z-10">
+                        <table className="w-full text-sm min-w-[500px] sm:min-w-max">
+                          <thead className="bg-white/[0.03] sticky top-0 z-10">
                             <tr>
-                              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Produkt</th>
-                              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Status</th>
-                              <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider w-36">Fortschritt</th>
-                              <th className="px-4 py-3 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">Aktionen</th>
+                              <th className="px-3 sm:px-4 py-2.5 sm:py-3 text-left text-[9px] sm:text-[10px] font-semibold text-white/60 uppercase tracking-wider">Produkt</th>
+                              <th className="px-3 sm:px-4 py-2.5 sm:py-3 text-left text-[9px] sm:text-[10px] font-semibold text-white/60 uppercase tracking-wider">Status</th>
+                              <th className="px-3 sm:px-4 py-2.5 sm:py-3 text-left text-[9px] sm:text-[10px] font-semibold text-white/60 uppercase tracking-wider w-28 sm:w-36">Fortschritt</th>
+                              <th className="px-3 sm:px-4 py-2.5 sm:py-3 text-right text-[9px] sm:text-[10px] font-semibold text-white/60 uppercase tracking-wider">Aktionen</th>
                             </tr>
                           </thead>
-                          <tbody className="divide-y divide-gray-100">
+                          <tbody className="divide-y divide-white/[0.04]">
                             {(() => {
                               const currentProcessingStatus = activeTab === 'custom'
                                 ? customProcessingStatus
@@ -2593,83 +2639,83 @@ export default function SearchTabs({
                                   ? (urlInputMode === 'file' ? urlFileModeProcessingStatus : urlManualModeProcessingStatus)
                                   : processingStatus;
                               return currentProcessingStatus.map((item, index) => (
-                              <tr key={index} className="hover:bg-blue-50/50 transition-colors duration-150">
-                                <td className="px-4 py-3">
-                                  <div className="flex items-center gap-3">
-                                    <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-100 to-indigo-100 flex items-center justify-center flex-shrink-0">
-                                      <span className="text-xs font-bold text-blue-600">{index + 1}</span>
+                              <tr key={index} className="hover:bg-white/[0.04] transition-colors duration-150">
+                                <td className="px-3 sm:px-4 py-2.5 sm:py-3">
+                                  <div className="flex items-center gap-2 sm:gap-3">
+                                    <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-[color:var(--rb-cyan)]/20 flex items-center justify-center flex-shrink-0">
+                                      <span className="text-[10px] sm:text-xs font-bold text-[color:var(--rb-cyan)]">{index + 1}</span>
                                     </div>
                                     <div className="min-w-0">
-                                      <p className="text-sm font-medium text-gray-800 truncate max-w-[200px]">{item.productName}</p>
-                                      <p className="text-xs text-gray-400 truncate">{item.articleNumber || 'Keine Art.-Nr.'}</p>
+                                      <p className="text-xs sm:text-sm font-medium text-white/90 truncate max-w-[120px] sm:max-w-[200px]">{item.productName}</p>
+                                      <p className="text-[10px] sm:text-xs text-white/40 truncate">{item.articleNumber || 'Keine Art.-Nr.'}</p>
                                     </div>
                                   </div>
                                 </td>
-                                <td className="px-4 py-3">
-                                  <div className="flex items-center gap-2">
+                                <td className="px-3 sm:px-4 py-2.5 sm:py-3">
+                                  <div className="flex items-center gap-1.5 sm:gap-2">
                                     {item.status === 'pending' && (
-                                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600 border border-gray-200">
-                                        <div className="w-1.5 h-1.5 bg-gray-400 rounded-full"></div>
-                                        Wartend
+                                      <span className="inline-flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-medium bg-white/10 text-white/60">
+                                        <div className="w-1.5 h-1.5 bg-white/40 rounded-full"></div>
+                                        <span className="hidden xs:inline">Wartend</span>
                                       </span>
                                     )}
                                     {item.status === 'searching' && (
-                                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700 border border-blue-200">
-                                        <Loader2 className="h-3 w-3 animate-spin" />
-                                        Suche läuft
+                                      <span className="inline-flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-medium bg-[color:var(--rb-cyan)]/20 text-[color:var(--rb-cyan)]">
+                                        <Loader2 className="h-2.5 w-2.5 sm:h-3 sm:w-3 animate-spin" />
+                                        <span className="hidden xs:inline">Suche</span>
                                       </span>
                                     )}
                                     {item.status === 'browser-rendering' && (
-                                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-purple-50 text-purple-700 border border-purple-200">
-                                        <Loader2 className="h-3 w-3 animate-spin" />
-                                        JS Rendering
+                                      <span className="inline-flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-medium bg-purple-500/20 text-purple-400">
+                                        <Loader2 className="h-2.5 w-2.5 sm:h-3 sm:w-3 animate-spin" />
+                                        <span className="hidden xs:inline">JS</span>
                                       </span>
                                     )}
                                     {item.status === 'extracting' && (
-                                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-amber-50 text-amber-700 border border-amber-200">
-                                        <Sparkles className="h-3 w-3" />
-                                        KI Extraktion
+                                      <span className="inline-flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-medium bg-amber-500/20 text-amber-400">
+                                        <Sparkles className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
+                                        <span className="hidden xs:inline">KI</span>
                                       </span>
                                     )}
                                     {item.status === 'completed' && (
-                                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
-                                        <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                                      <span className="inline-flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-medium bg-[color:var(--rb-lime)]/20 text-[color:var(--rb-lime)]">
+                                        <svg className="w-2.5 h-2.5 sm:w-3 sm:h-3" fill="currentColor" viewBox="0 0 20 20">
                                           <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                                         </svg>
-                                        Abgeschlossen
+                                        <span className="hidden xs:inline">OK</span>
                                       </span>
                                     )}
                                     {item.status === 'failed' && (
-                                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-red-50 text-red-700 border border-red-200">
-                                        <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                                      <span className="inline-flex items-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-medium bg-red-500/20 text-red-400">
+                                        <svg className="w-2.5 h-2.5 sm:w-3 sm:h-3" fill="currentColor" viewBox="0 0 20 20">
                                           <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
                                         </svg>
-                                        Fehlgeschlagen
+                                        <span className="hidden xs:inline">Fehler</span>
                                       </span>
                                     )}
                                   </div>
                                 </td>
-                                <td className="px-4 py-3">
-                                  <div className="flex items-center gap-2">
-                                    <div className="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
+                                <td className="px-3 sm:px-4 py-2.5 sm:py-3">
+                                  <div className="flex items-center gap-1.5 sm:gap-2">
+                                    <div className="flex-1 h-1 sm:h-1.5 bg-white/10 rounded-full overflow-hidden">
                                       <div
                                         className={`h-full rounded-full transition-all duration-500 ${
-                                          item.status === 'completed' ? 'bg-gradient-to-r from-emerald-400 to-green-500' :
-                                          item.status === 'failed' ? 'bg-gradient-to-r from-red-400 to-rose-500' :
-                                          'bg-gradient-to-r from-blue-400 to-indigo-500'
+                                          item.status === 'completed' ? 'bg-[color:var(--rb-lime)]' :
+                                          item.status === 'failed' ? 'bg-red-500' :
+                                          'bg-[color:var(--rb-cyan)]'
                                         }`}
                                         style={{ width: `${item.progress}%` }}
                                       />
                                     </div>
-                                    <span className="text-xs font-medium text-gray-500 w-8">{item.progress}%</span>
+                                    <span className="text-[10px] sm:text-xs font-medium text-white/50 w-6 sm:w-8">{item.progress}%</span>
                                   </div>
                                 </td>
-                                <td className="px-4 py-3">
-                                  <div className="flex justify-end gap-2">
+                                <td className="px-3 sm:px-4 py-2.5 sm:py-3">
+                                  <div className="flex justify-end gap-1.5 sm:gap-2">
                                     {item.result && (
                                       <>
                                         <button
-                                          className="inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium text-red-600 bg-red-50 hover:bg-red-100 rounded-md transition-colors"
+                                          className="inline-flex items-center gap-1 px-2 sm:px-2.5 py-1 sm:py-1.5 text-[10px] sm:text-xs font-medium text-red-400 bg-red-500/10 hover:bg-red-500/20 rounded-md transition-colors"
                                           onClick={() => {
                                             if (confirm(`Ergebnis für ${item.productName} löschen?`)) {
                                               setProcessingStatus(prev => prev.filter((_, i) => i !== index));
@@ -2692,318 +2738,27 @@ export default function SearchTabs({
                           </tbody>
                         </table>
                       ) : (
-                        <div>
-                          {(() => {
-                            const currentProcessingStatus = activeTab === 'custom'
-                              ? customProcessingStatus
-                              : activeTab === 'url'
-                                ? (urlInputMode === 'file' ? urlFileModeProcessingStatus : urlManualModeProcessingStatus)
-                                : processingStatus;
-                            
-                            if (currentProcessingStatus.length === 0) return null;
-                            
-                            return (() => {
-                            // Create clean column list based on Eigenschaften properties only
-                            const orderedPropertyKeys: string[] = [];
-                            
-                            // Add standard columns first (only the essential ones)
-                            orderedPropertyKeys.push("Status", "Artikelnummer", "Produktname");
-                            
-                            // Add properties in the order they appear in the properties array
-                            // This preserves the column order from the original Excel file
-                            properties.forEach(prop => {
-                              // Skip duplicates and system properties
-                              if (!orderedPropertyKeys.includes(prop.name) && 
-                                  prop.name !== "Artikelnummer" && 
-                                  prop.name !== "Produktname" && 
-                                  prop.name !== "Status" &&
-                                  prop.name !== "Artikel Nr." &&
-                                  prop.name !== "Produkt Name" &&
-                                  prop.name !== "id" &&
-                                  prop.name !== "productName" &&
-                                  !prop.name.startsWith('__')) {
-                                orderedPropertyKeys.push(prop.name);
+                        <ProductDataTable
+                          processingStatus={activeTab === 'custom'
+                            ? customProcessingStatus
+                            : activeTab === 'url'
+                              ? (urlInputMode === 'file' ? urlFileModeProcessingStatus : urlManualModeProcessingStatus)
+                              : processingStatus}
+                          properties={properties}
+                          onDeleteItem={(index) => {
+                            if (activeTab === 'custom') {
+                              setCustomProcessingStatus(prev => prev.filter((_, i) => i !== index));
+                            } else if (activeTab === 'url') {
+                              if (urlInputMode === 'file') {
+                                setUrlFileModeProcessingStatus(prev => prev.filter((_, i) => i !== index));
+                              } else {
+                                setUrlManualModeProcessingStatus(prev => prev.filter((_, i) => i !== index));
                               }
-                            });
-                            
-                            // Track which products have data to show proper property columns
-                            let hasCompletedProducts = false;
-                            
-                            // Check if we have completed products for display
-                            currentProcessingStatus.forEach(item => {
-                              if (item.status === 'completed' && item.result?.products?.[0]) {
-                                hasCompletedProducts = true;
-                              }
-                            });
-                            
-                            // Use the clean ordered property keys
-                            const propertyKeys = orderedPropertyKeys;
-                            
-                            return (
-                              <table className="w-full text-sm border-collapse min-w-max">
-                                <thead className="bg-gradient-to-r from-slate-100 to-gray-100 sticky top-0 z-10">
-                                  <tr>
-                                    <th className="px-3 py-2.5 text-left whitespace-nowrap sticky left-0 bg-gradient-to-r from-slate-100 to-gray-100 z-20 border-b border-gray-200">
-                                      <div className="flex items-center gap-2">
-                                        <input
-                                          type="checkbox"
-                                          className="rounded border-gray-300 text-blue-600 focus:ring-blue-500 focus:ring-offset-0"
-                                        />
-                                        <span className="text-xs font-semibold text-gray-600 uppercase tracking-wider">#</span>
-                                      </div>
-                                    </th>
-                                    {propertyKeys.map(key => (
-                                      <th key={key} className="px-3 py-2.5 text-left whitespace-nowrap border-b border-gray-200">
-                                        <span className="text-xs font-semibold text-gray-600 uppercase tracking-wider">{key}</span>
-                                      </th>
-                                    ))}
-                                    <th className="px-3 py-2.5 text-right whitespace-nowrap border-b border-gray-200">
-                                      <span className="text-xs font-semibold text-gray-600 uppercase tracking-wider">Aktionen</span>
-                                    </th>
-                                  </tr>
-                                </thead>
-                                <tbody className="divide-y divide-gray-100">
-                                  {currentProcessingStatus.map((item, index) => {
-                                    const product = item.result?.products?.[0];
-                                    const properties = product?.properties || {};
-                                    
-                                    return (
-                                      <tr key={index} className="hover:bg-blue-50/30 transition-colors duration-150 group">
-                                        <td className="px-3 py-2.5 whitespace-nowrap sticky left-0 bg-white group-hover:bg-blue-50/30 z-10 border-r border-gray-100">
-                                          <div className="flex items-center gap-2">
-                                            <input
-                                              type="checkbox"
-                                              className="rounded border-gray-300 text-blue-600 focus:ring-blue-500 focus:ring-offset-0"
-                                            />
-                                            <span className="text-xs font-medium text-gray-400">{index + 1}</span>
-                                          </div>
-                                        </td>
-                                        {propertyKeys.map(key => {
-                                          if (key === 'Status') {
-                                            return (
-                                              <td key={key} className="px-3 py-2.5 whitespace-nowrap">
-                                                {item.status === 'pending' && (
-                                                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-medium bg-gray-100 text-gray-600">
-                                                    <div className="w-1.5 h-1.5 bg-gray-400 rounded-full"></div>
-                                                    Wartend
-                                                  </span>
-                                                )}
-                                                {item.status === 'searching' && (
-                                                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-medium bg-blue-50 text-blue-600">
-                                                    <Loader2 className="h-3 w-3 animate-spin" />
-                                                    Suche
-                                                  </span>
-                                                )}
-                                                {item.status === 'extracting' && (
-                                                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-medium bg-amber-50 text-amber-600">
-                                                    <Sparkles className="h-3 w-3" />
-                                                    KI
-                                                  </span>
-                                                )}
-                                                {item.status === 'completed' && (
-                                                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-medium bg-emerald-50 text-emerald-600">
-                                                    <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                                                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                                                    </svg>
-                                                    OK
-                                                  </span>
-                                                )}
-                                                {item.status === 'failed' && (
-                                                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-medium bg-red-50 text-red-600">
-                                                    <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                                                      <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
-                                                    </svg>
-                                                    Fehler
-                                                  </span>
-                                                )}
-                                              </td>
-                                            );
-                                          } else if (key === 'Artikelnummer') {
-                                            return (
-                                              <td key={key} className="px-3 py-2.5 whitespace-nowrap">
-                                                <span className="text-xs font-mono text-gray-600 bg-gray-50 px-1.5 py-0.5 rounded">
-                                                  {item.articleNumber || '—'}
-                                                </span>
-                                              </td>
-                                            );
-                                          } else if (key === 'Produktname') {
-                                            return (
-                                              <td key={key} className="px-3 py-2.5 whitespace-nowrap max-w-[200px]">
-                                                <span className="text-sm font-medium text-gray-800 truncate block" title={item.productName}>
-                                                  {item.productName}
-                                                </span>
-                                              </td>
-                                            );
-                                          } else if (product && properties[key]) {
-                                            const propData = properties[key];
-                                            const hasValue = propData.value && propData.value !== 'Nicht gefunden' && propData.value !== 'Not found' && propData.value !== 'Not Found' && propData.value.trim() !== '';
-                                            const sourceCount = propData.consistencyCount || propData.sources?.length || 0;
-                                            
-                                            let bgColor = '';
-                                            let borderColor = 'border-gray-200';
-                                            let dotColor = 'bg-gray-300';
-                                            let consistencyInfo = '';
-                                            
-                                            if (hasValue) {
-                                              if (sourceCount === 1) {
-                                                bgColor = 'bg-yellow-50';
-                                                borderColor = 'border-yellow-200';
-                                                dotColor = 'bg-yellow-500';
-                                                consistencyInfo = `1 bestätigte Quelle`;
-                                              } else if (sourceCount === 2) {
-                                                bgColor = 'bg-lime-50';
-                                                borderColor = 'border-lime-200';
-                                                dotColor = 'bg-lime-500';
-                                                consistencyInfo = `2 bestätigte Quellen`;
-                                              } else if (sourceCount >= 3) {
-                                                bgColor = 'bg-green-50';
-                                                borderColor = 'border-green-200';
-                                                dotColor = 'bg-green-500';
-                                                consistencyInfo = `${sourceCount} bestätigte Quellen`;
-                                              }
-                                            }
-                                            
-                                            const getConfidenceColor = (confidence: number) => {
-                                              if (confidence >= 85) return "bg-green-500";
-                                              if (confidence >= 70) return "bg-yellow-500";
-                                              if (confidence >= 30) return "bg-orange-500";
-                                              return "bg-red-300";
-                                            };
-                                            
-                                            return (
-                                              <td key={key} className={`px-3 py-2.5 whitespace-nowrap ${bgColor}`}>
-                                                <TooltipProvider>
-                                                  <Tooltip>
-                                                    <TooltipTrigger asChild>
-                                                      <div className="flex items-center gap-1.5 cursor-help max-w-[150px]">
-                                                        <div className={`w-2 h-2 rounded-full ${dotColor} flex-shrink-0`}></div>
-                                                        <span className={`text-sm truncate ${!hasValue ? 'text-gray-400 italic' : 'text-gray-700'}`} title={propData.value}>
-                                                          {propData.value || '—'}
-                                                        </span>
-                                                      </div>
-                                                    </TooltipTrigger>
-                                                    <TooltipContent className="max-w-sm p-4 bg-white border border-gray-200 shadow-xl rounded-lg">
-                                                      <div className="space-y-3">
-                                                        <div>
-                                                          <div className="text-xs font-medium text-gray-500 mb-1">Eigenschaft</div>
-                                                          <p className="text-sm text-gray-800 font-medium">{key}</p>
-                                                        </div>
-                                                        <div>
-                                                          <div className="text-xs font-medium text-gray-500 mb-1">Wert</div>
-                                                          <p className="text-sm text-gray-800 font-medium">
-                                                            {hasValue ? propData.value : 'Keine Daten gefunden'}
-                                                          </p>
-                                                        </div>
-                                                        <div>
-                                                          <div className="text-xs font-medium text-gray-500 mb-1">Bestätigte Quellen</div>
-                                                          <div className="flex items-center gap-2">
-                                                            {(() => {
-                                                              const count = propData.consistencyCount || propData.sources?.length || 0;
-                                                              let color = '';
-                                                              
-                                                              if (count === 0) {
-                                                                color = 'bg-gray-400';
-                                                              } else if (count === 1) {
-                                                                color = 'bg-yellow-500';
-                                                              } else if (count === 2) {
-                                                                color = 'bg-lime-500';
-                                                              } else {
-                                                                color = 'bg-green-500';
-                                                              }
-                                                              
-                                                              return (
-                                                                <>
-                                                                  <div className={`w-2 h-2 rounded-full ${color}`}></div>
-                                                                  <span className="text-sm font-medium text-gray-700">
-                                                                    {count} {count === 1 ? 'Quelle' : 'Quellen'}
-                                                                  </span>
-                                                                </>
-                                                              );
-                                                            })()}
-                                                          </div>
-                                                        </div>
-                                                        {propData.sources && propData.sources.length > 0 && (
-                                                          <div>
-                                                            <div className="text-xs font-medium text-gray-500 mb-2">Quellen ({propData.sources.length})</div>
-                                                            <div className="space-y-1">
-                                                              {propData.sources.map((source: any, idx: number) => (
-                                                                <a
-                                                                  key={idx}
-                                                                  href={source.url}
-                                                                  target="_blank"
-                                                                  rel="noopener noreferrer"
-                                                                  className="flex items-start gap-2 hover:bg-blue-50 p-1 rounded transition-colors group"
-                                                                  onClick={(e) => e.stopPropagation()}
-                                                                >
-                                                                  <div className="w-1.5 h-1.5 bg-blue-500 rounded-full mt-1.5 flex-shrink-0 group-hover:bg-blue-700"></div>
-                                                                  <div className="min-w-0 flex-1">
-                                                                    <div className="text-xs text-gray-700 font-medium truncate group-hover:text-blue-600">
-                                                                      {source.sourceLabel || source.title || `Quelle ${idx + 1}`}
-                                                                    </div>
-                                                                    {source.url && source.url !== 'Unknown URL' && (
-                                                                      <div className="text-xs text-gray-500 truncate group-hover:text-blue-500 group-hover:underline">
-                                                                        {source.url.replace(/^https?:\/\//, '').replace(/^www\./, '')}
-                                                                      </div>
-                                                                    )}
-                                                                  </div>
-                                                                  <ExternalLink className="h-3 w-3 text-gray-400 group-hover:text-blue-500 flex-shrink-0 mt-1" />
-                                                                </a>
-                                                              ))}
-                                                            </div>
-                                                          </div>
-                                                        )}
-                                                        {consistencyInfo && (
-                                                          <div>
-                                                            <div className="text-xs font-medium text-gray-500 mb-1">Datenqualität</div>
-                                                            <div className="text-xs text-gray-600">{consistencyInfo}</div>
-                                                          </div>
-                                                        )}
-                                                      </div>
-                                                    </TooltipContent>
-                                                  </Tooltip>
-                                                </TooltipProvider>
-                                              </td>
-                                            );
-                                          } else {
-                                            return (
-                                              <td key={key} className="px-3 py-2.5 whitespace-nowrap">
-                                                <span className="text-gray-300">—</span>
-                                              </td>
-                                            );
-                                          }
-                                        })}
-                                        <td className="px-3 py-2.5 whitespace-nowrap">
-                                          <div className="flex justify-end gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
-                                            {item.result && (
-                                              <>
-                                                <button
-                                                  className="p-1.5 text-red-500 hover:bg-red-100 rounded-md transition-colors"
-                                                  title="Löschen"
-                                                  onClick={() => {
-                                                    if (confirm(`Ergebnis für ${item.productName} löschen?`)) {
-                                                      setProcessingStatus(prev => prev.filter((_, i) => i !== index));
-                                                      toast({
-                                                        title: "Gelöscht",
-                                                        description: `${item.productName} entfernt`,
-                                                      });
-                                                    }
-                                                  }}
-                                                >
-                                                  <Trash2 className="h-3.5 w-3.5" />
-                                                </button>
-                                              </>
-                                            )}
-                                          </div>
-                                        </td>
-                                      </tr>
-                                    );
-                                  })}
-                                </tbody>
-                              </table>
-                            );
-                          })();
-                          })()}
-                        </div>
+                            } else {
+                              setProcessingStatus(prev => prev.filter((_, i) => i !== index));
+                            }
+                          }}
+                        />
                       )}
                       </div>
                     </div>
